@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оборудование для «Честного знака»: сканеры, принтеры, этикетировщики | ЯФОР</title>
+  <meta name="description" content="Оборудование для работы с «Честным знаком» в пищевой промышленности: сканеры 2D, принтеры этикеток, весовые этикировщики DIBAL. Поставка, настройка, обучение.">
+  <meta property="og:title" content="Оборудование для «Честного знака»: сканеры, принтеры, этикетировщики | ЯФОР">
+  <meta property="og:description" content="Оборудование для работы с «Честным знаком» в пищевой промышленности: сканеры 2D, принтеры этикеток, весовые этикировщики DIBAL. Поставка, настройка, обучение.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="icon.png" type="image/png">
+
+  <style>
+    :root {
+      --blue-dark: #1F4E79;
+      --blue-mid: #2E75B6;
+      --orange: #C55A11;
+      --gray-dark: #1a1a2e;
+      --gray-mid: #6b7280;
+      --gray-light: #f3f4f6;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.10);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,.12);
+      --radius: 12px;
+      --transition: .22s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+           color: var(--gray-dark); background: #fff; line-height: 1.6; }
+    a { color: var(--blue-mid); }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, var(--blue-dark) 0%, #2E75B6 100%);
+            color: #fff; padding: 56px 0 48px; }
+    .hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800;
+               line-height: 1.2; margin-bottom: 12px; }
+    .hero .subtitle { font-size: 1.05rem; opacity: .85; max-width: 640px; }
+
+    /* STAT BAND */
+    .stat-band { background: var(--orange); padding: 28px 0; }
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+    .stat-item { text-align: center; padding: 0 16px;
+                 border-right: 1px solid rgba(255,255,255,.25); }
+    .stat-item:last-child { border-right: none; }
+    .stat-val { font-size: 2rem; font-weight: 900; color: #fff; line-height: 1; }
+    .stat-label { font-size: .78rem; color: rgba(255,255,255,.85); margin-top: 5px;
+                  text-transform: uppercase; letter-spacing: .3px; }
+
+    /* SECTIONS */
+    section { padding: 48px 0; }
+    section:nth-child(even) { background: var(--gray-light); }
+    .section-title { font-size: 1.5rem; font-weight: 800; color: var(--blue-dark);
+                     margin-bottom: 20px; }
+
+    /* PROBLEM→SOLUTION TABLE */
+    .ps-table { width: 100%; border-collapse: collapse; }
+    .ps-table th { background: var(--blue-dark); color: #fff; padding: 10px 16px;
+                   text-align: left; font-size: .9rem; }
+    .ps-table td { padding: 11px 16px; border-bottom: 1px solid #e5e7eb;
+                   font-size: .92rem; vertical-align: top; }
+    .ps-table tr:last-child td { border-bottom: none; }
+    .ps-table tr:nth-child(odd) td { background: #fff; }
+    .ps-table tr:nth-child(even) td { background: #f8f9fa; }
+    .ps-table td:first-child { color: var(--gray-mid); width: 38%; }
+    .ps-table td:last-child { color: var(--gray-dark); }
+
+    /* MODEL TABLE */
+    .model-table { width: 100%; border-collapse: collapse; }
+    .model-table th { background: var(--blue-dark); color: #fff; padding: 10px 16px;
+                      text-align: left; font-size: .9rem; }
+    .model-table td { padding: 11px 16px; border-bottom: 1px solid #e5e7eb;
+                      font-size: .9rem; vertical-align: top; }
+    .model-table tr:last-child td { border-bottom: none; }
+    .model-table tr:nth-child(odd) td { background: #fff; }
+    .model-table tr:nth-child(even) td { background: #f8f9fa; }
+    .model-table td:first-child { font-weight: 700; color: var(--blue-dark);
+                                   white-space: nowrap; width: 30%; }
+
+    /* HIGHLIGHT BOX */
+    .highlight-box { background: #EBF3FB; border-left: 4px solid var(--blue-mid);
+                     border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
+    .highlight-box ul { padding-left: 18px; }
+    .highlight-box li { margin-bottom: 6px; font-size: .93rem; }
+
+    /* DELIVERY LIST */
+    .delivery-list { list-style: none; padding: 0; }
+    .delivery-list li { padding: 9px 0 9px 28px; border-bottom: 1px solid #e5e7eb;
+                        position: relative; font-size: .93rem; }
+    .delivery-list li:last-child { border-bottom: none; }
+    .delivery-list li::before { content: '✓'; position: absolute; left: 0;
+                                 color: var(--blue-mid); font-weight: 700; }
+
+    /* CTA SECTION */
+    .cta-section { background: var(--blue-dark); color: #fff; padding: 52px 0; text-align: center; }
+    .cta-section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 12px; }
+    .cta-section p { opacity: .85; max-width: 520px; margin: 0 auto 28px; }
+    .cta-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+                 max-width: 640px; margin: 0 auto 28px; text-align: left; }
+    .cta-step { background: rgba(255,255,255,.1); border-radius: 8px; padding: 14px 16px;
+                font-size: .88rem; opacity: .9; }
+    .cta-step strong { display: block; color: var(--orange); margin-bottom: 3px; font-size: .78rem;
+                       text-transform: uppercase; letter-spacing: .5px; }
+    .btn-cta { display: inline-block; background: var(--orange); color: #fff;
+               font-weight: 700; font-size: 1rem; padding: 14px 32px; border-radius: 8px;
+               text-decoration: none; transition: var(--transition); }
+    .btn-cta:hover { background: #A84A0F; transform: translateY(-2px); }
+
+    /* FOOTER */
+    .page-footer { background: var(--gray-dark); color: rgba(255,255,255,.6);
+                   text-align: center; padding: 20px; font-size: .85rem; }
+    .page-footer a { color: rgba(255,255,255,.7); }
+
+    @media (max-width: 640px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-item { border-right: none; }
+      .cta-steps { grid-template-columns: 1fr; }
+      .ps-table td:first-child { width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:7px 20px;display:flex;align-items:center;gap:18px;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+      <img src="icon.png" style="height:32px;">
+      <img src="logo.png" style="height:24px;filter:brightness(0) invert(1);max-width:140px;">
+    </a>
+    <span style="color:rgba(255,255,255,.35);margin:0 4px;">|</span>
+    <a href="index.html" style="color:#fff;text-decoration:none;font-size:.9rem;opacity:.85;">← На главную</a>
+    <a href="index.html#products" style="color:#fff;text-decoration:none;font-size:.9rem;opacity:.85;">Все продукты</a>
+    <a href="index.html#contacts" style="color:#C55A11;text-decoration:none;font-size:.9rem;font-weight:700;">Получить КП</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <h1>Оборудование для «Честного знака» на пищевом производстве</h1>
+      <p class="subtitle">Всё, что нужно для работы с обязательной маркировкой: сканеры 2D, принтеры этикеток, весовые этикировщики с поддержкой КМ — от поставки до настройки и обучения.</p>
+    </div>
+  </section>
+
+  <!-- STAT BAND -->
+  <div class="stat-band">
+    <div class="container">
+      <div class="stat-grid">
+          <div class="stat-item"><div class="stat-val">2024+</div><div class="stat-label">обязательна для мяса и молока</div></div>
+          <div class="stat-item"><div class="stat-val">300 000 ₽</div><div class="stat-label">штраф за нарушение</div></div>
+          <div class="stat-item"><div class="stat-val">1 принтер</div><div class="stat-label">для КМ, EAN и QR</div></div>
+          <div class="stat-item"><div class="stat-val">24 ч</div><div class="stat-label">подготовим КП и настроим</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEM → SOLUTION -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Задачи производства → решения</h2>
+      <div style="overflow-x:auto;">
+        <table class="ps-table">
+          <thead><tr><th>Задача</th><th>Решение</th></tr></thead>
+          <tbody>
+          <tr><td>Нанесение кодов маркировки в потоке</td><td>DIBAL LS5000 — взвешивание + печать КМ, EAN, QR на одном принтере. До 150 уп./мин.</td></tr>
+          <tr><td>Флоу-пак линия требует маркировки на плёнке</td><td>Термотрансферный принтер Videojet / Markem-Imaje — нанесение КМ в потоке на плёнку.</td></tr>
+          <tr><td>Сканирование и верификация КМ</td><td>2D-сканер (ручной или стационарный) + верификатор КМ для контроля качества маркировки.</td></tr>
+          <tr><td>Передача данных в «Честный знак»</td><td>DIBAL LS5000 передаёт данные в ГИС МТ автоматически через API. Для других — через 1С или ЭДО.</td></tr>
+          <tr><td>Малое производство до 500 уп./смену</td><td>Термопринтер этикеток + ручной 2D-сканер + доступ к ЛК ЧЗ. Экономичное решение.</td></tr>
+          <tr><td>Нет совместимости с существующим оборудованием</td><td>DIBAL обновляется до поддержки КМ программно. Для другого оборудования — уточним совместимость.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODEL LINEUP -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Линейка оборудования</h2>
+      <div style="overflow-x:auto;">
+        <table class="model-table">
+          <thead><tr><th>Тип производства</th><th>Рекомендуемое решение</th></tr></thead>
+          <tbody>
+          <tr><td>Мясо и птица</td><td>DIBAL LS5000 с модулем «Честный знак» + 2D-сканер для контроля. Маркировка в потоке до 150 уп./мин.</td></tr>
+          <tr><td>Молоко и сыр</td><td>Термотрансферный принтер на линии фасовки + терминал для передачи данных в ГИС МТ.</td></tr>
+          <tr><td>Колбасные изделия</td><td>Принтер-аппликатор этикеток с Data Matrix + интеграция с 1С и личным кабинетом ЧЗ.</td></tr>
+          <tr><td>Малое производство</td><td>Термопринтер этикеток + ручной 2D-сканер + ЛК ЧЗ. Экономичное решение от 30 000 ₽.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Технические преимущества</h2>
+      <div class="highlight-box">
+        <ul>
+              <li>2D-сканеры штрихкодов — ручные и стационарные, считывание Data Matrix</li>
+              <li>Верификатор КМ — проверяет читаемость и соответствие требованиям ЦРПТ</li>
+              <li>Терминал сбора данных (ТСД) — для работы с кодами на складе и при приёмке</li>
+              <li>Программное обеспечение — интеграция с ЛК «Честного знака» и 1С</li>
+              <li>Принтер-аппликатор — для нанесения этикеток с КМ на готовые упаковки</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box" style="background:#FFF4ED;border-color:var(--orange);margin-top:16px;">
+        <strong style="display:block;font-size:1rem;margin-bottom:10px;">Что делаем под ключ:</strong>
+        <ul>
+              <li>аудит вашей линии и подбор оборудования под объём и тип продукта</li>
+              <li>поставка сканеров, принтеров, этикировщиков с поддержкой «Честного знака»</li>
+              <li>настройка интеграции с личным кабинетом ЧЗ и 1С</li>
+              <li>обучение персонала работе с оборудованием и системой</li>
+              <li>техническая поддержка после запуска</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERY -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Что входит в поставку</h2>
+      <ul class="delivery-list">
+          <li>Оборудование под «Честный знак» под вашу задачу и бюджет</li>
+          <li>Настройка интеграции с ЛК «Честного знака» и 1С</li>
+          <li>Обучение персонала</li>
+          <li>Помощь в прохождении проверки без остановки производства</li>
+          <li>Техническая поддержка после запуска</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Получить консультацию по «Честному знаку»</h2>
+      <p>Расскажите о вашем производстве и категории продукции — определим нужное оборудование и подготовим решение под текущие требования.</p>
+      <div class="cta-steps">
+          <div class="cta-step"><strong>Шаг 1</strong>Ответим в течение рабочего дня</div>
+          <div class="cta-step"><strong>Шаг 2</strong>Бесплатный аудит линии (выезд или онлайн)</div>
+          <div class="cta-step"><strong>Шаг 3</strong>Решение для прохождения проверки без штрафов</div>
+      </div>
+      <a href="index.html#contacts" class="btn-cta">Получить коммерческое предложение →</a>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>© 2025 ЯФОР — упаковочное оборудование для пищевой промышленности&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="index.html">На главную</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="index.html#contacts">Контакты</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="remont.html">Ремонт оборудования</a></p>
+  </footer>
+</body>
+</html>

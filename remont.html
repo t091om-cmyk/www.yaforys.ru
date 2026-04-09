@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO META -->
+<title>Ремонт упаковочного оборудования: термоформеры, трейсилеры, флоу-пак — ЯФОР</title>
+<meta name="description" content="Ремонт и обслуживание упаковочного оборудования для пищевой промышленности. Термоформеры, трейсилеры, флоу-пак машины. Диагностика, запчасти, гарантия 12 месяцев. Москва, выезд по России.">
+<meta name="keywords" content="ремонт термоформера, ремонт трейсилера, ремонт упаковочного оборудования, ремонт вакуумных упаковщиков, ремонт флоу-пак, обслуживание упаковочного оборудования, запчасти для термоформера, сервис упаковочного оборудования">
+<!-- OG -->
+<meta property="og:title" content="Ремонт упаковочного оборудования — ЯФОР">
+<meta property="og:description" content="Профессиональный ремонт термоформеров, трейсилеров и флоу-пак машин. Выезд по России, сервисный центр в Москве.">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:       #1B3A5C;
+  --blue-mid:   #2E6DA4;
+  --blue-light: #E8F0F8;
+  --blue-pale:  #F4F8FD;
+  --orange:     #C55A11;
+  --orange-pale:#FDE8D8;
+  --green:      #1A7A3C;
+  --green-pale: #E8F5E9;
+  --red:        #C0392B;
+  --red-pale:   #FDECEA;
+  --grey:       #2C2C2C;
+  --grey-soft:  #6B7280;
+  --grey-light: #F5F7FA;
+  --border:     #DDE5EF;
+  --white:      #FFFFFF;
+  --radius:     10px;
+  --shadow:     0 4px 24px rgba(27,58,92,0.10);
+}
+
+body { font-family: 'Segoe UI', system-ui, Arial, sans-serif; color: var(--grey); background: var(--white); line-height: 1.65; }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0f2540 0%, #1B3A5C 45%, #2E6DA4 100%);
+  padding: 72px 24px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 48px;
+  background: var(--white);
+  clip-path: ellipse(60% 100% at 50% 100%);
+}
+.hero .badge {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  padding: 4px 16px;
+  margin-bottom: 20px;
+  color: rgba(255,255,255,0.85);
+}
+.hero h1 {
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  max-width: 780px;
+  margin: 0 auto 20px;
+}
+.hero h1 span { color: #7EC8F4; }
+.hero p {
+  font-size: clamp(15px, 2vw, 18px);
+  color: rgba(255,255,255,0.78);
+  max-width: 620px;
+  margin: 0 auto 36px;
+}
+.hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-block;
+}
+.btn-primary:hover { background: #d9661a; transform: translateY(-1px); }
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.55);
+  padding: 13px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+  display: inline-block;
+}
+.btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.10); }
+
+/* ── STATS STRIP ── */
+.stats-strip {
+  background: var(--blue);
+  padding: 32px 24px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
+}
+@media (max-width: 700px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-val {
+  font-size: 38px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-lbl { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.4; }
+
+/* ── LAYOUT ── */
+.section { padding: 72px 24px; }
+.section-alt { background: var(--grey-light); }
+.container { max-width: 1060px; margin: 0 auto; }
+.section-label {
+  display: inline-block;
+  background: var(--blue-light);
+  color: var(--blue-mid);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: clamp(22px, 3.5vw, 34px);
+  font-weight: 800;
+  color: var(--blue);
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--grey-soft);
+  max-width: 640px;
+  margin-bottom: 44px;
+  line-height: 1.65;
+}
+
+/* ── WHY REPAIR ── */
+.why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 700px) { .why-grid { grid-template-columns: 1fr; } }
+.why-card {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  background: var(--white);
+}
+.why-card .icon { font-size: 28px; margin-bottom: 12px; display: block; }
+.why-card h3 { font-size: 16px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+.why-card p  { font-size: 14px; color: var(--grey-soft); line-height: 1.6; }
+.highlight-box {
+  border-left: 4px solid var(--blue-mid);
+  background: var(--blue-pale);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 20px 24px;
+  margin-top: 28px;
+}
+.highlight-box p { font-size: 15px; color: var(--blue); font-weight: 500; }
+
+/* ── SERVICES GRID ── */
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 860px) { .services-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 540px) { .services-grid { grid-template-columns: 1fr; } }
+.service-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  position: relative;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.service-card:hover { box-shadow: var(--shadow); border-color: var(--blue-mid); }
+.service-card .svc-icon { font-size: 32px; margin-bottom: 14px; display: block; }
+.service-card h3 { font-size: 17px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+.service-card p { font-size: 14px; color: var(--grey-soft); line-height: 1.6; margin-bottom: 14px; }
+.service-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--blue-light);
+  color: var(--blue-mid);
+}
+.service-tag.orange { background: var(--orange-pale); color: var(--orange); }
+.service-tag.green  { background: var(--green-pale);  color: var(--green); }
+
+/* ── EQUIPMENT TABLE ── */
+.equip-table { width: 100%; border-collapse: collapse; border-radius: var(--radius); overflow: hidden; }
+.equip-table th {
+  background: var(--blue);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px 18px;
+  text-align: left;
+  letter-spacing: 0.4px;
+}
+.equip-table td {
+  padding: 13px 18px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.equip-table tr:last-child td { border-bottom: none; }
+.equip-table tr:nth-child(even) td { background: var(--grey-light); }
+.equip-table .brand { font-weight: 600; color: var(--blue); }
+.equip-table .systems { color: var(--grey-soft); font-size: 13px; line-height: 1.6; }
+.equip-table .badge-repair {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--green-pale);
+  color: var(--green);
+}
+
+/* ── PROCESS STEPS ── */
+.steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; position: relative; }
+@media (max-width: 800px) { .steps { grid-template-columns: 1fr; gap: 12px; } }
+.step {
+  text-align: center;
+  padding: 24px 16px;
+  position: relative;
+}
+.step::after {
+  content: '→';
+  position: absolute;
+  right: -10px;
+  top: 28px;
+  font-size: 20px;
+  color: var(--blue-mid);
+  font-weight: 700;
+}
+.step:last-child::after { display: none; }
+@media (max-width: 800px) { .step::after { display: none; } }
+.step-num {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+.step h4 { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 6px; }
+.step p  { font-size: 12px; color: var(--grey-soft); line-height: 1.5; }
+
+/* ── SYSTEMS SECTION ── */
+.systems-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 860px) { .systems-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 540px) { .systems-grid { grid-template-columns: 1fr; } }
+.sys-card {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  background: var(--white);
+}
+.sys-card h4 { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 5px; }
+.sys-card p  { font-size: 13px; color: var(--grey-soft); line-height: 1.5; }
+
+/* ── COMPARISON ── */
+.compare-table { width: 100%; border-collapse: collapse; }
+.compare-table th { background: var(--blue); color: #fff; padding: 14px 20px; font-size: 14px; text-align: left; }
+.compare-table th:first-child { background: #0f2540; }
+.compare-table td { padding: 13px 20px; font-size: 14px; border-bottom: 1px solid var(--border); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: var(--grey-light); }
+.compare-table .criteria { font-weight: 600; color: var(--blue); }
+.compare-table .yes { color: var(--green); font-weight: 700; }
+.compare-table .no  { color: var(--red);   font-weight: 700; }
+.compare-table .maybe { color: var(--orange); font-weight: 600; }
+
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 12px; }
+.faq-item {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.faq-q {
+  background: var(--white);
+  padding: 18px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--blue);
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  user-select: none;
+}
+.faq-q::after { content: '+'; font-size: 22px; font-weight: 400; color: var(--blue-mid); }
+.faq-item.open .faq-q::after { content: '−'; }
+.faq-a {
+  display: none;
+  padding: 0 22px 18px;
+  font-size: 14px;
+  color: var(--grey-soft);
+  line-height: 1.7;
+  background: var(--white);
+}
+.faq-item.open .faq-a { display: block; }
+
+/* ── CALCULATOR CTA ── */
+.calc-cta {
+  background: linear-gradient(135deg, #0f2540 0%, #1B3A5C 100%);
+  border-radius: 16px;
+  padding: 52px 40px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: center;
+}
+@media (max-width: 660px) { .calc-cta { grid-template-columns: 1fr; padding: 36px 24px; } }
+.calc-cta h2 { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 10px; line-height: 1.25; }
+.calc-cta p  { font-size: 15px; color: rgba(255,255,255,0.72); line-height: 1.6; }
+.calc-cta-btn {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  padding: 16px 36px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-block;
+  transition: background 0.2s, transform 0.15s;
+}
+.calc-cta-btn:hover { background: #d9661a; transform: translateY(-1px); }
+.calc-cta .note { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 10px; }
+
+/* ── CONTACTS / CTA FORM ── */
+.contact-section {
+  background: var(--grey-light);
+  padding: 72px 24px;
+}
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+@media (max-width: 760px) { .contact-grid { grid-template-columns: 1fr; } }
+.contact-info h2 { font-size: 30px; font-weight: 800; color: var(--blue); margin-bottom: 16px; line-height: 1.25; }
+.contact-info p  { font-size: 15px; color: var(--grey-soft); margin-bottom: 28px; line-height: 1.7; }
+.contact-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.contact-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--grey); }
+.contact-list .ci { font-size: 20px; flex-shrink: 0; }
+.contact-form {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+}
+.contact-form h3 { font-size: 18px; font-weight: 700; color: var(--blue); margin-bottom: 20px; }
+.form-row { margin-bottom: 16px; }
+.form-row label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--grey-soft); margin-bottom: 6px; }
+.form-row input,
+.form-row select,
+.form-row textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--grey);
+  background: var(--white);
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus { outline: none; border-color: var(--blue-mid); }
+.form-row textarea { resize: vertical; min-height: 80px; }
+.form-submit {
+  width: 100%;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 4px;
+}
+.form-submit:hover { background: #d9661a; }
+.form-note { font-size: 12px; color: var(--grey-soft); text-align: center; margin-top: 10px; }
+
+/* ── BREADCRUMB ── */
+.breadcrumb { background: var(--grey-light); padding: 12px 24px; border-bottom: 1px solid var(--border); }
+.breadcrumb-inner { max-width: 1060px; margin: 0 auto; font-size: 13px; color: var(--grey-soft); }
+.breadcrumb-inner a { color: var(--blue-mid); text-decoration: none; }
+.breadcrumb-inner a:hover { text-decoration: underline; }
+.breadcrumb-inner span { margin: 0 6px; }
+
+/* ── TRUST BADGES ── */
+.trust-row { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 32px; }
+.trust-badge { display: flex; align-items: center; gap: 10px; }
+.trust-badge .tb-icon { font-size: 24px; }
+.trust-badge .tb-text { font-size: 13px; color: var(--grey-soft); line-height: 1.4; }
+.trust-badge .tb-text strong { display: block; color: var(--grey); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION BAR -->
+<div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:7px 20px;display:flex;align-items:center;gap:18px;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+  <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <img src="icon.png" style="height:32px;">
+    <img src="logo.png" style="height:24px;filter:brightness(0) invert(1);max-width:140px;">
+  </a>
+  <span style="color:rgba(255,255,255,.35);margin:0 4px;">|</span>
+  <a href="index.html" style="color:#fff;text-decoration:none;font-size:.9rem;opacity:.85;">← На главную</a>
+  <a href="index.html#products" style="color:#fff;text-decoration:none;font-size:.9rem;opacity:.85;">Продукты</a>
+  <a href="index.html#contacts" style="color:#C55A11;text-decoration:none;font-size:.9rem;font-weight:700;">Заявка на ремонт</a>
+</div>
+
+<!-- BREADCRUMB -->
+<nav class="breadcrumb" aria-label="Хлебные крошки">
+  <div class="breadcrumb-inner">
+    <a href="index.html">Главная</a><span>›</span>
+    Ремонт упаковочного оборудования
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" aria-label="Заголовок страницы">
+  <div class="badge">Сервисный центр ЯФОР · Москва</div>
+  <h1>Ремонт <span>упаковочного оборудования</span><br>для пищевой промышленности</h1>
+  <p>Термоформеры, трейсилеры, флоу-пак машины. Диагностика, ремонт, запчасти, гарантия 12 месяцев. Выезд по России — в течение 24 часов.</p>
+  <div class="hero-cta">
+    <a href="#calculator" class="btn-primary">Рассчитать стоимость ремонта</a>
+    <a href="#contact" class="btn-outline">Вызвать инженера</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip" aria-label="Ключевые показатели сервиса">
+  <div class="stats-grid">
+    <div>
+      <div class="stat-val">24 ч</div>
+      <div class="stat-lbl">Выезд инженера по России</div>
+    </div>
+    <div>
+      <div class="stat-val">12 мес</div>
+      <div class="stat-lbl">Гарантия на все виды ремонта</div>
+    </div>
+    <div>
+      <div class="stat-val">15+</div>
+      <div class="stat-lbl">Брендов в зоне обслуживания</div>
+    </div>
+    <div>
+      <div class="stat-val">97%</div>
+      <div class="stat-lbl">Машин восстановлено без замены</div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY REPAIR SECTION -->
+<section class="section" aria-labelledby="why-title">
+  <div class="container">
+    <span class="section-label">Почему это важно</span>
+    <h2 class="section-title" id="why-title">Простой линии стоит дороже, чем ремонт</h2>
+    <p class="section-sub">Упаковочная машина — центральное звено производственной линии. Каждый час простоя — это потери продукта, срыв отгрузки и штрафы от сети.</p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <span class="icon">⏱️</span>
+        <h3>Стоимость простоя термоформера</h3>
+        <p>При производительности 500 кг/смену и марже 80 ₽/кг — час простоя обходится в 5 000–8 000 рублей. Трёхдневный простой = 120 000–200 000 рублей чистых потерь. Стоимость ремонта большинства узлов — меньше.</p>
+      </div>
+      <div class="why-card">
+        <span class="icon">🔄</span>
+        <h3>Ремонт или новая машина?</h3>
+        <p>Капитальный ремонт термоформера обходится в 15–40% стоимости нового аналога. При этом вы получаете восстановленную машину с гарантией 12 месяцев и сохраняете накопленные программы, оснастку и наработку операторов.</p>
+      </div>
+      <div class="why-card">
+        <span class="icon">🇷🇺</span>
+        <h3>Независимость от импорта</h3>
+        <p>Мы держим склад оригинальных и совместимых запчастей в Москве. Большинство деталей — в наличии. Для редких узлов — изготовление аналога или 3D-печать. Не ждёте 3–6 месяцев, как при заказе из Европы.</p>
+      </div>
+      <div class="why-card">
+        <span class="icon">📋</span>
+        <h3>Ремонт как инвестиция в надёжность</h3>
+        <p>После капремонта машина проходит полную настройку и тестирование на вашем продукте. Часто производительность и стабильность шва становятся лучше, чем до поломки — потому что устраняется «накопленный износ».</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p>💡 Правило сервиса ЯФОР: если ремонт обойдётся дороже 60% стоимости нового аналога — мы честно скажем об этом и предложим зачёт б/у машины в счёт новой.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES TYPES -->
+<section class="section section-alt" aria-labelledby="services-title">
+  <div class="container">
+    <span class="section-label">Виды ремонта</span>
+    <h2 class="section-title" id="services-title">Какой ремонт вам нужен</h2>
+    <p class="section-sub">Выберите подходящий формат — от экстренного выезда до планового обслуживания по договору.</p>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="svc-icon">⚡</span>
+        <h3>Аварийный ремонт</h3>
+        <p>Машина встала. Выезд инженера в течение 24 часов по всей России. Диагностика на месте, устранение неисправности, запуск линии.</p>
+        <span class="service-tag orange">Выезд 24 ч</span>
+      </div>
+      <div class="service-card">
+        <span class="svc-icon">🔧</span>
+        <h3>Средний ремонт</h3>
+        <p>Плановая замена изношенных узлов: вакуумная система, станция запечатывания, ножи, нагревательные элементы. Выполняется на площадке или в сервисном центре.</p>
+        <span class="service-tag">2–7 дней</span>
+      </div>
+      <div class="service-card">
+        <span class="svc-icon">🏭</span>
+        <h3>Капитальный ремонт</h3>
+        <p>Полное восстановление машины: все системы проверяются и обслуживаются. Машина доставляется в сервисный центр ЯФОР в Москве, проходит полный цикл диагностики и ремонта.</p>
+        <span class="service-tag">14–30 дней</span>
+      </div>
+      <div class="service-card">
+        <span class="svc-icon">📅</span>
+        <h3>Плановое ТО</h3>
+        <p>Регламентное обслуживание по графику: смазка, затяжка крепежа, проверка электрики, замена расходников. Предотвращает 80% аварийных поломок.</p>
+        <span class="service-tag green">По договору</span>
+      </div>
+      <div class="service-card">
+        <span class="svc-icon">🔍</span>
+        <h3>Диагностика и аудит</h3>
+        <p>Комплексная диагностика оборудования с письменным отчётом: текущее состояние каждой системы, прогноз ресурса, приоритеты обслуживания и смета на ремонт.</p>
+        <span class="service-tag">Отчёт + смета</span>
+      </div>
+      <div class="service-card">
+        <span class="svc-icon">⚙️</span>
+        <h3>Модернизация</h3>
+        <p>Обновление PLC, замена устаревшей HMI на современный сенсорный экран, установка MAP-модуля, добавление системы контроля вакуума. Продлевает жизнь старых машин на 8–12 лет.</p>
+        <span class="service-tag">Под задачу</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPMENT WE REPAIR -->
+<section class="section" aria-labelledby="equip-title">
+  <div class="container">
+    <span class="section-label">Оборудование</span>
+    <h2 class="section-title" id="equip-title">Что мы ремонтируем</h2>
+    <p class="section-sub">Ремонтируем собственное оборудование ЯФОР и технику ведущих мировых производителей. Работаем с машинами от 3 до 25 лет эксплуатации.</p>
+
+    <div style="overflow-x:auto">
+    <table class="equip-table" aria-label="Перечень ремонтируемого оборудования">
+      <thead>
+        <tr>
+          <th>Тип оборудования</th>
+          <th>Бренды</th>
+          <th>Ремонтируемые системы</th>
+          <th>Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Термоформеры</strong></td>
+          <td class="brand">ЯFORM, Multivac, ULMA, Variovac, GEA, Hualian</td>
+          <td class="systems">Станция формования, запечатывания, вырубки · вакуумная система · MAP-модуль · электрика PLC/HMI · транспортировка плёнки · нагревательные элементы</td>
+          <td><span class="badge-repair">В наличии запчасти</span></td>
+        </tr>
+        <tr>
+          <td><strong>Трейсилеры</strong></td>
+          <td class="brand">ЯФОР TSA, ULMA TSA, Mondini, Adelta, Ishida</td>
+          <td class="systems">Термосварочная плита · вакуумная система · MAP/SKIN-модуль · денестер · система подачи плёнки · электрика</td>
+          <td><span class="badge-repair">В наличии запчасти</span></td>
+        </tr>
+        <tr>
+          <td><strong>Флоу-пак машины</strong></td>
+          <td class="brand">ЯFLOW, Omori, Fuji, Ulma, Bosch Packaging</td>
+          <td class="systems">Поперечные и продольные сварочные узлы · тянущие ролики · система натяжения плёнки · датчики позиционирования · привод подачи</td>
+          <td><span class="badge-repair">В наличии запчасти</span></td>
+        </tr>
+        <tr>
+          <td><strong>Весовые этикеровщики</strong></td>
+          <td class="brand">DIBAL, Bizerba, Mettler Toledo, Ishida</td>
+          <td class="systems">Весовой модуль · принтер этикеток · термоголовка · система подачи · датчики · электроника</td>
+          <td><span class="badge-repair">В наличии запчасти</span></td>
+        </tr>
+        <tr>
+          <td><strong>Вакуумные упаковщики</strong></td>
+          <td class="brand">Caso, Henkelman, Multivac C, Narrazione, Zigmund</td>
+          <td class="systems">Вакуумный насос · сварочная планка · уплотнения · электрика · крышка и механика</td>
+          <td><span class="badge-repair">В наличии запчасти</span></td>
+        </tr>
+        <tr>
+          <td><strong>Формирователи коробов</strong></td>
+          <td class="brand">ЯФОР YCZ, BOIX, SMIPAC</td>
+          <td class="systems">Вакуумная подача · клеевая система · сервоприводы · PLC · механика рамы</td>
+          <td><span class="badge-repair">В наличии запчасти</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- SYSTEMS WE FIX -->
+<section class="section section-alt" aria-labelledby="systems-title">
+  <div class="container">
+    <span class="section-label">Узлы и системы</span>
+    <h2 class="section-title" id="systems-title">Какие системы мы восстанавливаем</h2>
+    <p class="section-sub">Работаем со всеми функциональными узлами упаковочного оборудования — от механики до электроники.</p>
+
+    <div class="systems-grid">
+      <div class="sys-card">
+        <h4>🔥 Станция формования</h4>
+        <p>Нагревательные плиты, матрица, пуансон, уплотнения. Восстановление геометрии лотка, устранение неравномерного прогрева.</p>
+      </div>
+      <div class="sys-card">
+        <h4>🔒 Станция запечатывания</h4>
+        <p>Термосварочная плита, нагреватели, уплотнения. Устранение негерметичного шва, нестабильной температуры запайки.</p>
+      </div>
+      <div class="sys-card">
+        <h4>✂️ Станция вырубки</h4>
+        <p>Ножи, матрица вырубки, прижим, регулировки. Заточка, восстановление или замена режущего инструмента.</p>
+      </div>
+      <div class="sys-card">
+        <h4>💨 Вакуумная система</h4>
+        <p>Вакуумный насос, клапаны, трубки, распределитель. Замена масла, уплотнений, фильтров. Ремонт или замена насоса.</p>
+      </div>
+      <div class="sys-card">
+        <h4>🌬️ Пневматическая система</h4>
+        <p>Цилиндры, клапаны, фильтры, регуляторы, трубки. Устранение утечек, восстановление давления, замена расходников.</p>
+      </div>
+      <div class="sys-card">
+        <h4>💧 Гидравлическая система</h4>
+        <p>Гидростанция, цилиндры, шланги. Замена жидкости, уплотнений, восстановление давления.</p>
+      </div>
+      <div class="sys-card">
+        <h4>🧪 MAP / газовая система</h4>
+        <p>Головка смешивания, клапаны, датчики CO₂/N₂. Настройка состава газовой смеси, замена компонентов.</p>
+      </div>
+      <div class="sys-card">
+        <h4>⚡ Электрика и управление</h4>
+        <p>PLC, HMI, датчики, частотники, кабельные трассы. Диагностика ошибок, восстановление программ, замена контроллеров.</p>
+      </div>
+      <div class="sys-card">
+        <h4>🔗 Транспортировка плёнки</h4>
+        <p>Цепи, звёздочки, зажимы, ролики протяжки. Регулировка натяжения, замена изношенных элементов.</p>
+      </div>
+      <div class="sys-card">
+        <h4>🌡️ Нагревательные элементы</h4>
+        <p>ТЭНы, термопары, пирометры, реле. Замена вышедших из строя элементов, калибровка температурных зон.</p>
+      </div>
+      <div class="sys-card">
+        <h4>🛡️ Система безопасности</h4>
+        <p>Аварийные стопы, датчики дверей, ограждения. Приведение в соответствие с требованиями ХАССП и ТР ТС.</p>
+      </div>
+      <div class="sys-card">
+        <h4>🖨️ Принтер / маркировка</h4>
+        <p>Принтер-аппликатор, термоголовка, подача ленты. Замена головки, обслуживание механизма подачи, настройка печати.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS STEPS -->
+<section class="section" aria-labelledby="process-title">
+  <div class="container">
+    <span class="section-label">Как мы работаем</span>
+    <h2 class="section-title" id="process-title">Процесс ремонта от заявки до запуска</h2>
+    <p class="section-sub">Никаких сюрпризов: каждый этап согласован с вами, смета фиксируется до начала работ.</p>
+
+    <div class="steps" aria-label="Этапы ремонта">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Заявка</h4>
+        <p>Оставляете заявку на сайте или звоните. Описываете симптом — мы задаём уточняющие вопросы.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Диагностика</h4>
+        <p>Выезд инженера или доставка машины в центр. Полная диагностика, письменный отчёт, согласованная смета.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Ремонт</h4>
+        <p>Ремонт после вашего согласования сметы. Оригинальные или сертифицированные аналоги запчастей.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h4>Тестирование</h4>
+        <p>Проверка на вашем продукте: герметичность шва, стабильность вакуума, качество формовки.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <h4>Запуск + гарантия</h4>
+        <p>Передача машины с актом выполненных работ. Гарантия 12 месяцев на ремонт и запчасти.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REPAIR VS NEW COMPARISON -->
+<section class="section section-alt" aria-labelledby="compare-title">
+  <div class="container">
+    <span class="section-label">Ремонт или замена</span>
+    <h2 class="section-title" id="compare-title">Когда ремонтировать, а когда менять машину</h2>
+    <p class="section-sub">Честный ответ на главный вопрос производственника.</p>
+
+    <div style="overflow-x:auto">
+    <table class="compare-table" aria-label="Сравнение ремонта и замены оборудования">
+      <thead>
+        <tr>
+          <th>Критерий</th>
+          <th>Ремонт выгоднее</th>
+          <th>Замена выгоднее</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="criteria">Возраст машины</td>
+          <td class="yes">До 12–15 лет</td>
+          <td class="maybe">Свыше 15–18 лет при нескольких критических поломках</td>
+        </tr>
+        <tr>
+          <td class="criteria">Стоимость ремонта</td>
+          <td class="yes">До 50–60% от стоимости новой</td>
+          <td class="no">Более 60–70% при повторных поломках</td>
+        </tr>
+        <tr>
+          <td class="criteria">Доступность запчастей</td>
+          <td class="yes">Запчасти в наличии или изготовимы</td>
+          <td class="no">Снятая с производства платформа, нет поддержки производителя</td>
+        </tr>
+        <tr>
+          <td class="criteria">Производительность</td>
+          <td class="yes">Соответствует текущим задачам производства</td>
+          <td class="no">Нужна большая производительность или новый тип упаковки</td>
+        </tr>
+        <tr>
+          <td class="criteria">Электроника</td>
+          <td class="yes">PLC актуален, HMI подлежит обновлению</td>
+          <td class="no">Устаревшая система управления без возможности модернизации</td>
+        </tr>
+        <tr>
+          <td class="criteria">Механика</td>
+          <td class="yes">Рама цела, базовые узлы восстановимы</td>
+          <td class="no">Деформация рамы, критический износ основных направляющих</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="highlight-box" style="margin-top:28px">
+      <p>📞 Не уверены — позвоните нам. Инженер ЯФОР оценит состояние машины и даст честный ответ: ремонтировать или менять. Диагностика — от 25 000 рублей, стоимость засчитывается при заказе ремонта или нового оборудования.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR CTA -->
+<section class="section" id="calculator" aria-labelledby="calc-title">
+  <div class="container">
+    <span class="section-label">Калькулятор</span>
+    <h2 class="section-title" id="calc-title">Рассчитайте стоимость ремонта вашего термоформера</h2>
+    <p class="section-sub">Выберите марку, возраст машины и узлы, которые требуют ремонта — получите предварительную оценку стоимости за 2 минуты.</p>
+
+    <div class="calc-cta">
+      <div>
+        <h2>Калькулятор капитального ремонта термоформера</h2>
+        <p>Укажите параметры машины и отметьте системы, требующие ремонта. Калькулятор сформирует ориентировочную смету и отправит её на email вместе с заявкой инженеру.</p>
+        <p class="note">* Итоговая стоимость уточняется после выездной диагностики. Калькулятор даёт ориентир ±30%.</p>
+      </div>
+      <div>
+        <a href="thermoformer-repair-calculator.html" class="calc-cta-btn">Открыть калькулятор →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-alt" aria-labelledby="faq-title">
+  <div class="container">
+    <span class="section-label">Частые вопросы</span>
+    <h2 class="section-title" id="faq-title">Вопросы о ремонте упаковочного оборудования</h2>
+    <p class="section-sub">Отвечаем на то, что чаще всего спрашивают технологи и механики производства.</p>
+
+    <div class="faq-list" role="list">
+
+      <div class="faq-item" role="listitem">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Сколько стоит ремонт термоформера?</div>
+        <div class="faq-a">
+          Стоимость зависит от объёма работ, марки машины и возраста. Ремонт одного узла (например, вакуумной системы) — от 80 000 до 200 000 рублей с запчастями. Капитальный ремонт машины среднего класса — от 350 000 до 900 000 рублей. Точную смету мы выдаём после диагностики. Для ориентира — воспользуйтесь нашим калькулятором.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Ремонтируете ли вы оборудование других производителей, не только ЯФОР?</div>
+        <div class="faq-a">
+          Да. Мы ремонтируем термоформеры Multivac, ULMA, GEA, Variovac, Hualian и других производителей, трейсилеры ULMA, Mondini, Adelta, весовые этикеровщики DIBAL, Bizerba, Mettler Toledo, а также вакуумные упаковщики Caso, Henkelman, Narrazione. Полный перечень — в таблице выше на этой странице.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Как быстро приедет инженер?</div>
+        <div class="faq-a">
+          При аварийном выезде — в течение 24 часов из ближайшего офиса. У нас есть инженеры в Москве, Санкт-Петербурге и ещё нескольких городах. При плановом обслуживании — согласовываем дату удобную вам заранее. Для расчёта стоимости командировочных используйте калькулятор на этой странице.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Нужно ли везти машину в Москву?</div>
+        <div class="faq-a">
+          Зависит от объёма работ. Мелкий и средний ремонт выполняется на вашей площадке. Капитальный ремонт производится в нашем сервисном центре в Москве — это единственный вариант, который позволяет восстановить все системы в условиях мастерской. Мы помогаем организовать доставку, стоимость включается в смету.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Есть ли запчасти для снятых с производства термоформеров?</div>
+        <div class="faq-a">
+          Для большинства узлов — да. Мы держим склад оригинальных деталей, совместимых аналогов и восстановленных агрегатов. Если деталь уже не выпускается, мы можем изготовить её аналог на нашем производстве или привлечь партнёрную мастерскую. Для уточнения наличия — пришлите артикул или фото узла.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Можно ли заключить сервисный договор на обслуживание?</div>
+        <div class="faq-a">
+          Да, это наиболее выгодный формат для производств с интенсивной эксплуатацией. Сервисный договор включает плановые ТО по графику, приоритетный выезд при аварии (в течение 12–24 часов), фиксированную стоимость работ и скидку на запчасти. Стоимость договора — от 90 000 рублей в год на одну машину.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Что даёт гарантия после ремонта?</div>
+        <div class="faq-a">
+          12 месяцев на все выполненные работы и установленные запчасти. Если в гарантийный период возникнет та же неисправность по нашей вине — устраняем бесплатно, включая командировочные. Гарантия не распространяется на поломки из-за нарушения правил эксплуатации или стороннего вмешательства.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TRUST + CONTACT -->
+<section class="contact-section" id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="contact-grid">
+
+      <div class="contact-info">
+        <span class="section-label">Вызвать инженера</span>
+        <h2 id="contact-title">Свяжитесь с нами — ответим в течение часа</h2>
+        <p>Опишите симптом неисправности и марку машины. Инженер сразу оценит ситуацию и скажет, нужен ли выезд или достаточно удалённой диагностики.</p>
+
+        <ul class="contact-list" aria-label="Контактная информация">
+          <li>
+            <span class="ci">📍</span>
+            <span><strong>Сервисный центр:</strong> Москва, ул. Складочная — приём оборудования на капремонт</span>
+          </li>
+          <li>
+            <span class="ci">🔧</span>
+            <span><strong>Выездные инженеры:</strong> Москва, Санкт-Петербург, Екатеринбург — выезд по России</span>
+          </li>
+          <li>
+            <span class="ci">⏱️</span>
+            <span><strong>Режим работы:</strong> Пн–Пт 9:00–18:00 · Аварийный выезд — круглосуточно</span>
+          </li>
+          <li>
+            <span class="ci">✅</span>
+            <span><strong>Гарантия:</strong> 12 месяцев на ремонт и запчасти</span>
+          </li>
+        </ul>
+
+        <div class="trust-row" aria-label="Знаки доверия">
+          <div class="trust-badge">
+            <span class="tb-icon">🏭</span>
+            <div class="tb-text"><strong>Собственное производство</strong>Изготовление запчастей-аналогов</div>
+          </div>
+          <div class="trust-badge">
+            <span class="tb-icon">📦</span>
+            <div class="tb-text"><strong>Склад запчастей</strong>Москва, 2 000+ позиций</div>
+          </div>
+          <div class="trust-badge">
+            <span class="tb-icon">🎓</span>
+            <div class="tb-text"><strong>Обучение операторов</strong>После ремонта или планово</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form" role="form" aria-label="Форма заявки на ремонт">
+        <h3>Заявка на ремонт или диагностику</h3>
+        <div class="form-row">
+          <label for="cf-name">Ваше имя *</label>
+          <input type="text" id="cf-name" name="name" placeholder="Иван Петров" autocomplete="name">
+        </div>
+        <div class="form-row">
+          <label for="cf-company">Компания</label>
+          <input type="text" id="cf-company" name="company" placeholder="ООО «Мясокомбинат»" autocomplete="organization">
+        </div>
+        <div class="form-row">
+          <label for="cf-phone">Телефон / WhatsApp *</label>
+          <input type="tel" id="cf-phone" name="phone" placeholder="+7 (___) ___-__-__" autocomplete="tel">
+        </div>
+        <div class="form-row">
+          <label for="cf-equip">Тип оборудования</label>
+          <select id="cf-equip" name="equipment">
+            <option value="">— Выберите —</option>
+            <option>Термоформер</option>
+            <option>Трейсилер</option>
+            <option>Флоу-пак машина</option>
+            <option>Весовой этикеровщик</option>
+            <option>Вакуумный упаковщик</option>
+            <option>Формирователь коробов</option>
+            <option>Другое</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="cf-problem">Описание проблемы</label>
+          <textarea id="cf-problem" name="problem" placeholder="Например: машина не держит вакуум, шов нестабильный, ошибка E04 на дисплее…"></textarea>
+        </div>
+        <button type="submit" class="form-submit">Отправить заявку на ремонт</button>
+        <p class="form-note">Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных. Ответим в течение 1 рабочего часа.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+// FAQ toggle
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+  btn.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+  });
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

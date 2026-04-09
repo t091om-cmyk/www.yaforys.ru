@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Трейсилеры для запайки лотков — купить автоматический трейсилер | ЯФОР</title>
+  <meta name="description" content="Трейсилеры ЯФОР для запайки лотков с вакуумом, MAP и SKIN-плёнкой. До 72 трея/мин, переналадка за 15 минут. Мясо, птица, рыба, полуфабрикаты.">
+  <meta property="og:title" content="Трейсилеры для запайки лотков — купить автоматический трейсилер | ЯФОР">
+  <meta property="og:description" content="Трейсилеры ЯФОР для запайки лотков с вакуумом, MAP и SKIN-плёнкой. До 72 трея/мин, переналадка за 15 минут. Мясо, птица, рыба, полуфабрикаты.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="icon.png" type="image/png">
+
+  <style>
+    :root {
+      --blue-dark: #1F4E79;
+      --blue-mid: #2E75B6;
+      --orange: #C55A11;
+      --gray-dark: #1a1a2e;
+      --gray-mid: #6b7280;
+      --gray-light: #f3f4f6;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.10);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,.12);
+      --radius: 12px;
+      --transition: .22s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+           color: var(--gray-dark); background: #fff; line-height: 1.6; }
+    a { color: var(--blue-mid); }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, var(--blue-dark) 0%, #2E75B6 100%);
+            color: #fff; padding: 56px 0 48px; }
+    .hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800;
+               line-height: 1.2; margin-bottom: 12px; }
+    .hero .subtitle { font-size: 1.05rem; opacity: .85; max-width: 640px; }
+
+    /* STAT BAND */
+    .stat-band { background: var(--orange); padding: 28px 0; }
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+    .stat-item { text-align: center; padding: 0 16px;
+                 border-right: 1px solid rgba(255,255,255,.25); }
+    .stat-item:last-child { border-right: none; }
+    .stat-val { font-size: 2rem; font-weight: 900; color: #fff; line-height: 1; }
+    .stat-label { font-size: .78rem; color: rgba(255,255,255,.85); margin-top: 5px;
+                  text-transform: uppercase; letter-spacing: .3px; }
+
+    /* SECTIONS */
+    section { padding: 48px 0; }
+    section:nth-child(even) { background: var(--gray-light); }
+    .section-title { font-size: 1.5rem; font-weight: 800; color: var(--blue-dark);
+                     margin-bottom: 20px; }
+
+    /* PROBLEM→SOLUTION TABLE */
+    .ps-table { width: 100%; border-collapse: collapse; }
+    .ps-table th { background: var(--blue-dark); color: #fff; padding: 10px 16px;
+                   text-align: left; font-size: .9rem; }
+    .ps-table td { padding: 11px 16px; border-bottom: 1px solid #e5e7eb;
+                   font-size: .92rem; vertical-align: top; }
+    .ps-table tr:last-child td { border-bottom: none; }
+    .ps-table tr:nth-child(odd) td { background: #fff; }
+    .ps-table tr:nth-child(even) td { background: #f8f9fa; }
+    .ps-table td:first-child { color: var(--gray-mid); width: 38%; }
+    .ps-table td:last-child { color: var(--gray-dark); }
+
+    /* MODEL TABLE */
+    .model-table { width: 100%; border-collapse: collapse; }
+    .model-table th { background: var(--blue-dark); color: #fff; padding: 10px 16px;
+                      text-align: left; font-size: .9rem; }
+    .model-table td { padding: 11px 16px; border-bottom: 1px solid #e5e7eb;
+                      font-size: .9rem; vertical-align: top; }
+    .model-table tr:last-child td { border-bottom: none; }
+    .model-table tr:nth-child(odd) td { background: #fff; }
+    .model-table tr:nth-child(even) td { background: #f8f9fa; }
+    .model-table td:first-child { font-weight: 700; color: var(--blue-dark);
+                                   white-space: nowrap; width: 30%; }
+
+    /* HIGHLIGHT BOX */
+    .highlight-box { background: #EBF3FB; border-left: 4px solid var(--blue-mid);
+                     border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
+    .highlight-box ul { padding-left: 18px; }
+    .highlight-box li { margin-bottom: 6px; font-size: .93rem; }
+
+    /* DELIVERY LIST */
+    .delivery-list { list-style: none; padding: 0; }
+    .delivery-list li { padding: 9px 0 9px 28px; border-bottom: 1px solid #e5e7eb;
+                        position: relative; font-size: .93rem; }
+    .delivery-list li:last-child { border-bottom: none; }
+    .delivery-list li::before { content: '✓'; position: absolute; left: 0;
+                                 color: var(--blue-mid); font-weight: 700; }
+
+    /* CTA SECTION */
+    .cta-section { background: var(--blue-dark); color: #fff; padding: 52px 0; text-align: center; }
+    .cta-section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 12px; }
+    .cta-section p { opacity: .85; max-width: 520px; margin: 0 auto 28px; }
+    .cta-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+                 max-width: 640px; margin: 0 auto 28px; text-align: left; }
+    .cta-step { background: rgba(255,255,255,.1); border-radius: 8px; padding: 14px 16px;
+                font-size: .88rem; opacity: .9; }
+    .cta-step strong { display: block; color: var(--orange); margin-bottom: 3px; font-size: .78rem;
+                       text-transform: uppercase; letter-spacing: .5px; }
+    .btn-cta { display: inline-block; background: var(--orange); color: #fff;
+               font-weight: 700; font-size: 1rem; padding: 14px 32px; border-radius: 8px;
+               text-decoration: none; transition: var(--transition); }
+    .btn-cta:hover { background: #A84A0F; transform: translateY(-2px); }
+
+    /* FOOTER */
+    .page-footer { background: var(--gray-dark); color: rgba(255,255,255,.6);
+                   text-align: center; padding: 20px; font-size: .85rem; }
+    .page-footer a { color: rgba(255,255,255,.7); }
+
+    @media (max-width: 640px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-item { border-right: none; }
+      .cta-steps { grid-template-columns: 1fr; }
+      .ps-table td:first-child { width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:7px 20px;display:flex;align-items:center;gap:18px;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+      <img src="icon.png" style="height:32px;">
+      <img src="logo.png" style="height:24px;filter:brightness(0) invert(1);max-width:140px;">
+    </a>
+    <span style="color:rgba(255,255,255,.35);margin:0 4px;">|</span>
+    <a href="index.html" style="color:#fff;text-decoration:none;font-size:.9rem;opacity:.85;">← На главную</a>
+    <a href="index.html#products" style="color:#fff;text-decoration:none;font-size:.9rem;opacity:.85;">Все продукты</a>
+    <a href="index.html#contacts" style="color:#C55A11;text-decoration:none;font-size:.9rem;font-weight:700;">Получить КП</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <h1>Трейсилеры для запайки лотков</h1>
+      <p class="subtitle">Автоматическая и полуавтоматическая запайка лотков с мясом, птицей, рыбой и полуфабрикатами — в вакуум, MAP-атмосфере и SKIN-плёнке. От 6 до 72 трея в минуту.</p>
+    </div>
+  </section>
+
+  <!-- STAT BAND -->
+  <div class="stat-band">
+    <div class="container">
+      <div class="stat-grid">
+          <div class="stat-item"><div class="stat-val">72</div><div class="stat-label">трея/мин (TSA1000VG)</div></div>
+          <div class="stat-item"><div class="stat-val">3–4×</div><div class="stat-label">увеличение срока хранения</div></div>
+          <div class="stat-item"><div class="stat-val">15 мин</div><div class="stat-label">смена оснастки</div></div>
+          <div class="stat-item"><div class="stat-val">AISI-304</div><div class="stat-label">все контактные поверхности</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEM → SOLUTION -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Задачи производства → решения</h2>
+      <div style="overflow-x:auto;">
+        <table class="ps-table">
+          <thead><tr><th>Задача</th><th>Решение</th></tr></thead>
+          <tbody>
+          <tr><td>Короткий срок хранения</td><td>Вакуум + MAP (CO₂/N₂) продлевает хранение в 3–4 раза без консервантов.</td></tr>
+          <tr><td>Ручная запайка плёнкой</td><td>Автоматическая термосварка: герметичный шов, 6–72 трея/мин в зависимости от модели.</td></tr>
+          <tr><td>Высокий брак из-за нарушения герметики</td><td>Датчик контроля вакуума на каждом цикле. Дефектный лоток отсекается автоматически.</td></tr>
+          <tr><td>Разные форматы лотков</td><td>Быстросменная оснастка — переналадка за 15 минут без инструмента.</td></tr>
+          <tr><td>Требования сетей: SKIN, MAP, маркировка</td><td>TSA поддерживает вакуум / MAP / SKIN, интегрируется с этикетировщиком и металлодетектором.</td></tr>
+          <tr><td>Жёсткие требования по гигиене</td><td>Нержавеющая сталь AISI-304 на всех контактных поверхностях. IP54/IP65.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODEL LINEUP -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Линейка оборудования</h2>
+      <div style="overflow-x:auto;">
+        <table class="model-table">
+          <thead><tr><th>Модель</th><th>Описание</th></tr></thead>
+          <tbody>
+          <tr><td>YAFOR / YATRAY (полуавтомат)</td><td>6–12 трея/мин. Для производств до 500 кг/смену. Ручная загрузка лотков, автоматическая запайка.</td></tr>
+          <tr><td>TSA 500 (inline-автомат)</td><td>До 30 трея/мин. Денестер + автоподача лотков. Для линий средней производительности.</td></tr>
+          <tr><td>TSA 1000VG (inline-автомат)</td><td>До 72 трея/мин. Максимальная производительность. Для крупных мясокомбинатов и птицефабрик.</td></tr>
+          <tr><td>TSA с модулем MAP/SKIN</td><td>Любая модель TSA может комплектоваться модулем газовой упаковки или SKIN-плёнки.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Технические преимущества</h2>
+      <div class="highlight-box">
+        <ul>
+              <li>Вакуум — удаление воздуха, герметичная упаковка. Срок хранения охлаждённого мяса до 21 дня</li>
+              <li>MAP (модифицированная газовая среда) — замена воздуха смесью CO₂/N₂/O₂. Сохраняет цвет и товарный вид</li>
+              <li>SKIN-упаковка — плёнка облегает контуры продукта, востребовано в премиум-сегменте</li>
+              <li>Стандартная запайка — без вакуума, для готовых блюд с коротким сроком реализации</li>
+              <li>Интеграция в линию: Денестер → Весовой дозатор → Трейсилер → Этикетировщик DIBAL → Металлодетектор</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box" style="background:#FFF4ED;border-color:var(--orange);margin-top:16px;">
+        <strong style="display:block;font-size:1rem;margin-bottom:10px;">Для каких продуктов подходит трейсилер ЯФОР:</strong>
+        <ul>
+              <li>мясо охлаждённое и замороженное (говядина, свинина, баранина)</li>
+              <li>птица целиком и разделка (курица, индейка, утка)</li>
+              <li>рыба и морепродукты</li>
+              <li>колбасные изделия, сосиски, деликатесы</li>
+              <li>полуфабрикаты и готовые блюда</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERY -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Что входит в поставку</h2>
+      <ul class="delivery-list">
+          <li>Трейсилер + быстросменная оснастка под ваш формат лотка</li>
+          <li>Монтаж, подключение к инженерным системам, пусконаладка</li>
+          <li>Обучение операторов и технологов</li>
+          <li>Гарантия 12 месяцев, склад запчастей в России</li>
+          <li>Сервисный договор: плановое ТО + приоритетный выезд в течение 24 часов</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Запросить подбор трейсилера</h2>
+      <p>Укажите тип продукта, объём производства в смену и формат лотка — подберём модель и рассчитаем экономику проекта.</p>
+      <div class="cta-steps">
+          <div class="cta-step"><strong>Шаг 1</strong>Заявка с описанием задачи — ответим в течение дня</div>
+          <div class="cta-step"><strong>Шаг 2</strong>Подбор модели под ваш продукт и объём</div>
+          <div class="cta-step"><strong>Шаг 3</strong>КП с экономическим расчётом окупаемости</div>
+      </div>
+      <a href="index.html#contacts" class="btn-cta">Получить коммерческое предложение →</a>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>© 2025 ЯФОР — упаковочное оборудование для пищевой промышленности&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="index.html">На главную</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="index.html#contacts">Контакты</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="remont.html">Ремонт оборудования</a></p>
+  </footer>
+</body>
+</html>
