@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор «Честный знак» — ЯФОР</title>
+<style>
+  :root {
+    --blue-dark:  #1F3864;
+    --blue-mid:   #2E5BA8;
+    --blue-light: #E8F0FC;
+    --orange:     #E87722;
+    --orange-p:   #FFF3E0;
+    --red:        #C00000;
+    --red-p:      #FCE4E4;
+    --green:      #1A7A3F;
+    --green-p:    #E6F4EC;
+    --grey:       #555E6B;
+    --grey-light: #F5F7FA;
+    --white:      #FFFFFF;
+    --border:     #D0D9E8;
+    --shadow:     0 4px 20px rgba(31,56,100,0.10);
+    --radius:     12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--grey-light);
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--blue-dark);
+    padding: 18px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .header-logo {
+    font-size: 26px; font-weight: 900; color: var(--white);
+    letter-spacing: 1px;
+  }
+  .header-logo span { color: var(--orange); }
+  .header-sub {
+    font-size: 13px; color: rgba(255,255,255,0.65);
+    margin-top: 2px;
+  }
+  .header-badge {
+    margin-left: auto;
+    background: var(--red);
+    color: var(--white);
+    font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* ── WRAPPER ── */
+  .wrapper {
+    max-width: 860px;
+    margin: 32px auto;
+    padding: 0 16px 60px;
+  }
+
+  /* ── HERO ALERT ── */
+  .hero-alert {
+    background: var(--red-p);
+    border: 1.5px solid var(--red);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    display: flex; align-items: flex-start; gap: 14px;
+    margin-bottom: 28px;
+  }
+  .hero-alert-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+  .hero-alert-text h3 {
+    color: var(--red); font-size: 15px; font-weight: 700; margin-bottom: 4px;
+  }
+  .hero-alert-text p { color: #6b1010; font-size: 13.5px; line-height: 1.55; }
+
+  /* ── STEP PROGRESS ── */
+  .steps-bar {
+    display: flex; gap: 0;
+    margin-bottom: 28px;
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+  }
+  .step-tab {
+    flex: 1; padding: 14px 10px;
+    text-align: center; cursor: pointer;
+    border-right: 1.5px solid var(--border);
+    transition: background .2s;
+    position: relative;
+  }
+  .step-tab:last-child { border-right: none; }
+  .step-tab.active { background: var(--blue-dark); }
+  .step-tab.done { background: var(--blue-light); cursor: pointer; }
+  .step-tab.done:hover { background: #cfddf7; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    background: var(--border); color: var(--grey);
+    margin-bottom: 4px;
+  }
+  .step-tab.active .step-num { background: var(--orange); color: var(--white); }
+  .step-tab.done .step-num { background: var(--blue-mid); color: var(--white); }
+  .step-label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: var(--grey);
+  }
+  .step-tab.active .step-label { color: var(--white); }
+  .step-tab.done .step-label { color: var(--blue-mid); }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    display: none;
+  }
+  .card.active { display: block; }
+  .card-title {
+    font-size: 18px; font-weight: 700; color: var(--blue-dark);
+    margin-bottom: 6px;
+  }
+  .card-sub { font-size: 13px; color: var(--grey); margin-bottom: 24px; }
+
+  /* ── CATEGORY PILLS ── */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .cat-pill {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all .18s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cat-pill:hover { border-color: var(--blue-mid); background: var(--blue-light); }
+  .cat-pill.sel {
+    border-color: var(--blue-mid);
+    background: var(--blue-light);
+  }
+  .cat-pill .cp-icon { font-size: 22px; flex-shrink: 0; }
+  .cat-pill .cp-name { font-size: 13px; font-weight: 600; color: var(--blue-dark); line-height: 1.3; }
+  .cat-pill .cp-date { font-size: 11px; color: var(--red); font-weight: 600; margin-top: 2px; }
+  .cat-check {
+    margin-left: auto; width: 18px; height: 18px;
+    border-radius: 4px; border: 2px solid var(--border);
+    flex-shrink: 0; transition: all .15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cat-pill.sel .cat-check {
+    background: var(--blue-mid); border-color: var(--blue-mid);
+    color: white; font-size: 11px; font-weight: 700;
+  }
+
+  /* ── FORM CONTROLS ── */
+  .form-row { margin-bottom: 22px; }
+  .form-label {
+    display: block; font-size: 13.5px; font-weight: 600;
+    color: var(--blue-dark); margin-bottom: 8px;
+  }
+  .form-hint { font-size: 12px; color: var(--grey); font-weight: 400; margin-left: 6px; }
+
+  /* Slider */
+  .slider-wrap { display: flex; align-items: center; gap: 14px; }
+  input[type=range] {
+    flex: 1; -webkit-appearance: none; height: 6px;
+    border-radius: 3px; background: var(--border); outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px;
+    border-radius: 50%; background: var(--blue-mid);
+    cursor: pointer; box-shadow: 0 2px 6px rgba(46,91,168,0.35);
+  }
+  .slider-val {
+    min-width: 90px; text-align: right;
+    font-size: 15px; font-weight: 700; color: var(--blue-dark);
+  }
+  .slider-ticks {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--grey); margin-top: 4px;
+    padding: 0 2px;
+  }
+
+  /* Toggle pills */
+  .toggle-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .toggle-pill {
+    padding: 8px 16px; border-radius: 8px;
+    border: 2px solid var(--border);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all .15s; color: var(--grey);
+  }
+  .toggle-pill:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+  .toggle-pill.sel { border-color: var(--blue-mid); background: var(--blue-light); color: var(--blue-dark); }
+
+  /* Number input */
+  .num-input-wrap { display: flex; align-items: center; gap: 10px; }
+  .num-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    border: 2px solid var(--border); background: var(--grey-light);
+    font-size: 20px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--blue-dark); font-weight: 700; transition: all .15s;
+    flex-shrink: 0;
+  }
+  .num-btn:hover { border-color: var(--blue-mid); background: var(--blue-light); }
+  .num-display {
+    width: 60px; text-align: center;
+    font-size: 18px; font-weight: 700; color: var(--blue-dark);
+    border: 2px solid var(--border); border-radius: 8px;
+    padding: 6px; background: var(--white);
+  }
+
+  /* ── NAV BUTTONS ── */
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 30px; padding-top: 20px;
+    border-top: 1.5px solid var(--border);
+  }
+  .btn {
+    padding: 12px 28px; border-radius: 8px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    border: none; transition: all .18s;
+  }
+  .btn-primary {
+    background: var(--orange); color: var(--white);
+    box-shadow: 0 4px 14px rgba(232,119,34,0.35);
+  }
+  .btn-primary:hover { background: #d06a18; transform: translateY(-1px); }
+  .btn-primary:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; transform: none; }
+  .btn-secondary {
+    background: transparent; color: var(--blue-mid);
+    border: 2px solid var(--blue-mid);
+  }
+  .btn-secondary:hover { background: var(--blue-light); }
+
+  /* ── RESULTS ── */
+  .results-top {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 22px;
+  }
+  .result-kpi {
+    background: var(--blue-light);
+    border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    text-align: center;
+  }
+  .result-kpi.danger { background: var(--red-p); border-color: #e8a0a0; }
+  .result-kpi.good { background: var(--green-p); border-color: #8ecfa9; }
+  .kpi-label { font-size: 12px; color: var(--grey); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .kpi-val { font-size: 24px; font-weight: 800; color: var(--blue-dark); }
+  .result-kpi.danger .kpi-val { color: var(--red); }
+  .result-kpi.good .kpi-val { color: var(--green); }
+  .kpi-sub { font-size: 11.5px; color: var(--grey); margin-top: 3px; }
+
+  /* Package card */
+  .pkg-header {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--blue-dark); border-radius: 10px 10px 0 0;
+    padding: 16px 20px;
+  }
+  .pkg-name { font-size: 20px; font-weight: 800; color: var(--white); }
+  .pkg-badge {
+    background: var(--orange); color: var(--white);
+    font-size: 12px; font-weight: 700;
+    padding: 4px 12px; border-radius: 20px;
+  }
+  .pkg-body {
+    border: 1.5px solid var(--border); border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 20px; margin-bottom: 22px;
+  }
+  .pkg-price-row {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .pkg-price { font-size: 28px; font-weight: 800; color: var(--blue-dark); }
+  .pkg-price-note { font-size: 13px; color: var(--grey); }
+  .pkg-includes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .pkg-tag {
+    background: var(--blue-light); color: var(--blue-mid);
+    font-size: 12px; font-weight: 600;
+    padding: 4px 10px; border-radius: 6px;
+  }
+  .pkg-items { list-style: none; padding: 0; }
+  .pkg-items li {
+    padding: 6px 0; border-bottom: 1px solid var(--grey-light);
+    font-size: 13.5px; color: #333; display: flex; align-items: flex-start; gap: 8px;
+  }
+  .pkg-items li:last-child { border-bottom: none; }
+  .pkg-items li::before {
+    content: '✓'; color: var(--blue-mid); font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ROI table */
+  .roi-title {
+    font-size: 15px; font-weight: 700; color: var(--blue-dark);
+    margin-bottom: 14px;
+  }
+  .roi-table {
+    width: 100%; border-collapse: collapse;
+    border-radius: 10px; overflow: hidden;
+    border: 1.5px solid var(--border);
+    margin-bottom: 22px; font-size: 13px;
+  }
+  .roi-table th {
+    padding: 11px 14px; text-align: center;
+    font-weight: 700; font-size: 12px;
+  }
+  .roi-table th:first-child { text-align: left; background: var(--grey-light); color: var(--grey); }
+  .roi-table th.th-bad { background: var(--red); color: var(--white); }
+  .roi-table th.th-good { background: var(--green); color: var(--white); }
+  .roi-table td { padding: 10px 14px; border-top: 1px solid var(--border); }
+  .roi-table td:first-child { font-weight: 600; color: var(--blue-dark); }
+  .roi-table td:nth-child(2) { text-align: center; color: var(--red); font-weight: 600; background: #fff5f5; }
+  .roi-table td:nth-child(3) { text-align: center; color: var(--green); font-weight: 600; background: #f0faf4; }
+
+  /* CTA */
+  .cta-block {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+    border-radius: var(--radius); padding: 28px;
+    text-align: center; color: var(--white);
+  }
+  .cta-block h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .cta-block p { font-size: 13.5px; opacity: 0.85; margin-bottom: 20px; }
+  .cta-contacts { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+  .cta-contact { font-size: 14px; font-weight: 600; color: var(--orange); }
+  .btn-cta {
+    background: var(--orange); color: var(--white);
+    padding: 14px 36px; border-radius: 8px;
+    font-size: 15px; font-weight: 700; border: none; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transition: all .18s;
+  }
+  .btn-cta:hover { background: #d06a18; transform: translateY(-2px); }
+
+  /* Monthly cost breakdown */
+  .monthly-block {
+    background: var(--orange-p);
+    border: 1.5px solid #f0c070;
+    border-radius: 10px; padding: 16px 20px;
+    margin-bottom: 18px;
+  }
+  .monthly-block h4 { font-size: 14px; font-weight: 700; color: var(--blue-dark); margin-bottom: 10px; }
+  .monthly-rows { display: flex; flex-direction: column; gap: 6px; }
+  .monthly-row { display: flex; justify-content: space-between; font-size: 13px; }
+  .monthly-row .mr-label { color: var(--grey); }
+  .monthly-row .mr-val { font-weight: 700; color: var(--blue-dark); }
+  .monthly-row.total { border-top: 1.5px solid #f0c070; padding-top: 8px; margin-top: 2px; }
+  .monthly-row.total .mr-label { font-weight: 700; color: var(--blue-dark); }
+  .monthly-row.total .mr-val { color: var(--orange); font-size: 15px; }
+
+  /* Error */
+  .warn-box {
+    background: var(--red-p); border: 1.5px solid var(--red);
+    border-radius: 8px; padding: 12px 16px;
+    font-size: 13px; color: var(--red); font-weight: 600;
+    margin-top: -10px; margin-bottom: 16px; display: none;
+  }
+
+  @media (max-width: 600px) {
+    .results-top { grid-template-columns: 1fr; }
+    .steps-bar { font-size: 11px; }
+    .step-label { display: none; }
+    .wrapper { padding: 0 10px 40px; }
+    .cat-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+<link rel="icon" type="image/png" href="../icon.png">
+</head>
+<body>
+<!-- ── BACK TO HOMEPAGE ─────────────────────────────── -->
+<div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:7px 20px;display:flex;align-items:center;gap:14px;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+  <img src="../icon.png" alt="ЯФОР" style="height:32px;width:auto;flex-shrink:0;">
+  <img src="../logo.png" alt="ЯФОР" style="height:24px;width:auto;filter:brightness(0) invert(1);flex-shrink:0;">
+  <a href="index.html"
+     style="display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.88);font-size:.84rem;font-weight:700;text-decoration:none;padding:6px 14px;border-radius:7px;border:1.5px solid rgba(255,255,255,.28);transition:all .2s;"
+     onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff';this.style.borderColor='rgba(255,255,255,.6)'"
+     onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.88)';this.style.borderColor='rgba(255,255,255,.28)'">
+    ← На главную
+  </a>
+  <span style="color:rgba(255,255,255,.3);font-size:.9rem;user-select:none;">|</span>
+  <span style="color:rgba(255,255,255,.55);font-size:.82rem;font-weight:500;letter-spacing:.2px;">www.yaforys.ru</span>
+  <div style="flex:1;"></div>
+  <a href="index.html#calculators"
+     style="color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;"
+     onmouseover="this.style.color='rgba(255,255,255,.9)'"
+     onmouseout="this.style.color='rgba(255,255,255,.55)'">
+    Все калькуляторы
+  </a>
+</div>
+
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-logo">Я<span>ФОР</span></div>
+    <div class="header-sub">Интеграция систем маркировки под ключ</div>
+  </div>
+  <div class="header-badge">⚠ Обязательно с 2023</div>
+</div>
+
+<div class="wrapper">
+
+  <!-- HERO ALERT -->
+  <div class="hero-alert">
+    <div class="hero-alert-icon">🚨</div>
+    <div class="hero-alert-text">
+      <h3>Мясные предприятия обязаны маркировать продукцию «Честным знаком»</h3>
+      <p>ПП РФ №205 от 28.02.2026 вступил в силу. С&nbsp;01.03.2026 регистрация в ГИС МТ обязательна. С&nbsp;01.08.2026 — маркировка на производстве. Штраф за партию — <strong>до 300&nbsp;000 ₽</strong>. Узнайте, какой пакет подойдёт вашему производству.</p>
+    </div>
+  </div>
+
+  <!-- STEP BAR -->
+  <div class="steps-bar">
+    <div class="step-tab active" id="stab-1" onclick="goStep(1)">
+      <div class="step-num">1</div>
+      <span class="step-label">Продукция</span>
+    </div>
+    <div class="step-tab" id="stab-2" onclick="goStep(2)">
+      <div class="step-num">2</div>
+      <span class="step-label">Производство</span>
+    </div>
+    <div class="step-tab" id="stab-3" onclick="goStep(3)">
+      <div class="step-num">3</div>
+      <span class="step-label">Инфраструктура</span>
+    </div>
+    <div class="step-tab" id="stab-4" onclick="goStep(4)">
+      <div class="step-num">4</div>
+      <span class="step-label">Результат</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: Categories -->
+  <div class="card active" id="step-1">
+    <div class="card-title">Какую продукцию вы выпускаете?</div>
+    <div class="card-sub">Выберите все категории, которые нужно маркировать</div>
+
+    <div class="cat-grid" id="cat-grid">
+      <!-- rendered by JS -->
+    </div>
+    <div class="warn-box" id="warn-1">Выберите хотя бы одну категорию продукции</div>
+
+    <div class="nav-row">
+      <div></div>
+      <button class="btn btn-primary" onclick="nextStep(1)">Далее →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Volume -->
+  <div class="card" id="step-2">
+    <div class="card-title">Параметры производства</div>
+    <div class="card-sub">Укажите объём выпуска — это определит состав системы</div>
+
+    <div class="form-row">
+      <label class="form-label">Количество упаковок в сутки <span class="form-hint">(единиц с этикеткой)</span></label>
+      <div class="slider-wrap">
+        <input type="range" id="vol-slider" min="100" max="50000" step="100" value="2000" oninput="updateVol()">
+        <div class="slider-val" id="vol-val">2 000 уп/сут</div>
+      </div>
+      <div class="slider-ticks">
+        <span>100</span><span>10 000</span><span>25 000</span><span>50 000+</span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">Количество упаковочных линий</label>
+      <div class="num-input-wrap">
+        <button class="num-btn" onclick="changeLines(-1)">−</button>
+        <div class="num-display" id="lines-disp">1</div>
+        <button class="num-btn" onclick="changeLines(+1)">+</button>
+        <span style="font-size:13px;color:var(--grey);margin-left:4px">линий</span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">Сколько смен в сутки?</label>
+      <div class="toggle-row" id="shifts-row">
+        <div class="toggle-pill sel" onclick="selToggle('shifts-row',this,'1')">1 смена</div>
+        <div class="toggle-pill" onclick="selToggle('shifts-row',this,'2')">2 смены</div>
+        <div class="toggle-pill" onclick="selToggle('shifts-row',this,'3')">3 смены</div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goStep(1)">← Назад</button>
+      <button class="btn btn-primary" onclick="nextStep(2)">Далее →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Infrastructure -->
+  <div class="card" id="step-3">
+    <div class="card-title">Текущая инфраструктура</div>
+    <div class="card-sub">Поможет точно подобрать пакет и избежать лишних затрат</div>
+
+    <div class="form-row">
+      <label class="form-label">Используете 1С или другую ERP/МИС?</label>
+      <div class="toggle-row" id="erp-row">
+        <div class="toggle-pill sel" onclick="selToggle('erp-row',this,'yes')">Да, есть 1С / ERP</div>
+        <div class="toggle-pill" onclick="selToggle('erp-row',this,'no')">Нет / не знаю</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">Нужна агрегация (короба, паллеты)?</label>
+      <div class="toggle-row" id="aggr-row">
+        <div class="toggle-pill" onclick="selToggle('aggr-row',this,'yes')">Да, нужна</div>
+        <div class="toggle-pill sel" onclick="selToggle('aggr-row',this,'no')">Пока не нужна</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">Есть электронный документооборот (ЭДО)?</label>
+      <div class="toggle-row" id="edo-row">
+        <div class="toggle-pill" onclick="selToggle('edo-row',this,'yes')">Да, работаем</div>
+        <div class="toggle-pill sel" onclick="selToggle('edo-row',this,'no')">Нет / нужно подключить</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">Есть принтеры для маркировки?</label>
+      <div class="toggle-row" id="printers-row">
+        <div class="toggle-pill" onclick="selToggle('printers-row',this,'yes')">Да, есть</div>
+        <div class="toggle-pill sel" onclick="selToggle('printers-row',this,'no')">Нет / нужны новые</div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goStep(2)">← Назад</button>
+      <button class="btn btn-primary" onclick="calcAndShow()">Рассчитать →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Results -->
+  <div class="card" id="step-4">
+    <div class="card-title">Ваш расчёт готов</div>
+    <div class="card-sub" id="res-sub">На основе ваших данных ЯФОР рекомендует:</div>
+
+    <!-- KPI row -->
+    <div class="results-top" id="res-kpis">
+      <!-- rendered -->
+    </div>
+
+    <!-- Package -->
+    <div id="res-pkg"></div>
+
+    <!-- Monthly cost -->
+    <div id="res-monthly"></div>
+
+    <!-- ROI table -->
+    <div id="res-roi"></div>
+
+    <!-- CTA -->
+    <div class="cta-block">
+      <h3>Получите точный расчёт и коммерческое предложение</h3>
+      <p>Специалист ЯФОР свяжется с вами в течение одного рабочего дня и проведёт бесплатный аудит готовности к «Честному знаку»</p>
+      <div class="cta-contacts">
+        <span class="cta-contact">📞 +7 (800) 555-XX-XX</span>
+        <span class="cta-contact">✉ info@yafor.ru</span>
+        <span class="cta-contact">🌐 yafor.ru</span>
+      </div>
+      <button class="btn-cta" onclick="alert('Заявка отправлена! Мы свяжемся с вами в ближайшее время.')">Отправить заявку на аудит</button>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goStep(1)">← Пересчитать</button>
+      <div style="font-size:12px;color:var(--grey)">Бесплатный аудит · Без обязательств</div>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+// Данные актуальны на апрель 2026 г.
+// Основание: ПП РФ №205 от 28.02.2026
+const CATS = [
+  { id:'ready',   icon:'🥩', name:'Готовые мясные продукты',  date:'с 01.08.2026 ⚠', mandatory:true  },
+  { id:'poultry', icon:'🍗', name:'Птица, субпродукты',       date:'с 01.08.2026 ⚠', mandatory:true  },
+  { id:'semi',    icon:'🥡', name:'Полуфабрикаты мясные',     date:'с 01.08.2026 ⚠', mandatory:true  },
+  { id:'sausage', icon:'🌭', name:'Колбасы, сосиски, ветчина',date:'с 01.10.2026 ⚠', mandatory:true  },
+  { id:'kfh',     icon:'🌾', name:'КФХ / с.-х. кооперативы', date:'с 01.10.2026 ⚠', mandatory:true  },
+  { id:'retail',  icon:'🛒', name:'Передача данных о продажах',date:'с 01.06.2027',   mandatory:false },
+  { id:'reg',     icon:'📋', name:'Регистрация в ГИС МТ',    date:'с 01.03.2026 ✓', mandatory:true  },
+];
+
+const PACKAGES = [
+  {
+    id: 'start',
+    name: 'СТАРТ',
+    badge: 'Малое производство',
+    priceFrom: 185000,
+    priceTo: 320000,
+    volMax: 2000,
+    linesMax: 1,
+    includes: ['Принтер-аппликатор', 'ПО интеграции', 'Обучение 2 чел.', 'Поддержка 3 мес.'],
+    tags: ['DataMatrix', 'ГИС МТ', 'Базовая интеграция'],
+    items: [
+      'Принтер этикеток Zebra ZD421 (1 шт.) с держателем',
+      'Лицензия ПО «ЯФОР.Марки» — интеграция с ГИС МТ',
+      'Регистрация в GS1 и ГИС МТ (сопровождение)',
+      'Настройка шаблонов этикеток под вашу продукцию',
+      'Обучение операторов и технолога (2 человека)',
+      'Техническая поддержка 3 месяца',
+    ],
+    roi: { operatorsBefore: 2, operatorsAfter: 1 },
+  },
+  {
+    id: 'profi',
+    name: 'ПРОФИ',
+    badge: 'Среднее производство',
+    priceFrom: 490000,
+    priceTo: 820000,
+    volMax: 10000,
+    linesMax: 3,
+    includes: ['Принтеры-аппликаторы', 'Интеграция 1С/ERP', 'Агрегация', 'Поддержка 6 мес.'],
+    tags: ['DataMatrix', 'ГИС МТ', '1С / ERP', 'Агрегация'],
+    items: [
+      'Принтеры-аппликаторы Zebra ZD621 (по числу линий)',
+      'Интеграция с 1С:Мясокомбинат / ERP вашего предприятия',
+      'Модуль агрегации: короба и паллеты',
+      'Автоматическое формирование УПД в ЭДО',
+      'Регистрация в GS1 / ГИС МТ под ключ',
+      'Обучение команды (до 8 человек)',
+      'Техническая поддержка 6 месяцев',
+    ],
+    roi: { operatorsBefore: 4, operatorsAfter: 1 },
+  },
+  {
+    id: 'zavod',
+    name: 'ЗАВОД',
+    badge: 'Крупное производство',
+    priceFrom: 1100000,
+    priceTo: 2500000,
+    volMax: Infinity,
+    linesMax: Infinity,
+    includes: ['Авто-аппликаторы', 'MES/ERP интеграция', 'Агрегация + ЭДО', 'Выделенный менеджер'],
+    tags: ['DataMatrix', 'ГИС МТ', 'ERP / MES', 'Агрегация', 'ЭДО', 'Камеры верификации'],
+    items: [
+      'Высокоскоростные принтеры-аппликаторы (на все линии)',
+      'Камеры верификации DataMatrix на каждой линии',
+      'Полная интеграция с ERP / MES / WMS',
+      'Агрегация: короба + паллеты с формированием SSCC',
+      'Интеграция с системой ЭДО (Диадок, СБИС и др.)',
+      'Подключение к ГИС МТ и GS1 под ключ',
+      'Выделенный менеджер поддержки 12 месяцев',
+      'SLA 4 ч на критичные обращения',
+    ],
+    roi: { operatorsBefore: 8, operatorsAfter: 1 },
+  },
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let state = {
+  cats: [],
+  vol: 2000,
+  lines: 1,
+  shifts: '1',
+  erp: 'yes',
+  aggr: 'no',
+  edo: 'no',
+  printers: 'no',
+};
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderCats();
+});
+
+function renderCats() {
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = CATS.map(c => `
+    <div class="cat-pill ${state.cats.includes(c.id)?'sel':''}" onclick="toggleCat('${c.id}',this)">
+      <div class="cp-icon">${c.icon}</div>
+      <div>
+        <div class="cp-name">${c.name}</div>
+        <div class="cp-date">${c.date}</div>
+      </div>
+      <div class="cat-check">${state.cats.includes(c.id)?'✓':''}</div>
+    </div>
+  `).join('');
+}
+
+function toggleCat(id, el) {
+  if (state.cats.includes(id)) {
+    state.cats = state.cats.filter(x => x !== id);
+    el.classList.remove('sel');
+    el.querySelector('.cat-check').textContent = '';
+  } else {
+    state.cats.push(id);
+    el.classList.add('sel');
+    el.querySelector('.cat-check').textContent = '✓';
+  }
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+let currentStep = 1;
+const TOTAL_STEPS = 4;
+
+function goStep(n) {
+  if (n === currentStep) return;
+  if (n > currentStep) {
+    // validate each intermediate step
+    for (let s = currentStep; s < n; s++) {
+      if (!validateStep(s)) return;
+    }
+  }
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  document.getElementById('stab-' + currentStep).classList.remove('active');
+  if (currentStep < n) document.getElementById('stab-' + currentStep).classList.add('done');
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  document.getElementById('stab-' + currentStep).classList.add('active');
+  window.scrollTo({top: 0, behavior:'smooth'});
+}
+
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  goStep(from + 1);
+}
+
+function validateStep(n) {
+  if (n === 1) {
+    const w = document.getElementById('warn-1');
+    if (state.cats.length === 0) {
+      w.style.display = 'block';
+      return false;
+    }
+    w.style.display = 'none';
+  }
+  return true;
+}
+
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+function updateVol() {
+  const v = parseInt(document.getElementById('vol-slider').value);
+  state.vol = v;
+  document.getElementById('vol-val').textContent = v.toLocaleString('ru') + ' уп/сут';
+}
+
+let linesVal = 1;
+function changeLines(d) {
+  linesVal = Math.max(1, Math.min(20, linesVal + d));
+  state.lines = linesVal;
+  document.getElementById('lines-disp').textContent = linesVal;
+}
+
+function selToggle(groupId, el, val) {
+  const row = document.getElementById(groupId);
+  row.querySelectorAll('.toggle-pill').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  state[groupId.replace('-row','')] = val;
+}
+
+// ── CALCULATION ───────────────────────────────────────────────────────────────
+function pickPackage() {
+  const needAggr = state.aggr === 'yes';
+  const needEdo  = state.edo  === 'no'; // needs to be connected
+  const vol   = state.vol;
+  const lines = state.lines;
+
+  // Pick by volume + lines
+  let pkg = PACKAGES[2]; // default ЗАВОД
+  if (vol <= 2000 && lines <= 1) pkg = PACKAGES[0];
+  else if (vol <= 10000 && lines <= 3) pkg = PACKAGES[1];
+
+  // Upgrade if complex needs
+  if ((needAggr || needEdo) && pkg.id === 'start') pkg = PACKAGES[1];
+
+  return pkg;
+}
+
+function calcAndShow() {
+  state.lines = linesVal;
+
+  const pkg = pickPackage();
+  const vol = state.vol;
+  const lines = state.lines;
+
+  // Mark cost: 0.5 ₽/mark
+  const markCost = Math.round(vol * 30 * 0.5);
+  // Monthly operator savings
+  const salaryOp = 52000; // avg operator salary+taxes
+  const opSaved = Math.max(1, pkg.roi.operatorsBefore - pkg.roi.operatorsAfter);
+  const laborSaving = opSaved * salaryOp;
+  // Fine risk (3 batches/day * 300k * 30 days * p_catch)
+  const fineRisk = Math.round(vol / 500 * 3 * 300000 / 30);
+  // Payback
+  const midPrice = (pkg.priceFrom + pkg.priceTo) / 2;
+  const totalBenefit = laborSaving;
+  const payback = Math.ceil(midPrice / (totalBenefit + markCost * 0.0)); // months
+
+  // Render KPIs
+  document.getElementById('res-kpis').innerHTML = `
+    <div class="result-kpi danger">
+      <div class="kpi-label">Штраф за 1 партию без маркировки</div>
+      <div class="kpi-val">до 300 000 ₽</div>
+      <div class="kpi-sub">ст. 15.12 КоАП РФ, до приостановки деятельности</div>
+    </div>
+    <div class="result-kpi good">
+      <div class="kpi-label">Срок выхода в полный комплаенс</div>
+      <div class="kpi-val">от 14 дней</div>
+      <div class="kpi-sub">с момента подписания договора</div>
+    </div>
+    <div class="result-kpi">
+      <div class="kpi-label">Стоимость марок в месяц</div>
+      <div class="kpi-val">${fmtRub(markCost)}</div>
+      <div class="kpi-sub">при объёме ${vol.toLocaleString('ru')} уп/сут × 0,5 ₽/марка</div>
+    </div>
+    <div class="result-kpi" style="background:var(--green-p);border-color:#8ecfa9">
+      <div class="kpi-label">Экономия ФОТ в месяц</div>
+      <div class="kpi-val" style="color:var(--green)">${fmtRub(laborSaving)}</div>
+      <div class="kpi-sub">автоматизация заменяет ${opSaved} оператора(ов) ручной маркировки</div>
+    </div>
+  `;
+
+  // Package
+  document.getElementById('res-pkg').innerHTML = `
+    <div class="pkg-header">
+      <div class="pkg-name">Пакет «${pkg.name}»</div>
+      <div class="pkg-badge">${pkg.badge}</div>
+    </div>
+    <div class="pkg-body">
+      <div class="pkg-price-row">
+        <div class="pkg-price">${fmtRub(pkg.priceFrom)} — ${fmtRub(pkg.priceTo)}</div>
+        <div class="pkg-price-note">стоимость внедрения под ключ, без НДС</div>
+      </div>
+      <div class="pkg-includes">${pkg.tags.map(t=>`<span class="pkg-tag">${t}</span>`).join('')}</div>
+      <ul class="pkg-items">
+        ${pkg.items.map(i=>`<li>${i}</li>`).join('')}
+        ${state.printers==='no' ? '<li>Подбор и поставка принтеров-аппликаторов</li>' : ''}
+        ${state.erp==='no' ? '<li>Помощь с выбором и настройкой учётной системы</li>' : ''}
+        ${state.edo==='no' ? '<li>Подключение к ЭДО (Диадок / СБИС)</li>' : ''}
+      </ul>
+    </div>
+  `;
+
+  // Monthly cost
+  document.getElementById('res-monthly').innerHTML = `
+    <div class="monthly-block">
+      <h4>📅 Регулярные затраты после внедрения</h4>
+      <div class="monthly-rows">
+        <div class="monthly-row"><span class="mr-label">Коды маркировки (${vol.toLocaleString('ru')} уп × 0,5 ₽ × 30)</span><span class="mr-val">${fmtRub(markCost)}/мес</span></div>
+        <div class="monthly-row"><span class="mr-label">Расходные материалы (этикетки, риббоны)</span><span class="mr-val">${fmtRub(Math.round(lines * 4500))}/мес</span></div>
+        <div class="monthly-row"><span class="mr-label">Техподдержка ЯФОР (после гарантии)</span><span class="mr-val">от ${fmtRub(12000)}/мес</span></div>
+        <div class="monthly-row total"><span class="mr-label">Итого операционные затраты</span><span class="mr-val">${fmtRub(markCost + lines*4500 + 12000)}/мес</span></div>
+      </div>
+    </div>
+  `;
+
+  // ROI table
+  const payMonths = Math.ceil(midPrice / laborSaving);
+  document.getElementById('res-roi').innerHTML = `
+    <div class="roi-title">📊 Сравнение: без маркировки vs ЯФОР под ключ</div>
+    <table class="roi-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="th-bad">❌ Без «Честного знака»</th>
+          <th class="th-good">✅ ЯФОР под ключ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Штраф при проверке (ст. 15.12 КоАП)</td><td>До 300 000 ₽ за партию</td><td>0 ₽ — полный комплаенс</td></tr>
+        <tr><td>Блокировка отгрузок в сети</td><td>С 01.08.2026 — риск блокировки</td><td>Отсутствует</td></tr>
+        <tr><td>Регистрация в ГИС МТ</td><td>Обязательна с 01.03.2026</td><td>✓ Выполнено в пакете</td></tr>
+        <tr><td>Дедлайн для вашей категории</td><td>01.08.2026 или 01.10.2026</td><td>Сдаём за 14 рабочих дней</td></tr>
+        <tr><td>Ручная маркировка</td><td>${pkg.roi.operatorsBefore} оператора(ов) вручную</td><td>${pkg.roi.operatorsAfter} оператор (контроль)</td></tr>
+        <tr><td>Скорость маркировки</td><td>Ограничена физически</td><td>До 150 уп/мин в линии</td></tr>
+        <tr><td>Ошибки и пересортица</td><td>Человеческий фактор</td><td>0% — верификация DataMatrix</td></tr>
+        <tr><td>Окупаемость внедрения</td><td>—</td><td>≈ ${payMonths} мес. за счёт экономии ФОТ</td></tr>
+      </tbody>
+    </table>
+  `;
+
+  // Update sub
+  document.getElementById('res-sub').textContent =
+    `Пакет «${pkg.name}» для ${vol.toLocaleString('ru')} уп/сут на ${lines} линии(ях)`;
+
+  goStep(4);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function fmtRub(n) {
+  return Math.round(n).toLocaleString('ru') + ' ₽';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Подбор термоформера — ЯФОР</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:        #1F4E79;
+  --blue-mid:    #2E75B6;
+  --blue-light:  #D6E4F0;
+  --blue-pale:   #EEF4FB;
+  --green:       #1E6B3C;
+  --green-pale:  #E2EFDA;
+  --orange:      #C55A11;
+  --orange-pale: #FCE4D6;
+  --grey:        #3A3A3A;
+  --grey-soft:   #6B7280;
+  --bg:          #F0F4F9;
+  --white:       #FFFFFF;
+  --radius:      10px;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--grey);
+  min-height: 100vh;
+}
+
+/* ── ШАПКА ─────────────────────────────────────────────────────── */
+.page-header {
+  background: linear-gradient(130deg, var(--blue) 0%, #2563AB 100%);
+  padding: 28px 32px 24px;
+  text-align: center;
+  color: white;
+}
+.page-header .badge {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 3px 14px;
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+.page-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.page-header p  { font-size: 13px; opacity: 0.78; }
+
+/* ── СЕТКА: левая часть + правая ─────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(280px, 30%, 360px);
+  gap: 20px;
+  max-width: 1060px;
+  margin: 20px auto;
+  padding: 0 16px 40px;
+  align-items: start;
+  box-sizing: border-box;
+}
+/* Левая колонка не растягивается за пределы */
+.questions-wrap { min-width: 0; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .right-panel { order: -1; position: static; }
+}
+
+/* ── ВОПРОСЫ (левая колонка) ────────────────────────────────── */
+.questions-wrap { display: flex; flex-direction: column; gap: 16px; }
+
+.q-block {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1.5px solid #E2EAF2;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.q-block.answered { border-color: var(--blue-mid); }
+
+.q-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid #F0F4F9;
+}
+.q-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #E9EFF6;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.q-block.answered .q-num { background: var(--blue-mid); color: white; }
+.q-block.answered .q-num::before { content: '✓'; font-size: 11px; }
+.q-block.answered .q-num-text { display: none; }
+.q-num-text { font-size: 12px; font-weight: 700; color: var(--blue); }
+
+.q-title { font-size: 14px; font-weight: 700; color: var(--blue); flex: 1; }
+.q-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--blue-mid);
+  background: var(--blue-pale);
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+.q-tag.multi { background: #FFF3EA; color: var(--orange); }
+
+.q-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 18px 14px;
+}
+.q-opt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1.5px solid #DDE5EF;
+  border-radius: 8px;
+  background: white;
+  padding: 8px 13px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.18s;
+  color: var(--grey);
+  user-select: none;
+  line-height: 1.3;
+}
+.q-opt:hover { border-color: var(--blue-mid); background: var(--blue-pale); color: var(--blue); }
+.q-opt.selected {
+  border-color: var(--blue-mid);
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 600;
+}
+
+/* Чекбокс для мультивыбора */
+.opt-check {
+  width: 16px; height: 16px;
+  border: 2px solid #C5D4E5;
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  background: white;
+}
+.opt-check::after {
+  content: '';
+  width: 4px; height: 7px;
+  border: 2px solid white;
+  border-top: none; border-left: none;
+  transform: rotate(45deg) translate(-0.5px, -1px);
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.q-opt.selected .opt-check { background: var(--blue-mid); border-color: var(--blue-mid); }
+.q-opt.selected .opt-check::after { opacity: 1; }
+
+/* Радио для одиночного выбора */
+.opt-radio {
+  width: 16px; height: 16px;
+  border: 2px solid #C5D4E5;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  background: white;
+}
+.opt-radio::after {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.q-opt.selected .opt-radio { background: var(--blue-mid); border-color: var(--blue-mid); }
+.q-opt.selected .opt-radio::after { opacity: 1; }
+
+/* ── ПРАВАЯ ПАНЕЛЬ — РЕКОМЕНДАЦИЯ ─────────────────────────────── */
+.right-panel { position: sticky; top: 20px; min-width: 0; width: 100%; }
+
+.rec-card {
+  background: white;
+  border-radius: var(--radius);
+  border: 1.5px solid #E2EAF2;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rec-header {
+  background: linear-gradient(130deg, var(--blue) 0%, var(--blue-mid) 100%);
+  padding: 14px 16px;
+  color: white;
+}
+.rec-header .label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0.75; margin-bottom: 4px; }
+.rec-header .model-name { font-size: clamp(17px, 2.2vw, 22px); font-weight: 800; letter-spacing: -0.5px; transition: all 0.3s; word-break: break-word; }
+.rec-header .model-sub  { font-size: 12px; opacity: 0.8; margin-top: 3px; }
+
+.rec-body { padding: 14px 16px; }
+
+/* Прогресс заполнения */
+.fill-progress { margin-bottom: 18px; }
+.fill-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--grey-soft); margin-bottom: 6px; }
+.fill-label span { font-weight: 600; color: var(--blue); }
+.fill-bar-bg { background: #E9EFF6; border-radius: 99px; height: 6px; overflow: hidden; }
+.fill-bar    { background: linear-gradient(90deg, var(--blue-mid), #5BA4D4); height: 100%; border-radius: 99px; transition: width 0.4s cubic-bezier(.4,0,.2,1); width: 0%; }
+
+/* Метрики */
+.rec-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 14px; }
+.rec-metric {
+  background: var(--blue-pale);
+  border-radius: 8px;
+  padding: 8px 4px;
+  text-align: center;
+  transition: all 0.3s;
+  min-width: 0;
+}
+.rec-metric .val { font-size: clamp(13px, 1.5vw, 17px); font-weight: 800; color: var(--blue-mid); line-height: 1; margin-bottom: 3px; word-break: break-word; }
+.rec-metric .key { font-size: 9px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.3px; }
+
+/* Преимущества */
+.rec-advs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.rec-adv {
+  display: flex; align-items: flex-start; gap: 9px;
+  padding: 8px 10px;
+  background: var(--green-pale);
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.35s;
+}
+.rec-adv.show { opacity: 1; transform: none; }
+.rec-adv .chk { color: var(--green); font-weight: 800; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.rec-adv .txt { font-size: 12px; color: var(--grey); line-height: 1.4; }
+.rec-adv .txt strong { color: var(--green); }
+
+/* Опции */
+.rec-opts { margin-bottom: 16px; }
+.rec-opts h4 { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.rec-opts-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.rec-opt-tag {
+  background: var(--orange-pale);
+  border: 1px solid rgba(197,90,17,0.2);
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--orange);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.25s;
+}
+.rec-opt-tag.show { opacity: 1; transform: scale(1); }
+
+/* Плейсхолдер до начала выбора */
+.rec-placeholder {
+  padding: 28px 20px;
+  text-align: center;
+}
+.rec-placeholder .big-icon { font-size: 40px; margin-bottom: 12px; }
+.rec-placeholder p { font-size: 13px; color: var(--grey-soft); line-height: 1.6; }
+
+/* Форма заявки */
+.rec-form { border-top: 1.5px solid #E9EFF6; padding: 14px 16px 18px; }
+.rec-form h3 { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 10px; }
+.form-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.form-inp {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  border: 1.5px solid #DDE5EF;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--grey);
+  background: white;
+  transition: border 0.2s;
+  box-sizing: border-box;
+}
+.form-inp:focus { outline: none; border-color: var(--blue-mid); box-shadow: 0 0 0 3px var(--blue-light); }
+.form-inp::placeholder { color: #B0BCCC; }
+.btn-cta {
+  width: 100%;
+  padding: 12px;
+  background: var(--orange);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-top: 4px;
+}
+.btn-cta:hover { background: #a84d0e; }
+.btn-cta:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-note { font-size: 10px; color: #A0ACBA; text-align: center; margin-top: 8px; line-height: 1.5; }
+
+/* Ошибка / успех */
+.form-error { font-size: 12px; color: #c0392b; background: #FEF0F0; border-radius: 6px; padding: 7px 10px; margin-bottom: 8px; display: none; }
+.form-error.show { display: block; }
+.form-success { text-align: center; padding: 20px 16px; }
+.form-success .big-icon { font-size: 36px; margin-bottom: 10px; }
+.form-success h3 { font-size: 16px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+.form-success p  { font-size: 13px; color: var(--grey-soft); line-height: 1.5; }
+
+/* Анимация модели */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.model-animate { animation: popIn 0.25s ease; }
+
+/* ── РАСКРЫВАЮЩИЕСЯ ПОДПАНЕЛИ ───────────────────────────────── */
+.q-reveal {
+  display: none;
+  padding: 0 18px 14px;
+  animation: fadeReveal 0.2s ease;
+}
+.q-reveal.open { display: block; }
+@keyframes fadeReveal {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.q-reveal-inner {
+  background: var(--blue-pale);
+  border: 1.5px solid var(--blue-light);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.q-reveal-inner label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  white-space: nowrap;
+}
+.q-inline-inp {
+  border: 1.5px solid var(--blue-light);
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: var(--grey);
+  background: white;
+  width: 90px;
+  transition: border 0.2s;
+}
+.q-inline-inp.wide { width: 100%; flex: 1; min-width: 160px; }
+.q-inline-inp:focus { outline: none; border-color: var(--blue-mid); box-shadow: 0 0 0 3px var(--blue-light); }
+.q-inline-inp::placeholder { color: #B0BCCC; }
+.reveal-hint {
+  font-size: 11px;
+  color: var(--grey-soft);
+  width: 100%;
+  margin-top: 2px;
+}
+/* ── АДАПТИВ ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .page-header h1 { font-size: 18px; }
+  .q-opt { font-size: 12px; padding: 7px 10px; }
+  .rec-metrics { grid-template-columns: repeat(3,1fr); }
+}
+</style>
+<link rel="icon" type="image/png" href="../icon.png">
+</head>
+<body>
+<!-- ── BACK TO HOMEPAGE ─────────────────────────────── -->
+<div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:7px 20px;display:flex;align-items:center;gap:14px;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+  <img src="../icon.png" alt="ЯФОР" style="height:32px;width:auto;flex-shrink:0;">
+  <img src="../logo.png" alt="ЯФОР" style="height:24px;width:auto;filter:brightness(0) invert(1);flex-shrink:0;">
+  <a href="index.html"
+     style="display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.88);font-size:.84rem;font-weight:700;text-decoration:none;padding:6px 14px;border-radius:7px;border:1.5px solid rgba(255,255,255,.28);transition:all .2s;"
+     onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff';this.style.borderColor='rgba(255,255,255,.6)'"
+     onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.88)';this.style.borderColor='rgba(255,255,255,.28)'">
+    ← На главную
+  </a>
+  <span style="color:rgba(255,255,255,.3);font-size:.9rem;user-select:none;">|</span>
+  <span style="color:rgba(255,255,255,.55);font-size:.82rem;font-weight:500;letter-spacing:.2px;">www.yaforys.ru</span>
+  <div style="flex:1;"></div>
+  <a href="index.html#calculators"
+     style="color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;"
+     onmouseover="this.style.color='rgba(255,255,255,.9)'"
+     onmouseout="this.style.color='rgba(255,255,255,.55)'">
+    Все калькуляторы
+  </a>
+</div>
+
+
+<!-- ШАПКА -->
+<div class="page-header">
+  <div class="badge">Подбор оборудования · ЯФОР</div>
+  <h1>Какой термоформер подойдёт вашему производству?</h1>
+  <p>Выберите параметры — рекомендация обновляется автоматически</p>
+</div>
+
+<!-- ОСНОВНАЯ СЕТКА -->
+<div class="layout">
+
+  <!-- ═══ ЛЕВАЯ КОЛОНКА — ВОПРОСЫ ═══ -->
+  <div class="questions-wrap">
+
+    <!-- Q1 -->
+    <div class="q-block" id="qb-1">
+      <div class="q-header">
+        <div class="q-num"><span class="q-num-text">1</span></div>
+        <div class="q-title">Что вы производите?</div>
+        <div class="q-tag">Продукт</div>
+      </div>
+      <div class="q-options" data-field="product" data-multi="false">
+        <div class="q-opt" data-value="Мясо и птица"><span class="opt-radio"></span>🥩 Мясо и птица</div>
+        <div class="q-opt" data-value="Колбаса и деликатесы"><span class="opt-radio"></span>🌭 Колбаса / деликатесы</div>
+        <div class="q-opt" data-value="Молочная продукция"><span class="opt-radio"></span>🧀 Молочная продукция</div>
+        <div class="q-opt" data-value="Рыба и морепродукты"><span class="opt-radio"></span>🐟 Рыба / морепродукты</div>
+        <div class="q-opt" data-value="Готовые блюда / п.ф."><span class="opt-radio"></span>🍱 Готовые блюда / п.ф.</div>
+        <div class="q-opt" data-value="Другая продукция"><span class="opt-radio"></span>📦 Другое</div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block" id="qb-2">
+      <div class="q-header">
+        <div class="q-num"><span class="q-num-text">2</span></div>
+        <div class="q-title">Размер упаковки (Ш × Д)</div>
+        <div class="q-tag">Формат</div>
+      </div>
+      <div class="q-options" data-field="pack_size" data-multi="false">
+        <div class="q-opt" data-value="Маленький до 150×100"><span class="opt-radio"></span>🔹 До 150 × 100 мм</div>
+        <div class="q-opt" data-value="Средний 150–280 × 100–200"><span class="opt-radio"></span>🔷 150–280 × 100–200 мм</div>
+        <div class="q-opt" data-value="Большой 280–400 × 150–300"><span class="opt-radio"></span>📐 280–400 × 150–300 мм</div>
+        <div class="q-opt" data-value="Несколько размеров"><span class="opt-radio"></span>🔀 Несколько / не знаю</div>
+        <div class="q-opt" data-value="custom" data-reveal-id="reveal-custom-size"><span class="opt-radio"></span>✏️ Задать свой размер</div>
+      </div>
+      <!-- Раскрывается при выборе «Задать свой размер» -->
+      <div class="q-reveal" id="reveal-custom-size">
+        <div class="q-reveal-inner">
+          <label>Ширина (Ш), мм:</label>
+          <input class="q-inline-inp" id="customW" type="number" min="50" max="600" placeholder="напр. 190"
+                 oninput="onCustomSizeInput()">
+          <label>Длина (Д), мм:</label>
+          <input class="q-inline-inp" id="customL" type="number" min="50" max="800" placeholder="напр. 270"
+                 oninput="onCustomSizeInput()">
+          <span class="reveal-hint">Внутренние размеры лотка. Глубину укажите в вопросе 3.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block" id="qb-3">
+      <div class="q-header">
+        <div class="q-num"><span class="q-num-text">3</span></div>
+        <div class="q-title">Глубина лотка</div>
+        <div class="q-tag">Глубина</div>
+      </div>
+      <div class="q-options" data-field="depth" data-multi="false">
+        <div class="q-opt" data-value="до 30 мм"><span class="opt-radio"></span>📏 До 30 мм — нарезка, тонкие изделия</div>
+        <div class="q-opt" data-value="30–80 мм"><span class="opt-radio"></span>📐 30–80 мм — стейки, куски</div>
+        <div class="q-opt" data-value="80–130 мм"><span class="opt-radio"></span>🫙 80–130 мм — целые куски, птица</div>
+        <div class="q-opt" data-value="Не знаю"><span class="opt-radio"></span>❓ Помогите подобрать</div>
+      </div>
+    </div>
+
+    <!-- Q4 — МУЛЬТИВЫБОР -->
+    <div class="q-block" id="qb-4">
+      <div class="q-header">
+        <div class="q-num"><span class="q-num-text">4</span></div>
+        <div class="q-title">Тип упаковки</div>
+        <div class="q-tag multi">Несколько</div>
+      </div>
+      <div class="q-options" data-field="pack_type" data-multi="true">
+        <div class="q-opt" data-value="Вакуум"><span class="opt-check"></span>💨 Вакуум</div>
+        <div class="q-opt" data-value="MAP (газ)"><span class="opt-check"></span>🫧 MAP — вакуум + газ</div>
+        <div class="q-opt" data-value="Скин-упаковка"><span class="opt-check"></span>✨ Скин-упаковка (SKIN)</div>
+        <div class="q-opt" data-value="Не определился" data-exclusive="true"><span class="opt-check"></span>🤔 Пока не определился</div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-block" id="qb-5">
+      <div class="q-header">
+        <div class="q-num"><span class="q-num-text">5</span></div>
+        <div class="q-title">Производительность в смену</div>
+        <div class="q-tag">Объём</div>
+      </div>
+      <div class="q-options" data-field="output" data-multi="false">
+        <div class="q-opt" data-value="до 1 000 упак."><span class="opt-radio"></span>🐢 До 1 000 упаковок</div>
+        <div class="q-opt" data-value="1 000–3 000 упак."><span class="opt-radio"></span>🔄 1 000 – 3 000 упаковок</div>
+        <div class="q-opt" data-value="3 000–6 000 упак."><span class="opt-radio"></span>⚡ 3 000 – 6 000 упаковок</div>
+        <div class="q-opt" data-value="более 6 000 упак."><span class="opt-radio"></span>🚀 Более 6 000 упаковок</div>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q-block" id="qb-6">
+      <div class="q-header">
+        <div class="q-num"><span class="q-num-text">6</span></div>
+        <div class="q-title">Как упаковываете сейчас?</div>
+        <div class="q-tag">Текущее</div>
+      </div>
+      <div class="q-options" data-field="current" data-multi="false">
+        <div class="q-opt" data-value="Вручную / стрейч"><span class="opt-radio"></span>👐 Вручную / стрейч-плёнка</div>
+        <div class="q-opt" data-value="Лоток + стрейч"><span class="opt-radio"></span>🫙 Лоток + стрейч / термоусадка</div>
+        <div class="q-opt" data-value="Замена термоформера"><span class="opt-radio"></span>🔧 Замена старого термоформера</div>
+        <div class="q-opt" data-value="Новое производство"><span class="opt-radio"></span>🏭 Новое производство / расширение</div>
+      </div>
+    </div>
+
+    <!-- Q7 — ДОПОЛНИТЕЛЬНЫЕ ОПЦИИ -->
+    <div class="q-block" id="qb-7">
+      <div class="q-header">
+        <div class="q-num"><span class="q-num-text">7</span></div>
+        <div class="q-title">Дополнительные опции</div>
+        <div class="q-tag multi">Несколько</div>
+      </div>
+      <div class="q-options" data-field="labels" data-multi="true">
+        <div class="q-opt" data-value="Этикетка снизу"><span class="opt-check"></span>🏷️ Этикетка снизу</div>
+        <div class="q-opt" data-value="Этикетка сверху"><span class="opt-check"></span>🔖 Этикетка сверху</div>
+        <div class="q-opt" data-value="Без этикетки" data-exclusive="true"><span class="opt-check"></span>— Без этикетки</div>
+      </div>
+    </div>
+
+    <!-- Q8 — УКЛАДКА ПРОДУКТА -->
+    <div class="q-block" id="qb-8">
+      <div class="q-header">
+        <div class="q-num"><span class="q-num-text">8</span></div>
+        <div class="q-title">Укладка продукта</div>
+        <div class="q-tag">Загрузка</div>
+      </div>
+      <div class="q-options" data-field="loading" data-multi="true">
+        <div class="q-opt" data-value="Вручную" data-reveal-id="reveal-manual"><span class="opt-check"></span>👐 Вручную</div>
+        <div class="q-opt" data-value="Дозатор" data-reveal-id="reveal-doser"><span class="opt-check"></span>⚙️ Дозатор</div>
+      </div>
+      <!-- Вручную: длина зоны загрузки -->
+      <div class="q-reveal" id="reveal-manual">
+        <div class="q-reveal-inner">
+          <label>Желаемая длина зоны загрузки, мм:</label>
+          <input class="q-inline-inp" id="manualZone" type="number" min="500" max="4000" placeholder="напр. 1500"
+                 oninput="onDetailInput('loading_zone', this.value)">
+          <span class="reveal-hint">Стандарт ЯFORM420 — около 1 500–2 100 мм (4 оператора). Оставьте пустым, если не важно.</span>
+        </div>
+      </div>
+      <!-- Дозатор: продукты -->
+      <div class="q-reveal" id="reveal-doser">
+        <div class="q-reveal-inner">
+          <label>Продукт(ы) для дозирования:</label>
+          <input class="q-inline-inp wide" id="doserProducts" type="text"
+                 placeholder="напр. фарш, нарезка, творог"
+                 oninput="onDetailInput('doser_products', this.value)">
+          <span class="reveal-hint">Укажите продукт — специалист подберёт совместимый дозатор.</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /questions-wrap -->
+
+  <!-- ═══ ПРАВАЯ КОЛОНКА — РЕКОМЕНДАЦИЯ ═══ -->
+  <div class="right-panel">
+    <div class="rec-card" id="recCard">
+
+      <!-- Состояние: нет выборов -->
+      <div id="recPlaceholder" class="rec-placeholder">
+        <div class="big-icon">🎯</div>
+        <p>Выберите параметры слева — рекомендованная модель появится здесь автоматически</p>
+      </div>
+
+      <!-- Состояние: есть выборы -->
+      <div id="recContent" style="display:none;">
+        <div class="rec-header">
+          <div class="label">Рекомендованная модель</div>
+          <div class="model-name" id="recModelName">ЯFORM420×300</div>
+          <div class="model-sub" id="recModelSub">Универсальная · Оптимальный выбор</div>
+        </div>
+        <div class="rec-body">
+          <!-- Прогресс -->
+          <div class="fill-progress">
+            <div class="fill-label">Заполнено вопросов <span id="fillCount">0 / 6</span></div>
+            <div class="fill-bar-bg"><div class="fill-bar" id="fillBar"></div></div>
+          </div>
+          <!-- Метрики -->
+          <div class="rec-metrics" id="recMetrics"></div>
+          <!-- Преимущества -->
+          <div class="rec-advs" id="recAdvs"></div>
+          <!-- Опции -->
+          <div class="rec-opts" id="recOpts" style="display:none;">
+            <h4>Рекомендуемые опции</h4>
+            <div class="rec-opts-tags" id="recOptsTags"></div>
+          </div>
+        </div>
+        <!-- Форма -->
+        <div class="rec-form" id="recForm">
+          <h3>Получить КП и расчёт окупаемости</h3>
+          <div class="form-error" id="formErr">Заполните имя, телефон и компанию</div>
+          <div class="form-row">
+            <input class="form-inp" id="fName"    type="text"  placeholder="Ваше имя *">
+            <input class="form-inp" id="fPhone"   type="tel"   placeholder="Телефон *">
+          </div>
+          <input class="form-inp" id="fCompany" type="text" placeholder="Название компании *" style="width:100%;margin-bottom:8px;">
+          <input class="form-inp" id="fEmail"   type="email" placeholder="Email (необязательно)" style="width:100%;margin-bottom:10px;">
+          <button class="btn-cta" id="ctaBtn" onclick="submitLead()">Получить КП бесплатно →</button>
+          <p class="form-note">Свяжемся в течение 2 часов в рабочее время · sp@yaforys.ru · +7 (911) 927-48-67</p>
+        </div>
+        <!-- Успех -->
+        <div class="form-success" id="formSuccess" style="display:none;">
+          <div class="big-icon">✅</div>
+          <h3>Заявка отправлена!</h3>
+          <p>Специалист свяжется с вами в течение 2 рабочих часов и подготовит персональное КП на <strong id="successModel"></strong></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<script>
+// ─── НАСТРОЙКИ EmailJS ──────────────────────────────────────────
+const EMAILJS_PUBLIC_KEY  = 'ВАШ_PUBLIC_KEY';
+const EMAILJS_SERVICE_ID  = 'ВАШ_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'ВАШ_TEMPLATE_ID';
+const TARGET_EMAIL        = 'sales@yaforys.ru';
+
+// ─── СОСТОЯНИЕ ─────────────────────────────────────────────────
+const answers = {
+  product:         null,
+  pack_size:       null,   // может быть 'custom' → см. pack_size_custom
+  pack_size_custom: null,  // строка вида "190 × 270 мм" при custom
+  depth:           null,
+  pack_type:       [],     // массив — мультивыбор
+  output:          null,
+  current:         null,
+  labels:          [],     // мультивыбор этикеток
+  loading:         [],     // массив: ['Вручную'], ['Дозатор'], или оба
+  loading_zone:    null,   // длина зоны (при Вручную)
+  doser_products:  null,   // продукты (при Дозатор)
+};
+
+// ─── ЛОГИКА РЕКОМЕНДАЦИИ ────────────────────────────────────────
+const MODELS = {
+  'ЯFORM460×600': {
+    sub:  'Максимальный формат · Высокая производительность',
+    metrics: [
+      { val: '460 мм',      key: 'Ширина' },
+      { val: '8 цикл/мин',  key: 'Произв-ть' },
+      { val: '130 мм',      key: 'Глубина' },
+    ],
+    advs: [
+      'Несколько дорожек — до 6 упак./цикл при крупном формате',
+      'Самый широкий формат в линейке ЯФОР',
+      'Все режимы: Вакуум, MAP, Скин',
+      'Совместим с автозагрузкой и роботикой',
+    ],
+  },
+  'ЯFORM420×600': {
+    sub:  'Длинный шаг · Высокая производительность',
+    metrics: [
+      { val: '420 мм',       key: 'Ширина' },
+      { val: '7–8 цикл/мин', key: 'Произв-ть' },
+      { val: '130 мм',       key: 'Глубина' },
+    ],
+    advs: [
+      'Шаг 600 мм — длинные форматы без ограничений',
+      'До 4 000 упаковок за смену',
+      'Зона загрузки 1 500+ мм (4 оператора)',
+      'ROI 18–24 мес. при объёме от 500 кг/смену',
+    ],
+  },
+  'ЯFORM460×400': {
+    sub:  'Широкий формат · Много дорожек',
+    metrics: [
+      { val: '460 мм',      key: 'Ширина' },
+      { val: '7 цикл/мин',  key: 'Произв-ть' },
+      { val: '110 мм',      key: 'Глубина' },
+    ],
+    advs: [
+      'Широкая плёнка — больше дорожек при среднем шаге',
+      'Идеал для нарезки и порций высокой производительности',
+      'AISI-304, программа мойки CIP',
+      'Совместим с принтером Dibal 5000',
+    ],
+  },
+  'ЯFORM420×300': {
+    sub:  'Универсальная модель · Оптимальный выбор',
+    metrics: [
+      { val: '420 мм',       key: 'Ширина' },
+      { val: '7–8 цикл/мин', key: 'Произв-ть' },
+      { val: 'до 130 мм',    key: 'Глубина' },
+    ],
+    advs: [
+      'До 7 форматов на 1 машине — переналадка 20 мин.',
+      'Срок хранения ×3–5 без консервантов',
+      'Установлена у 20+ клиентов: Продо, Рефтинская, Знаменский МК',
+      'Окупаемость 18–24 мес. при 300+ кг/смену',
+    ],
+  },
+};
+
+function getModel() {
+  const out   = answers.output    || '';
+  const depth = answers.depth     || '';
+
+  // Определяем «большой» размер: по выбранному диапазону или по кастомным полям
+  let isBig = false;
+  if (answers.pack_size === 'custom' && answers.pack_size_custom) {
+    const nums = answers.pack_size_custom.match(/\d+/g);
+    if (nums) {
+      const w = parseInt(nums[0]), l = parseInt(nums[1]);
+      isBig = (w > 280 || l > 300);
+    }
+  } else {
+    const size = answers.pack_size || '';
+    isBig = size.includes('280–400') || size.includes('Несколько');
+  }
+
+  const isHigh = out.includes('3 000') || out.includes('6 000') || out.includes('более');
+  const isDeep = depth.includes('80–130');
+
+  if (isBig && isHigh)  return 'ЯFORM460×600';
+  if (isBig || isHigh)  return 'ЯFORM420×600';
+  if (isDeep)           return 'ЯFORM420×300';
+  return 'ЯFORM420×300';
+}
+
+function getOptions() {
+  const types   = answers.pack_type || [];
+  const lbls    = answers.labels    || [];
+  const loading = answers.loading || [];
+  const opts    = [];
+  if (types.includes('MAP (газ)'))       opts.push('MAP-голова (газовая система)');
+  if (types.includes('Скин-упаковка'))   opts.push('Скин-упаковка (SKIN)');
+  if (lbls.includes('Этикетка снизу'))   opts.push('Принтер-аппликатор снизу (Dibal 5000 Bottom)');
+  if (lbls.includes('Этикетка сверху'))  opts.push('Принтер-аппликатор сверху (Dibal 5000 Top)');
+  if (!lbls.includes('Этикетка снизу') && !lbls.includes('Этикетка сверху'))
+                                         opts.push('Принтер этикеток Dibal 5000');
+  if (loading.includes('Дозатор'))       opts.push('Дозатор (под ваш продукт)');
+  opts.push('Весовой контроль', 'Металлодетектор');
+  return opts;
+}
+
+// ─── ПОДСЧЁТ ЗАПОЛНЕННЫХ ВОПРОСОВ ──────────────────────────────
+function filledCount() {
+  let n = 0;
+  if (answers.product)   n++;
+  // pack_size считается заполненным: либо выбран не-custom вариант, либо custom с обоими полями
+  const sizeOk = answers.pack_size && (answers.pack_size !== 'custom' || answers.pack_size_custom);
+  if (sizeOk) n++;
+  if (answers.depth)     n++;
+  if (answers.pack_type && answers.pack_type.length) n++;
+  if (answers.output)    n++;
+  if (answers.current)   n++;
+  if (answers.labels && answers.labels.length) n++;
+  if (answers.loading && answers.loading.length) n++;
+  return n;
+}
+const TOTAL_Q = 8;
+
+// ─── ОБНОВЛЕНИЕ ПРАВОЙ ПАНЕЛИ ──────────────────────────────────
+let lastModel = null;
+
+function updateRec() {
+  const filled = filledCount();
+
+  if (filled === 0) {
+    document.getElementById('recPlaceholder').style.display = 'block';
+    document.getElementById('recContent').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('recPlaceholder').style.display = 'none';
+  document.getElementById('recContent').style.display = 'block';
+
+  // Прогресс
+  document.getElementById('fillCount').textContent = filled + ' / ' + TOTAL_Q;
+  document.getElementById('fillBar').style.width = Math.round(filled / TOTAL_Q * 100) + '%';
+
+  // Модель
+  const modelKey = getModel();
+  const model    = MODELS[modelKey];
+
+  const nameEl = document.getElementById('recModelName');
+  const subEl  = document.getElementById('recModelSub');
+
+  if (modelKey !== lastModel) {
+    nameEl.classList.remove('model-animate');
+    void nameEl.offsetWidth; // reflow
+    nameEl.classList.add('model-animate');
+    lastModel = modelKey;
+  }
+  nameEl.textContent = modelKey;
+  subEl.textContent  = model.sub;
+
+  // Метрики
+  const metricsEl = document.getElementById('recMetrics');
+  metricsEl.innerHTML = model.metrics.map(m => `
+    <div class="rec-metric">
+      <div class="val">${m.val}</div>
+      <div class="key">${m.key}</div>
+    </div>
+  `).join('');
+
+  // Преимущества
+  const advsEl = document.getElementById('recAdvs');
+  advsEl.innerHTML = model.advs.map((a, i) => `
+    <div class="rec-adv" style="transition-delay:${i * 60}ms">
+      <div class="chk">✓</div>
+      <div class="txt">${a}</div>
+    </div>
+  `).join('');
+  requestAnimationFrame(() => {
+    advsEl.querySelectorAll('.rec-adv').forEach(el => el.classList.add('show'));
+  });
+
+  // Опции
+  const opts    = getOptions();
+  const optsEl  = document.getElementById('recOpts');
+  const tagsEl  = document.getElementById('recOptsTags');
+  const typesFilled = answers.pack_type && answers.pack_type.length > 0;
+  if (typesFilled) {
+    optsEl.style.display = 'block';
+    tagsEl.innerHTML = opts.map((o, i) => `
+      <span class="rec-opt-tag" style="transition-delay:${i * 40}ms">${o}</span>
+    `).join('');
+    requestAnimationFrame(() => {
+      tagsEl.querySelectorAll('.rec-opt-tag').forEach(el => el.classList.add('show'));
+    });
+  } else {
+    optsEl.style.display = 'none';
+  }
+
+  // Сохраняем модель для отправки
+  window._recModel = modelKey;
+}
+
+// ─── ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ───────────────────────────────────
+// Открыть/закрыть reveal-панели внутри блока
+function toggleReveal(blockEl, revealId) {
+  // Закрываем все reveal в этом блоке
+  blockEl.querySelectorAll('.q-reveal').forEach(r => r.classList.remove('open'));
+  // Открываем нужный (если есть)
+  if (revealId) {
+    const target = document.getElementById(revealId);
+    if (target) target.classList.add('open');
+  }
+}
+
+// Обновляет answers.pack_size_custom на основе полей ввода
+function onCustomSizeInput() {
+  const w = document.getElementById('customW').value.trim();
+  const l = document.getElementById('customL').value.trim();
+  if (w && l) {
+    answers.pack_size_custom = w + ' × ' + l + ' мм';
+  } else {
+    answers.pack_size_custom = null;
+  }
+  // Помечаем блок
+  const blockEl = document.getElementById('qb-2');
+  blockEl.classList.toggle('answered', !!answers.pack_size_custom);
+  updateRec();
+}
+
+// Обновляет произвольные текстовые поля (зона загрузки, дозатор)
+function onDetailInput(field, value) {
+  answers[field] = value.trim() || null;
+  updateRec();
+}
+
+// ─── КЛИКИ ПО ВАРИАНТАМ ────────────────────────────────────────
+document.querySelectorAll('.q-options').forEach(group => {
+  group.addEventListener('click', e => {
+    const opt   = e.target.closest('.q-opt');
+    if (!opt) return;
+
+    const field     = group.dataset.field;
+    const value     = opt.dataset.value;
+    const isMulti   = group.dataset.multi === 'true';
+    const isExcl    = opt.dataset.exclusive === 'true';
+    const revealId  = opt.dataset.revealId || null;
+    const blockEl   = group.closest('.q-block');
+
+    if (isMulti) {
+      if (isExcl) {
+        group.querySelectorAll('.q-opt').forEach(b => b.classList.remove('selected'));
+        opt.classList.add('selected');
+        answers[field] = [value];
+        // Закрыть все reveal в блоке при выборе эксклюзивного
+        blockEl.querySelectorAll('.q-reveal').forEach(r => r.classList.remove('open'));
+      } else {
+        group.querySelectorAll('.q-opt[data-exclusive]').forEach(b => {
+          b.classList.remove('selected');
+          // Закрыть reveal эксклюзивного варианта (если есть)
+          const exclReveal = b.dataset.revealId;
+          if (exclReveal) {
+            const el = document.getElementById(exclReveal);
+            if (el) el.classList.remove('open');
+          }
+        });
+        opt.classList.toggle('selected');
+        answers[field] = [...group.querySelectorAll('.q-opt.selected')].map(b => b.dataset.value);
+
+        // Reveal для мультивыбора: показываем/скрываем по состоянию кнопки
+        if (revealId) {
+          const revealEl = document.getElementById(revealId);
+          if (revealEl) revealEl.classList.toggle('open', opt.classList.contains('selected'));
+        }
+      }
+    } else {
+      group.querySelectorAll('.q-opt').forEach(b => b.classList.remove('selected'));
+      opt.classList.add('selected');
+      answers[field] = value;
+
+      // Reveal-логика для одиночного выбора
+      toggleReveal(blockEl, revealId);
+
+      // Если выбран «custom» в размере — сбросить custom-значение до заполнения полей
+      if (field === 'pack_size' && value === 'custom') {
+        answers.pack_size_custom = null;
+      }
+    }
+
+    // Помечаем блок как заполненный
+    let hasAnswer;
+    if (field === 'pack_size' && answers.pack_size === 'custom') {
+      hasAnswer = !!answers.pack_size_custom;
+    } else {
+      hasAnswer = Array.isArray(answers[field])
+        ? answers[field].length > 0
+        : !!answers[field];
+    }
+    blockEl.classList.toggle('answered', hasAnswer);
+
+    updateRec();
+  });
+});
+
+// ─── ОТПРАВКА ФОРМЫ ────────────────────────────────────────────
+async function submitLead() {
+  const name    = document.getElementById('fName').value.trim();
+  const phone   = document.getElementById('fPhone').value.trim();
+  const company = document.getElementById('fCompany').value.trim();
+  const email   = document.getElementById('fEmail').value.trim();
+  const errEl   = document.getElementById('formErr');
+
+  errEl.classList.remove('show');
+  if (!name || !phone || !company) {
+    errEl.classList.add('show');
+    return;
+  }
+
+  const btn = document.getElementById('ctaBtn');
+  btn.disabled = true;
+  btn.textContent = 'Отправляем...';
+
+  // Формируем человекочитаемый размер упаковки
+  const sizeStr = answers.pack_size === 'custom'
+    ? ('Произвольный: ' + (answers.pack_size_custom || 'не указан'))
+    : (answers.pack_size || '—');
+
+  // Загрузка
+  const loadingArr = answers.loading || [];
+  let loadingStr = loadingArr.length ? loadingArr.join(' + ') : '—';
+  if (loadingArr.includes('Вручную') && answers.loading_zone)
+    loadingStr += ' (зона загрузки: ' + answers.loading_zone + ' мм)';
+  if (loadingArr.includes('Дозатор') && answers.doser_products)
+    loadingStr += ' (дозатор: ' + answers.doser_products + ')';
+
+  const params = {
+    to_email:   TARGET_EMAIL,
+    from_name:  name, phone, company,
+    user_email: email || '—',
+    model:      window._recModel || '—',
+    product:    answers.product    || '—',
+    pack_size:  sizeStr,
+    depth:      answers.depth      || '—',
+    pack_type:  (answers.pack_type || []).join(', ') || '—',
+    output:     answers.output     || '—',
+    current:    answers.current    || '—',
+    labels:     (answers.labels    || []).join(', ') || '—',
+    loading:    loadingStr,
+  };
+
+  try {
+    if (EMAILJS_PUBLIC_KEY === 'ВАШ_PUBLIC_KEY') {
+      console.log('Demo mode — данные:', params);
+      await new Promise(r => setTimeout(r, 600));
+    } else {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+    }
+    document.getElementById('recForm').style.display    = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+    document.getElementById('successModel').textContent  = window._recModel;
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = 'Получить КП бесплатно →';
+    errEl.textContent = 'Ошибка: ' + (err.text || err.message || 'попробуйте ещё раз');
+    errEl.classList.add('show');
+  }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'ВАШ_PUBLIC_KEY') emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });</script>
+</body>
+</html>

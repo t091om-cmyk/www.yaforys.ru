@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор ремонта упаковочного оборудования — ЯФОР</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:        #1F4E79;
+  --blue-mid:    #2E75B6;
+  --blue-light:  #D6E4F0;
+  --blue-pale:   #EEF4FB;
+  --orange:      #C55A11;
+  --orange-mid:  #E06B1A;
+  --orange-pale: #FDE8D8;
+  --green:       #1E6B3C;
+  --green-pale:  #E2EFDA;
+  --red:         #C0392B;
+  --red-pale:    #FDECEA;
+  --yellow:      #D4A017;
+  --yellow-pale: #FEF9E7;
+  --grey:        #3A3A3A;
+  --grey-soft:   #6B7280;
+  --grey-light:  #F2F5F8;
+  --border:      #DDE5EF;
+  --white:       #FFFFFF;
+  --radius:      10px;
+  --shadow:      0 4px 20px rgba(31,78,121,0.10);
+}
+body { font-family: 'Segoe UI', system-ui, Arial, sans-serif; background: var(--grey-light); color: var(--grey); min-height: 100vh; }
+
+/* ── HEADER ── */
+.page-header { background: linear-gradient(130deg, #1a3a5c 0%, var(--blue-mid) 100%); padding: 28px 24px 20px; text-align: center; color: white; }
+.page-header .badge { display: inline-block; border: 1px solid rgba(255,255,255,0.35); border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; padding: 3px 14px; margin-bottom: 12px; opacity: 0.85; }
+.page-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.page-header p  { font-size: 13px; opacity: 0.78; }
+
+/* ── MACHINE TABS ── */
+.tabs-bar { background: white; border-bottom: 2px solid var(--border); display: flex; justify-content: center; overflow-x: auto; padding: 0 16px; }
+.tab-btn {
+  padding: 14px 18px; font-size: 13px; font-weight: 600; color: var(--grey-soft);
+  cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent;
+  display: flex; align-items: center; gap: 7px; white-space: nowrap;
+  margin-bottom: -2px; transition: color 0.15s;
+}
+.tab-btn:hover { color: var(--blue); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue-mid); }
+.tab-btn .ti { font-size: 18px; }
+
+/* ── LAYOUT ── */
+.layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; max-width: 1100px; margin: 24px auto; padding: 0 16px 48px; align-items: start; }
+@media (max-width: 860px) { .layout { grid-template-columns: 1fr; } .right-col { order: -1; } }
+
+/* ── CARD ── */
+.card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); overflow: hidden; margin-bottom: 16px; }
+.card-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; background: var(--blue-pale); border-bottom: 1px solid var(--border); }
+.card-head .icon { width: 30px; height: 30px; border-radius: 8px; background: var(--blue-mid); color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.card-head h3 { font-size: 14px; font-weight: 700; color: var(--blue); }
+.card-head .sub { font-size: 12px; color: var(--grey-soft); margin-left: auto; }
+.head-actions { display: flex; gap: 6px; margin-left: auto; }
+.head-btn { border: 1.5px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 11px; font-weight: 600; cursor: pointer; background: white; transition: all 0.18s; white-space: nowrap; }
+.head-btn-all   { color: var(--green); border-color: var(--green); }
+.head-btn-all:hover   { background: var(--green-pale); }
+.head-btn-clear { color: var(--red); border-color: #e0b0aa; }
+.head-btn-clear:hover { background: var(--red-pale); }
+.card-body { padding: 18px; }
+
+/* ── PARAMS ── */
+.params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 500px) { .params-grid { grid-template-columns: 1fr; } }
+.field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--grey-soft); margin-bottom: 6px; }
+.field input, .field select { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; color: var(--grey); background: white; transition: border-color 0.2s; appearance: none; }
+.field input:focus, .field select:focus { outline: none; border-color: var(--blue-mid); }
+.field.full { grid-column: 1 / -1; }
+
+/* ── CONDITION ── */
+.condition-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 4px; }
+@media (max-width: 500px) { .condition-grid { grid-template-columns: 1fr 1fr; } }
+.cond-btn { border: 2px solid var(--border); border-radius: 8px; padding: 10px 6px; cursor: pointer; text-align: center; transition: all 0.18s; background: white; }
+.cond-btn .emoji { font-size: 20px; display: block; margin-bottom: 4px; }
+.cond-btn .lbl   { font-size: 11px; font-weight: 600; color: var(--grey-soft); }
+.cond-btn .coef  { font-size: 10px; color: #aaa; margin-top: 2px; }
+.cond-btn:hover  { border-color: var(--blue-mid); }
+.cond-btn.sel-green  { border-color: var(--green);  background: var(--green-pale); }
+.cond-btn.sel-green  .lbl { color: var(--green); }
+.cond-btn.sel-yellow { border-color: var(--yellow); background: var(--yellow-pale); }
+.cond-btn.sel-yellow .lbl { color: var(--yellow); }
+.cond-btn.sel-orange { border-color: var(--orange); background: var(--orange-pale); }
+.cond-btn.sel-orange .lbl { color: var(--orange); }
+.cond-btn.sel-red    { border-color: var(--red);    background: var(--red-pale); }
+.cond-btn.sel-red    .lbl { color: var(--red); }
+
+/* ── SYSTEMS ── */
+.system-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f4f8; }
+.system-row:last-child { border-bottom: none; }
+.sys-check { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; background: white; }
+.sys-check.checked { border-color: var(--blue-mid); background: var(--blue-mid); }
+.sys-check.checked::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; }
+.sys-info { flex: 1; min-width: 0; }
+.sys-info .sys-name { font-size: 13px; font-weight: 600; color: var(--grey); }
+.sys-info .sys-desc { font-size: 11px; color: var(--grey-soft); margin-top: 1px; }
+.sys-scope { display: flex; gap: 4px; flex-shrink: 0; }
+.scope-btn { border: 1.5px solid var(--border); border-radius: 6px; padding: 4px 7px; font-size: 10px; font-weight: 600; cursor: pointer; color: var(--grey-soft); background: white; transition: all 0.15s; white-space: nowrap; }
+.scope-btn:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+.scope-btn.scope-minor.active { background: var(--green-pale);  border-color: var(--green);  color: var(--green); }
+.scope-btn.scope-major.active { background: var(--orange-pale); border-color: var(--orange); color: var(--orange); }
+.scope-btn.scope-full.active  { background: var(--red-pale);    border-color: var(--red);    color: var(--red); }
+.sys-base-price { font-size: 11px; color: #aaa; flex-shrink: 0; text-align: right; min-width: 70px; }
+
+/* ── EXTRAS ── */
+.extras-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 500px) { .extras-grid { grid-template-columns: 1fr; } }
+.extra-item { border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.18s; background: white; }
+.extra-item:hover { border-color: var(--blue-mid); }
+.extra-item.active { border-color: var(--blue-mid); background: var(--blue-pale); }
+.extra-item .eicon { font-size: 20px; flex-shrink: 0; }
+.extra-item .etxt .ename  { font-size: 12px; font-weight: 700; color: var(--grey); }
+.extra-item .etxt .eprice { font-size: 11px; color: var(--grey-soft); margin-top: 1px; }
+.extra-item .echk { margin-left: auto; width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.extra-item.active .echk { border-color: var(--blue-mid); background: var(--blue-mid); }
+.extra-item.active .echk::after { content: '✓'; color: white; font-size: 10px; font-weight: 700; }
+
+/* ── RIGHT PANEL ── */
+.right-col { position: sticky; top: 20px; }
+.summary-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); overflow: hidden; }
+.summary-head { background: linear-gradient(130deg, var(--blue) 0%, var(--blue-mid) 100%); padding: 16px 18px; color: white; }
+.summary-head h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.summary-head p  { font-size: 12px; opacity: 0.75; }
+.summary-body { padding: 16px 18px; }
+.machine-tag { display: flex; align-items: center; gap: 8px; background: var(--blue-pale); border-radius: 8px; padding: 8px 12px; margin-bottom: 14px; font-size: 12px; color: var(--blue); }
+.machine-tag strong { font-size: 13px; }
+.coef-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--grey-soft); padding: 4px 0; border-bottom: 1px dashed #eee; }
+.coef-row:last-of-type { border-bottom: none; }
+.coef-row .val { font-weight: 700; color: var(--grey); }
+.divider { height: 1px; background: var(--border); margin: 12px 0; }
+.line-items { margin-bottom: 12px; }
+.li-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; padding: 4px 0; border-bottom: 1px solid #f5f7fa; }
+.li-row:last-child { border-bottom: none; }
+.li-row .li-name { color: var(--grey-soft); flex: 1; padding-right: 8px; }
+.li-row .li-val  { font-weight: 600; color: var(--grey); white-space: nowrap; }
+.li-row .li-val.scope-minor { color: var(--green); }
+.li-row .li-val.scope-major { color: var(--orange); }
+.li-row .li-val.scope-full  { color: var(--red); }
+.empty-hint { text-align: center; padding: 20px 10px; color: var(--grey-soft); font-size: 12px; }
+.empty-hint .big { font-size: 28px; margin-bottom: 6px; }
+.total-block { background: var(--blue-pale); border-radius: 8px; padding: 12px 14px; text-align: center; margin-bottom: 12px; }
+.total-block .total-label { font-size: 11px; color: var(--grey-soft); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+.total-block .total-range { font-size: 22px; font-weight: 800; color: var(--blue); line-height: 1.2; }
+.total-block .total-sub   { font-size: 11px; color: var(--grey-soft); margin-top: 4px; }
+.timeline-block { display: flex; gap: 8px; margin-bottom: 14px; }
+.tl-item { flex: 1; text-align: center; background: var(--grey-light); border-radius: 8px; padding: 8px 4px; }
+.tl-item .tv { font-size: 15px; font-weight: 800; color: var(--blue); }
+.tl-item .tl { font-size: 10px; color: var(--grey-soft); margin-top: 2px; }
+.btn-primary { display: block; width: 100%; background: linear-gradient(130deg, var(--orange) 0%, var(--orange-mid) 100%); color: white; border: none; border-radius: 8px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; margin-bottom: 8px; }
+.btn-primary:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(197,90,17,0.3); }
+.btn-secondary { display: block; width: 100%; background: white; color: var(--blue); border: 1.5px solid var(--blue-mid); border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center; }
+.btn-secondary:hover { background: var(--blue-pale); }
+.note { background: var(--yellow-pale); border: 1px solid #e8d08a; border-radius: 8px; padding: 10px 12px; font-size: 11px; color: #7a5900; margin-top: 10px; line-height: 1.5; }
+.note strong { display: block; margin-bottom: 2px; }
+.legend { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--grey-soft); }
+.leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+.leg-dot.minor { background: var(--green); }
+.leg-dot.major { background: var(--orange); }
+.leg-dot.full  { background: var(--red); }
+
+/* ── LOGISTICS ── */
+.logistic-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+@media (max-width: 600px) { .logistic-grid { grid-template-columns: 1fr; } }
+.logistic-btn { border: 2px solid var(--border); border-radius: 10px; padding: 14px 12px; cursor: pointer; background: white; transition: all 0.18s; }
+.logistic-btn:hover { border-color: var(--blue-mid); }
+.logistic-btn.active-visit    { border-color: var(--green);  background: var(--green-pale); }
+.logistic-btn.active-delivery { border-color: var(--orange); background: var(--orange-pale); }
+.logistic-btn.active-self     { border-color: var(--blue-mid); background: var(--blue-pale); }
+.log-icon  { font-size: 22px; margin-bottom: 6px; }
+.log-title { font-size: 12px; font-weight: 700; color: var(--grey); margin-bottom: 5px; line-height: 1.3; }
+.log-desc  { font-size: 11px; color: var(--grey-soft); line-height: 1.4; margin-bottom: 8px; }
+.log-tag   { display: inline-block; border-radius: 4px; padding: 2px 7px; font-size: 10px; font-weight: 700; }
+.tag-green  { background: var(--green-pale);  color: var(--green); }
+.tag-orange { background: var(--orange-pale); color: var(--orange); }
+.tag-grey   { background: #f0f0f0; color: var(--grey-soft); }
+.delivery-dest-badge { display: flex; align-items: flex-start; gap: 10px; background: var(--orange-pale); border: 1.5px solid #e8c4a0; border-radius: 8px; padding: 10px 14px; font-size: 13px; }
+.delivery-dest-badge span { font-size: 22px; flex-shrink: 0; }
+.ddb-title { font-size: 13px; color: var(--orange); font-weight: 600; }
+.ddb-sub   { font-size: 11px; color: var(--grey-soft); margin-top: 2px; }
+.delivery-estimate { background: var(--orange-pale); border: 1px solid #e8c4a0; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--orange); margin-top: 10px; line-height: 1.5; }
+.delivery-estimate strong { font-size: 15px; font-weight: 800; display: block; margin-bottom: 2px; }
+
+/* ── DIAG OFFICE ── */
+.diag-office-block { grid-column: 1 / -1; background: var(--blue-pale); border: 1.5px solid var(--blue-light); border-radius: 8px; padding: 12px 14px; margin-top: -4px; display: none; }
+.diag-office-block.visible { display: block; }
+.diag-office-block label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--blue); margin-bottom: 8px; display: block; }
+.diag-offices { display: flex; gap: 8px; flex-wrap: wrap; }
+.diag-off-btn { border: 1.5px solid var(--blue-light); border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; background: white; color: var(--grey-soft); transition: all 0.15s; }
+.diag-off-btn:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+.diag-off-btn.active { border-color: var(--blue-mid); background: var(--blue-mid); color: white; }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.open { display: flex; }
+.modal { background: white; border-radius: var(--radius); max-width: 480px; width: 100%; overflow: hidden; animation: popIn 0.25s ease; }
+@keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-head { background: linear-gradient(130deg, var(--blue) 0%, var(--blue-mid) 100%); color: white; padding: 20px 24px; }
+.modal-head h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.modal-head p  { font-size: 12px; opacity: 0.78; }
+.modal-body { padding: 20px 24px; }
+.modal-field { margin-bottom: 14px; }
+.modal-field label { display: block; font-size: 12px; font-weight: 700; color: var(--grey-soft); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.modal-field input, .modal-field textarea, .modal-field select { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; transition: border-color 0.2s; }
+.modal-field input:focus, .modal-field textarea:focus, .modal-field select:focus { outline: none; border-color: var(--blue-mid); }
+.modal-field textarea { resize: vertical; min-height: 70px; }
+.modal-summary-box { background: var(--blue-pale); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 12px; color: var(--blue); }
+.modal-summary-box strong { display: block; font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+.modal-footer { display: flex; gap: 10px; }
+.modal-footer .btn-primary { flex: 1; }
+.modal-footer .btn-cancel { padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 8px; background: white; color: var(--grey-soft); font-size: 13px; font-weight: 600; cursor: pointer; }
+.modal-footer .btn-cancel:hover { background: var(--grey-light); }
+.success-msg { text-align: center; padding: 30px 20px; display: none; }
+.success-msg .big { font-size: 48px; margin-bottom: 12px; }
+.success-msg h4 { font-size: 18px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+.success-msg p  { font-size: 13px; color: var(--grey-soft); }
+.print-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: var(--grey-soft); display: flex; align-items: center; gap: 4px; padding: 4px 0; margin-top: 6px; width: 100%; justify-content: center; }
+.print-btn:hover { color: var(--blue); }
+@media print { .btn-primary, .btn-secondary, .print-btn, .modal-overlay, .tabs-bar { display: none !important; } body { background: white; } .right-col { position: static; } }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="badge">Сервисный калькулятор · ЯФОР</div>
+  <h1>🔧 Калькулятор ремонта упаковочного оборудования</h1>
+  <p>Термоформеры · Трейсилеры · Флоу-пак · Формирователи коробов · Конвейерные линии · Предварительный расчёт за 2 минуты</p>
+</div>
+
+<!-- MACHINE TABS -->
+<div class="tabs-bar" id="tabsBar">
+  <button class="tab-btn active" data-mtype="thermoformer" onclick="switchMachine('thermoformer',this)">
+    <span class="ti">🔥</span>Термоформер
+  </button>
+  <button class="tab-btn" data-mtype="traysaler" onclick="switchMachine('traysaler',this)">
+    <span class="ti">📦</span>Трейсилер
+  </button>
+  <button class="tab-btn" data-mtype="flowpack" onclick="switchMachine('flowpack',this)">
+    <span class="ti">🌀</span>Флоу-пак
+  </button>
+  <button class="tab-btn" data-mtype="carton" onclick="switchMachine('carton',this)">
+    <span class="ti">📫</span>Формирователь коробов
+  </button>
+  <button class="tab-btn" data-mtype="conveyor" onclick="switchMachine('conveyor',this)">
+    <span class="ti">🔗</span>Конвейерная линия
+  </button>
+</div>
+
+<div class="layout">
+  <!-- LEFT -->
+  <div class="left-col">
+
+    <!-- 1. МАШИНА -->
+    <div class="card">
+      <div class="card-head">
+        <div class="icon">⚙️</div>
+        <h3>1. Параметры оборудования</h3>
+        <span class="sub">Влияет на коэффициент стоимости</span>
+      </div>
+      <div class="card-body">
+        <div class="params-grid">
+          <div class="field">
+            <label>Марка / модель</label>
+            <input type="text" id="machineModel" placeholder="Введите марку и модель…" oninput="updateCalc()">
+          </div>
+
+          <!-- SIZE: меняется по типу машины -->
+          <div class="field" id="sizeField">
+            <label id="sizeLabel">Размер машины</label>
+            <select id="machineSize" onchange="updateCalc()">
+              <!-- Заполняется JS -->
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Возраст машины</label>
+            <select id="machineAge" onchange="updateCalc()">
+              <option value="0.8">до 3 лет</option>
+              <option value="0.9">3–5 лет</option>
+              <option value="1.0" selected>5–8 лет</option>
+              <option value="1.15">8–12 лет</option>
+              <option value="1.35">12–18 лет</option>
+              <option value="1.6">свыше 18 лет</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Производитель</label>
+            <select id="mfrType" onchange="updateCalc()">
+              <option value="1.0">Российский (ЯФОР)</option>
+              <option value="1.0">Белорусский / СНГ</option>
+              <option value="1.25">Европейский</option>
+              <option value="1.15">Азиатский</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label>Текущее состояние</label>
+            <div class="condition-grid">
+              <div class="cond-btn sel-green" data-coef="0.85" onclick="selectCond(this,'sel-green')">
+                <span class="emoji">🟢</span><div class="lbl">Рабочее</div><div class="coef">плановый ТО</div>
+              </div>
+              <div class="cond-btn" data-coef="1.0" onclick="selectCond(this,'sel-yellow')">
+                <span class="emoji">🟡</span><div class="lbl">Износ</div><div class="coef">частые сбои</div>
+              </div>
+              <div class="cond-btn" data-coef="1.3" onclick="selectCond(this,'sel-orange')">
+                <span class="emoji">🟠</span><div class="lbl">Аварийное</div><div class="coef">не работает</div>
+              </div>
+              <div class="cond-btn" data-coef="1.65" onclick="selectCond(this,'sel-red')">
+                <span class="emoji">🔴</span><div class="lbl">Критическое</div><div class="coef">долгий простой</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. СИСТЕМЫ -->
+    <div class="card">
+      <div class="card-head">
+        <div class="icon">🔩</div>
+        <h3>2. Узлы и системы</h3>
+        <div class="head-actions">
+          <button class="head-btn head-btn-all"   onclick="selectAllSystems()">✅ Все</button>
+          <button class="head-btn head-btn-clear" onclick="clearAllSystems()">🗑 Очистить</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="legend">
+          <div class="leg-item"><div class="leg-dot minor"></div>Мелкий (регулировка, замена деталей)</div>
+          <div class="leg-item"><div class="leg-dot major"></div>Средний (частичная замена узла)</div>
+          <div class="leg-item"><div class="leg-dot full"></div>Полный (замена / восстановление)</div>
+        </div>
+        <div id="systemsContainer"></div>
+      </div>
+    </div>
+
+    <!-- 3. ЛОГИСТИКА -->
+    <div class="card">
+      <div class="card-head">
+        <div class="icon">🚛</div>
+        <h3>3. Логистика</h3>
+        <span class="sub" id="logisticHint" style="color:var(--orange)"></span>
+      </div>
+      <div class="card-body">
+        <div class="logistic-grid">
+          <div class="logistic-btn" id="log_visit" onclick="setLogistic('visit')">
+            <div class="log-icon">🔧</div>
+            <div class="log-title">Выезд специалиста к вам</div>
+            <div class="log-desc">Рекомендуется для планового ТО и мелкого ремонта. Командировочные включены.</div>
+            <div class="log-tag tag-green">ТО / Мелкий ремонт</div>
+          </div>
+          <div class="logistic-btn" id="log_delivery" onclick="setLogistic('delivery')">
+            <div class="log-icon">🚛</div>
+            <div class="log-title">Доставка в сервисный центр</div>
+            <div class="log-desc">Оборудование доставляется в ЯФОР (Москва). Полный цикл ремонта в мастерской.</div>
+            <div class="log-tag tag-orange">Средний / Капитальный</div>
+          </div>
+          <div class="logistic-btn" id="log_self" onclick="setLogistic('self')">
+            <div class="log-icon">🏭</div>
+            <div class="log-title">Самовывоз</div>
+            <div class="log-desc">Клиент доставляет оборудование самостоятельно. Стоимость доставки не включается.</div>
+            <div class="log-tag tag-grey">Экономия на логистике</div>
+          </div>
+        </div>
+        <div id="deliveryBlock" style="display:none; margin-top:16px;">
+          <div class="delivery-dest-badge">
+            <span>🏭</span>
+            <div>
+              <div class="ddb-title">Сервисный центр ЯФОР — <strong>Москва</strong></div>
+              <div class="ddb-sub">Единственный центр для приёма оборудования на капремонт</div>
+            </div>
+          </div>
+          <div class="field" style="margin-top:12px;">
+            <label>Расстояние от вас до Москвы</label>
+            <select id="deliveryDist" onchange="updateCalc()">
+              <option value="0">В черте города / до 100 км</option>
+              <option value="1">101–300 км</option>
+              <option value="2">301–600 км</option>
+              <option value="3">601–1000 км</option>
+              <option value="4">1001–2000 км</option>
+              <option value="5">свыше 2000 км</option>
+            </select>
+          </div>
+          <div id="deliveryEstimate" class="delivery-estimate"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. ДОППЫ -->
+    <div class="card">
+      <div class="card-head">
+        <div class="icon">📋</div>
+        <h3>4. Дополнительные работы</h3>
+      </div>
+      <div class="card-body">
+        <div class="extras-grid" id="extrasContainer"></div>
+        <div class="diag-office-block" id="diagOfficeBlock">
+          <label>🔍 Из какого офиса выедет специалист?</label>
+          <div class="diag-offices">
+            <button class="diag-off-btn active" id="doff_spb" onclick="setDiagOffice('spb')">🏙️ Санкт-Петербург</button>
+            <button class="diag-off-btn"        id="doff_msk" onclick="setDiagOffice('msk')">🏙️ Москва</button>
+            <button class="diag-off-btn"        id="doff_vlg" onclick="setDiagOffice('vlg')">🏙️ Волгоград</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- RIGHT -->
+  <div class="right-col">
+    <div class="summary-card">
+      <div class="summary-head">
+        <h3>💰 Предварительный расчёт</h3>
+        <p>Обновляется автоматически</p>
+      </div>
+      <div class="summary-body">
+        <div class="machine-tag" id="machineTag">
+          <span id="machineTagIcon">🔥</span>
+          <span id="machineTagText">Термоформер · Введите данные</span>
+        </div>
+        <div class="coef-row"><span>Тип оборудования:</span><span class="val" id="cType">Термоформер</span></div>
+        <div class="coef-row"><span>Коэф. размера:</span><span class="val" id="cSize">×1.0</span></div>
+        <div class="coef-row"><span>Коэф. возраста:</span><span class="val" id="cAge">×1.0</span></div>
+        <div class="coef-row"><span>Коэф. состояния:</span><span class="val" id="cCond">×0.85</span></div>
+        <div class="coef-row"><span>Производитель:</span><span class="val" id="cMfr">×1.0</span></div>
+        <div class="coef-row"><span>Логистика:</span><span class="val" id="cLogistic" style="color:var(--grey-soft)">— не выбрано</span></div>
+        <div class="divider"></div>
+        <div class="line-items" id="lineItems">
+          <div class="empty-hint"><div class="big">🔧</div>Выберите системы слева — расчёт появится здесь</div>
+        </div>
+        <div id="totalBlock" style="display:none">
+          <div class="total-block">
+            <div class="total-label">Стоимость ремонта (без НДС)</div>
+            <div class="total-range" id="totalRange">—</div>
+            <div class="total-sub" id="totalSub">без учёта стоимости запчастей</div>
+          </div>
+          <div class="timeline-block" id="timelineBlock">
+            <div class="tl-item"><div class="tv" id="tlDays">—</div><div class="tl">рабочих дней</div></div>
+            <div class="tl-item"><div class="tv" id="tlParts">—</div><div class="tl">позиций з/ч</div></div>
+            <div class="tl-item"><div class="tv" id="tlSpec">—</div><div class="tl">специалистов</div></div>
+          </div>
+          <button class="btn-primary" onclick="openModal()">📞 Получить точную смету</button>
+          <button class="btn-secondary" onclick="window.print()">🖨️ Распечатать расчёт</button>
+          <div class="note">
+            <strong>⚠️ Предварительная оценка</strong>
+            Точная стоимость определяется после технической диагностики. Выезд специалиста — бесплатно в радиусе 500 км от СПб.
+          </div>
+        </div>
+        <div id="noSelBlock" style="display:none">
+          <div class="note">Выберите хотя бы одну систему для ремонта</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>📋 Запрос точной сметы</h3>
+      <p>Специалист свяжется в течение 2 часов</p>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="modal-summary-box">
+        <div style="font-size:11px;color:#5b7fa6;margin-bottom:3px">Предварительная оценка по расчёту:</div>
+        <strong id="modalTotal">—</strong>
+        <span id="modalMachine" style="font-size:12px;color:#5b7fa6"></span>
+      </div>
+      <div class="modal-field">
+        <label>Тип оборудования</label>
+        <select id="cEquipType">
+          <option>Термоформер</option>
+          <option>Трейсилер</option>
+          <option>Флоу-пак машина</option>
+          <option>Формирователь коробов</option>
+          <option>Конвейерная линия</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label>Ваше имя *</label>
+        <input type="text" id="cName" placeholder="Иван Петров">
+      </div>
+      <div class="modal-field">
+        <label>Компания</label>
+        <input type="text" id="cCompany" placeholder="ООО «Название»">
+      </div>
+      <div class="modal-field">
+        <label>Телефон / WhatsApp *</label>
+        <input type="tel" id="cPhone" placeholder="+7 (___) ___-__-__">
+      </div>
+      <div class="modal-field">
+        <label>Комментарий</label>
+        <textarea id="cComment" placeholder="Опишите симптомы поломки, срочность…"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+        <button class="btn-primary" onclick="submitForm()">Отправить заявку →</button>
+      </div>
+    </div>
+    <div class="success-msg" id="successMsg">
+      <div class="big">✅</div>
+      <h4>Заявка отправлена!</h4>
+      <p>Специалист ЯФОР свяжется с вами в течение 2 рабочих часов для уточнения деталей и согласования выезда.</p>
+      <br>
+      <button class="btn-secondary" onclick="closeModal()" style="max-width:200px;margin:0 auto">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  ДАННЫЕ ПО ТИПАМ МАШИН
+// ═══════════════════════════════════════════════════════════════
+const MACHINES = {
+
+  thermoformer: {
+    label: 'Термоформер', icon: '🔥',
+    sizeLabel: 'Ширина плёнки, мм',
+    sizes: [
+      { label: 'до 300 мм (компактная)', coef: 0.70 },
+      { label: '301–380 мм',             coef: 0.85 },
+      { label: '381–450 мм (базовая)',   coef: 1.00, selected: true },
+      { label: '451–520 мм',             coef: 1.20 },
+      { label: '521–650 мм',             coef: 1.45 },
+      { label: '651–800 мм',             coef: 1.70 },
+      { label: 'свыше 800 мм (крупная)', coef: 2.10 },
+    ],
+    deliveryCoefs: { '0.7':0.7, '0.85':0.85, '1.0':1.0, '1.2':1.2, '1.45':1.5, '1.7':1.8, '2.1':2.3 },
+    systems: [
+      { id:'tf_framing',    name:'Рама и направляющие',           desc:'Профиль рамы, линейные направляющие, опоры',                    base:55000,  partsFull:3 },
+      { id:'tf_transport',  name:'Система транспортировки плёнки',desc:'Цепи, звёздочки, зажимы, ролики протяжки',                      base:70000,  partsFull:5 },
+      { id:'tf_forming',    name:'Станция формования',            desc:'Нагревательные плиты, матрица, пуансон, уплотнения',            base:95000,  partsFull:7 },
+      { id:'tf_sealing',    name:'Станция запечатывания',         desc:'Термосварочная плита, нагреватели, уплотнения',                 base:85000,  partsFull:6 },
+      { id:'tf_cutting',    name:'Станция вырубки / резки',       desc:'Ножи, матрица вырубки, прижим, регулировки',                   base:75000,  partsFull:5 },
+      { id:'tf_vacuum',     name:'Вакуумная система',             desc:'Вакуумный насос, клапаны, трубки, распределитель',              base:80000,  partsFull:4 },
+      { id:'tf_pneumatics', name:'Пневматическая система',        desc:'Цилиндры, клапаны, фильтры, регуляторы, трубки',               base:60000,  partsFull:5 },
+      { id:'tf_hydraulics', name:'Гидравлическая система',        desc:'Гидростанция, цилиндры, шланги (при наличии)',                  base:90000,  partsFull:4 },
+      { id:'tf_map',        name:'MAP / газовая система',         desc:'Головка смешивания, клапаны, датчики CO₂/N₂',                  base:65000,  partsFull:3 },
+      { id:'tf_electric',   name:'Электрика и управление (PLC)',  desc:'PLC, HMI, датчики, частотники, кабельные трассы',              base:110000, partsFull:8 },
+      { id:'tf_heaters',    name:'Нагревательные элементы',       desc:'ТЭНы, термопары, пирометры, реле',                             base:45000,  partsFull:4 },
+      { id:'tf_safety',     name:'Система безопасности',          desc:'Аварийные стопы, датчики дверей, ограждения',                  base:35000,  partsFull:2 },
+      { id:'tf_lubrication',name:'Система смазки',                desc:'Смазочные точки, автосмазка, уплотнения шарниров',             base:25000,  partsFull:2 },
+      { id:'tf_cip',        name:'Система CIP-мойки',             desc:'Насосы, форсунки, трубки, клапаны',                            base:40000,  partsFull:2 },
+      { id:'tf_marking',    name:'Принтер / маркировка',          desc:'Принтер-аппликатор, термоголовка, подача ленты',               base:50000,  partsFull:3 },
+    ]
+  },
+
+  traysaler: {
+    label: 'Трейсилер', icon: '📦',
+    sizeLabel: 'Производительность, трея/мин',
+    sizes: [
+      { label: 'до 12 (полуавтомат)',     coef: 0.75 },
+      { label: '13–30 (малая линия)',     coef: 1.00, selected: true },
+      { label: '31–50 (средняя линия)',   coef: 1.25 },
+      { label: '51–72 (высокопроизв.)',   coef: 1.60 },
+    ],
+    deliveryCoefs: { '0.75':0.6, '1.0':1.0, '1.25':1.3, '1.6':1.7 },
+    systems: [
+      { id:'ts_sealing',    name:'Станция термосварки',            desc:'Сварочная плита, нагреватели, верхняя плёнка, уплотнения',    base:80000,  partsFull:5 },
+      { id:'ts_vacuum',     name:'Вакуумная система',              desc:'Насос, клапаны, трубки, распределитель, датчик вакуума',      base:75000,  partsFull:4 },
+      { id:'ts_map',        name:'MAP / газовый модуль',           desc:'Клапаны подачи CO₂/N₂, смесительная головка, датчики',       base:65000,  partsFull:3 },
+      { id:'ts_skin',       name:'SKIN-модуль',                    desc:'Нагрев верхней плёнки, прижим, вакуум обтяжки',              base:55000,  partsFull:3 },
+      { id:'ts_denester',   name:'Денестер (подача лотков)',        desc:'Механизм отделения лотков, сервопривод, датчики',            base:60000,  partsFull:4 },
+      { id:'ts_topfilm',    name:'Подача верхней плёнки',          desc:'Разматыватель, натяжение, центрирование, нож обрезки',        base:45000,  partsFull:3 },
+      { id:'ts_conveyor',   name:'Транспортная система',           desc:'Конвейер лотков, направляющие, привод, регулировки',         base:50000,  partsFull:4 },
+      { id:'ts_cutting',    name:'Станция вырубки / разделения',   desc:'Ножи, матрица, прижим, сброс',                               base:55000,  partsFull:3 },
+      { id:'ts_electric',   name:'Электрика и PLC',                desc:'Контроллер, HMI, частотники, датчики, кабели',               base:90000,  partsFull:6 },
+      { id:'ts_pneumatics', name:'Пневматика',                     desc:'Цилиндры, клапаны, фильтры, регуляторы, шланги',            base:40000,  partsFull:3 },
+      { id:'ts_safety',     name:'Система безопасности',           desc:'Блокировки, датчики, ограждения, аварийные стопы',           base:30000,  partsFull:2 },
+      { id:'ts_marking',    name:'Принтер / этикетировщик',        desc:'Интегрированный принтер, термоголовка, подача этикетки',     base:45000,  partsFull:3 },
+    ]
+  },
+
+  flowpack: {
+    label: 'Флоу-пак', icon: '🌀',
+    sizeLabel: 'Производительность, уп/мин',
+    sizes: [
+      { label: 'до 80 уп/мин (базовый)',   coef: 0.80 },
+      { label: '81–150 уп/мин (средний)',  coef: 1.00, selected: true },
+      { label: '151–220 уп/мин (высокий)', coef: 1.30 },
+      { label: 'свыше 220 (специальный)',  coef: 1.65 },
+    ],
+    deliveryCoefs: { '0.8':0.7, '1.0':1.0, '1.3':1.3, '1.65':1.7 },
+    systems: [
+      { id:'fp_transverse', name:'Поперечные сварочные губки',     desc:'Губки, нагреватели, нож отреза, пружины, уплотнения',        base:75000,  partsFull:5 },
+      { id:'fp_longitudinal',name:'Продольная сварка / воротник',  desc:'Продольный сварочный узел, воротник формовки, регулировки',  base:55000,  partsFull:4 },
+      { id:'fp_pull',       name:'Тянущие ролики / подача плёнки', desc:'Приводные ролики, резина, подшипники, натяжение',            base:45000,  partsFull:4 },
+      { id:'fp_unwinder',   name:'Разматыватель / держатель рулона',desc:'Тормоз, ось, датчик диаметра, автосмена',                   base:35000,  partsFull:2 },
+      { id:'fp_infeed',     name:'Подающий конвейер',              desc:'Лента, приводы, ограждения, толкатели, центрирование',       base:50000,  partsFull:4 },
+      { id:'fp_drive',      name:'Приводная система',              desc:'Сервомоторы, редукторы, зубчатые пояса, муфты',              base:80000,  partsFull:5 },
+      { id:'fp_electric',   name:'Электрика и управление',         desc:'PLC, HMI, сервоусилители, датчики, кабельные трассы',       base:95000,  partsFull:7 },
+      { id:'fp_printer',    name:'Термотрансферный принтер',       desc:'Печатающая головка, риббон, датчик метки, синхронизация',   base:40000,  partsFull:3 },
+      { id:'fp_map',        name:'MAP / газовый модуль',           desc:'Продувка CO₂/N₂, клапан, расходомер, трубки',              base:50000,  partsFull:3 },
+      { id:'fp_frame',      name:'Рама и направляющие',            desc:'Несущая рама, регулировочные шины, опоры',                  base:40000,  partsFull:2 },
+      { id:'fp_pneumatics', name:'Пневматика',                     desc:'Цилиндры, клапаны, фильтры, шланги',                        base:35000,  partsFull:3 },
+      { id:'fp_safety',     name:'Система безопасности',           desc:'Блокировки крышек, аварийные стопы, датчики',               base:25000,  partsFull:2 },
+    ]
+  },
+
+  carton: {
+    label: 'Формирователь коробов', icon: '📫',
+    sizeLabel: 'Производительность, коробов/мин',
+    sizes: [
+      { label: 'до 10 (малая)',            coef: 0.70 },
+      { label: '11–20 (средняя)',          coef: 1.00, selected: true },
+      { label: '21–35 (высокая)',          coef: 1.30 },
+      { label: 'свыше 35 (максимальная)', coef: 1.60 },
+    ],
+    deliveryCoefs: { '0.7':0.6, '1.0':1.0, '1.3':1.3, '1.6':1.7 },
+    systems: [
+      { id:'cb_vacuum',     name:'Вакуумная система подачи',       desc:'Вакуумные присоски, насос, распределитель, клапаны',         base:45000,  partsFull:3 },
+      { id:'cb_glue',       name:'Клеевая система (горячий клей)', desc:'Клеевой узел NORDSON/Melton, форсунки, шланги, термостат',   base:70000,  partsFull:4 },
+      { id:'cb_erection',   name:'Механизм формовки короба',       desc:'Кулачки, толкатели, направляющие, прижимы',                 base:55000,  partsFull:4 },
+      { id:'cb_drive',      name:'Приводная система',              desc:'Сервоприводы, редукторы, цепные передачи, муфты',            base:75000,  partsFull:5 },
+      { id:'cb_magazine',   name:'Магазин заготовок',              desc:'Механизм подачи бланков, ролики, датчики наличия',           base:40000,  partsFull:3 },
+      { id:'cb_outfeed',    name:'Выходной конвейер',              desc:'Лента, привод, регулировки интервала подачи',                base:35000,  partsFull:2 },
+      { id:'cb_electric',   name:'Электрика и PLC',                desc:'Контроллер, HMI, датчики, кабельные трассы',                base:80000,  partsFull:5 },
+      { id:'cb_pneumatics', name:'Пневматика',                     desc:'Цилиндры, клапаны, фильтры, регуляторы',                    base:35000,  partsFull:3 },
+      { id:'cb_sealer',     name:'Заклейщик / запечатывающий узел',desc:'Нижняя запайка клапанов, прижимные ремни, ролики',          base:45000,  partsFull:3 },
+      { id:'cb_frame',      name:'Рама и направляющие',            desc:'Несущий каркас, регулировки ширины/высоты',                 base:35000,  partsFull:2 },
+      { id:'cb_safety',     name:'Система безопасности',           desc:'Аварийные стопы, блокировки, датчики открытия',             base:25000,  partsFull:2 },
+    ]
+  },
+
+  conveyor: {
+    label: 'Конвейерная линия', icon: '🔗',
+    sizeLabel: 'Длина линии, м',
+    sizes: [
+      { label: 'до 5 м (короткая)',          coef: 0.65 },
+      { label: '5–15 м (стандартная)',       coef: 1.00, selected: true },
+      { label: '15–30 м (длинная)',          coef: 1.35 },
+      { label: 'свыше 30 м (магистральная)',coef: 1.80 },
+    ],
+    deliveryCoefs: { '0.65':0.4, '1.0':1.0, '1.35':1.3, '1.8':1.8 },
+    systems: [
+      { id:'cv_belt',       name:'Лента / несущий орган',          desc:'Конвейерная лента или цепь, скребки, натяжение',             base:50000,  partsFull:4 },
+      { id:'cv_drive',      name:'Приводной блок',                 desc:'Мотор-редуктор, частотный преобразователь, муфты',           base:65000,  partsFull:4 },
+      { id:'cv_rollers',    name:'Барабаны и ролики',              desc:'Приводной и ведомый барабаны, промежуточные ролики, подшипники', base:45000, partsFull:5 },
+      { id:'cv_frame',      name:'Рама и профили',                 desc:'Несущий каркас, боковые направляющие, опоры, регулировки',   base:40000,  partsFull:3 },
+      { id:'cv_tension',    name:'Система натяжения',              desc:'Натяжной барабан, механизм натяжки, пружины',                base:30000,  partsFull:2 },
+      { id:'cv_guides',     name:'Направляющие / ограждения',      desc:'Боковые направляющие, отсекатели, упоры, переходники',       base:25000,  partsFull:3 },
+      { id:'cv_electric',   name:'Электрика и управление',         desc:'Пульт управления, датчики, частотник, кабели, клеммы',      base:70000,  partsFull:5 },
+      { id:'cv_pneumatics', name:'Пневматика / стопоры',           desc:'Пневмоцилиндры, стопперы, клапаны, шланги',                 base:35000,  partsFull:3 },
+      { id:'cv_weigher',    name:'Весовой / сортировочный блок',   desc:'Весовая платформа, датчики, логика сортировки',             base:60000,  partsFull:4 },
+      { id:'cv_washer',     name:'Система мойки (CIP)',            desc:'Форсунки, насос мойки, трубки, управление',                 base:35000,  partsFull:2 },
+      { id:'cv_safety',     name:'Ограждения и безопасность',      desc:'Защитные кожухи, аварийные тросы, датчики',                 base:25000,  partsFull:2 },
+    ]
+  }
+};
+
+const EXTRAS = [
+  { id:'diag',     name:'Полная диагностика',   desc:'Выезд + письменный отчёт', price:25000, icon:'🔍' },
+  { id:'adjust',   name:'Настройка / наладка',  desc:'ПНР после ремонта',        price:18000, icon:'🎚️' },
+  { id:'train',    name:'Обучение операторов',  desc:'1–2 дня на площадке',      price:22000, icon:'🎓' },
+  { id:'warranty', name:'Гарантия 12 мес.',     desc:'После ремонта',            price:35000, icon:'🛡️' },
+  { id:'parts',    name:'Поставка з/ч',         desc:'По факту подбора',         price:0,     icon:'📦' },
+  { id:'urgent',   name:'Срочный выезд 24ч',    desc:'+50% к работам',           price:-1,    icon:'⚡' },
+];
+
+const DELIVERY_TARIFFS = [
+  { range:[8000,  15000]  },
+  { range:[18000, 30000]  },
+  { range:[30000, 55000]  },
+  { range:[55000, 90000]  },
+  { range:[90000, 160000] },
+  { range:[160000,280000] },
+];
+
+const SCOPE_MULT   = { minor:0.35, major:0.75, full:1.0 };
+const SCOPE_SPREAD = { minor:[0.85,1.20], major:[0.80,1.25], full:[0.75,1.30] };
+const SCOPE_DAYS   = { minor:[1,3], major:[3,7], full:[5,12] };
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+let state = {
+  mtype:    'thermoformer',
+  condCoef: 0.85,
+  systems:  {},
+  extras:   new Set(),
+  urgent:   false,
+  logistic: null,
+  diagOffice: 'spb',
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  SWITCH MACHINE
+// ═══════════════════════════════════════════════════════════════
+function switchMachine(mtype, btn) {
+  state.mtype   = mtype;
+  state.systems = {};
+  state.extras  = new Set();
+  state.urgent  = false;
+  state.logistic = null;
+
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Summary icon/type label
+  const m = MACHINES[mtype];
+  document.getElementById('machineTagIcon').textContent = m.icon;
+  document.getElementById('cType').textContent = m.label;
+  document.getElementById('cEquipType').value = m.label;
+
+  // Size field
+  document.getElementById('sizeLabel').textContent = m.sizeLabel;
+  const sel = document.getElementById('machineSize');
+  sel.innerHTML = m.sizes.map(s =>
+    `<option value="${s.coef}"${s.selected?' selected':''}>${s.label}</option>`
+  ).join('');
+
+  // Logistic reset visual
+  ['visit','delivery','self'].forEach(l => {
+    document.getElementById('log_'+l).className = 'logistic-btn';
+  });
+  document.getElementById('deliveryBlock').style.display = 'none';
+  document.getElementById('logisticHint').textContent = '';
+
+  renderSystems();
+  renderExtras();
+  updateCalc();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER SYSTEMS
+// ═══════════════════════════════════════════════════════════════
+function renderSystems() {
+  const c = document.getElementById('systemsContainer');
+  const systems = MACHINES[state.mtype].systems;
+  c.innerHTML = systems.map(s => `
+    <div class="system-row" id="row_${s.id}">
+      <div class="sys-check${state.systems[s.id]?' checked':''}" id="chk_${s.id}" onclick="toggleSystem('${s.id}')"></div>
+      <div class="sys-info">
+        <div class="sys-name">${s.name}</div>
+        <div class="sys-desc">${s.desc}</div>
+      </div>
+      <div class="sys-scope" id="scope_${s.id}">
+        <button class="scope-btn scope-minor${state.systems[s.id]==='minor'?' active':''}" onclick="setScope('${s.id}','minor')">Мелкий</button>
+        <button class="scope-btn scope-major${state.systems[s.id]==='major'?' active':''}" onclick="setScope('${s.id}','major')">Средний</button>
+        <button class="scope-btn scope-full${state.systems[s.id]==='full'?' active':''}" onclick="setScope('${s.id}','full')">Полный</button>
+      </div>
+      <div class="sys-base-price" id="bprice_${s.id}">от ${fmtNum(Math.round(s.base*0.35/1000)*1000)} ₽</div>
+    </div>`).join('');
+}
+
+function renderSystemRow(id) {
+  const systems = MACHINES[state.mtype].systems;
+  const s = systems.find(x => x.id === id);
+  if (!s) return;
+  const scope = state.systems[id];
+  const chk = document.getElementById('chk_'+id);
+  if (chk) {
+    chk.className = 'sys-check' + (scope ? ' checked' : '');
+  }
+  ['minor','major','full'].forEach(sc => {
+    const btn = document.querySelector(`#scope_${id} .scope-${sc}`);
+    if (btn) btn.classList.toggle('active', scope === sc);
+  });
+}
+
+function toggleSystem(id) {
+  if (state.systems[id]) {
+    delete state.systems[id];
+  } else {
+    state.systems[id] = 'minor';
+  }
+  renderSystemRow(id);
+  updateCalc();
+}
+
+function setScope(id, scope) {
+  state.systems[id] = scope;
+  renderSystemRow(id);
+  updateCalc();
+}
+
+function selectAllSystems() {
+  MACHINES[state.mtype].systems.forEach(s => {
+    if (!state.systems[s.id]) state.systems[s.id] = 'minor';
+    renderSystemRow(s.id);
+  });
+  updateCalc();
+}
+
+function clearAllSystems() {
+  MACHINES[state.mtype].systems.forEach(s => {
+    delete state.systems[s.id];
+    renderSystemRow(s.id);
+  });
+  updateCalc();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER EXTRAS
+// ═══════════════════════════════════════════════════════════════
+function renderExtras() {
+  const c = document.getElementById('extrasContainer');
+  c.innerHTML = EXTRAS.map(e => {
+    const priceStr = e.price > 0 ? fmtNum(e.price)+' ₽' : e.price === 0 ? 'по факту' : '+50%';
+    return `<div class="extra-item${state.extras.has(e.id)?' active':''}" id="extra_${e.id}" onclick="toggleExtra('${e.id}')">
+      <span class="eicon">${e.icon}</span>
+      <div class="etxt">
+        <div class="ename">${e.name}</div>
+        <div class="eprice">${e.desc} · ${priceStr}</div>
+      </div>
+      <div class="echk"></div>
+    </div>`;
+  }).join('');
+}
+
+function toggleExtra(id) {
+  if (id === 'urgent') {
+    state.urgent = !state.urgent;
+    state.extras[state.urgent ? 'add' : 'delete'](id);
+  } else {
+    if (state.extras.has(id)) state.extras.delete(id);
+    else state.extras.add(id);
+  }
+  const el = document.getElementById('extra_'+id);
+  if (el) el.classList.toggle('active', state.extras.has(id));
+  if (id === 'diag') {
+    document.getElementById('diagOfficeBlock').classList.toggle('visible', state.extras.has('diag'));
+  }
+  updateCalc();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONDITION
+// ═══════════════════════════════════════════════════════════════
+function selectCond(el, cls) {
+  document.querySelectorAll('.cond-btn').forEach(b => {
+    b.className = 'cond-btn';
+  });
+  el.classList.add(cls);
+  state.condCoef = parseFloat(el.dataset.coef);
+  updateCalc();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  LOGISTICS
+// ═══════════════════════════════════════════════════════════════
+function setLogistic(type) {
+  state.logistic = type;
+  ['visit','delivery','self'].forEach(l => {
+    document.getElementById('log_'+l).className = 'logistic-btn';
+  });
+  document.getElementById('log_'+type).classList.add('active-'+type);
+  const deliveryBlock = document.getElementById('deliveryBlock');
+  deliveryBlock.style.display = type === 'delivery' ? 'block' : 'none';
+  const hints = { visit:'Стоимость командировочных включена', delivery:'Рекомендуем для капитального ремонта', self:'' };
+  document.getElementById('logisticHint').textContent = hints[type] || '';
+  updateCalc();
+}
+
+function setDiagOffice(office) {
+  state.diagOffice = office;
+  ['spb','msk','vlg'].forEach(o => {
+    document.getElementById('doff_'+o).classList.toggle('active', o === office);
+  });
+  updateCalc();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DELIVERY COST
+// ═══════════════════════════════════════════════════════════════
+function getDeliveryCost() {
+  if (state.logistic !== 'delivery') return { min:0, max:0, label:'' };
+  const idx = parseInt(document.getElementById('deliveryDist').value);
+  const t = DELIVERY_TARIFFS[idx];
+  if (!t) return { min:0, max:0, label:'' };
+  const sizeCoef = parseFloat(document.getElementById('machineSize').value);
+  const m = MACHINES[state.mtype];
+  const wcoef = m.deliveryCoefs[String(sizeCoef)] || sizeCoef;
+  return {
+    min: Math.round(t.range[0] * wcoef / 1000) * 1000,
+    max: Math.round(t.range[1] * wcoef / 1000) * 1000,
+    label: idx === 0 ? 'в черте города' : DELIVERY_TARIFFS[idx] ? '' : ''
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  UPDATE CALC
+// ═══════════════════════════════════════════════════════════════
+function updateCalc() {
+  const m    = MACHINES[state.mtype];
+  const sz   = parseFloat(document.getElementById('machineSize').value);
+  const age  = parseFloat(document.getElementById('machineAge').value);
+  const mfr  = parseFloat(document.getElementById('mfrType').value);
+  const coef = sz * age * state.condCoef * mfr;
+
+  document.getElementById('cSize').textContent = '×'+sz.toFixed(2);
+  document.getElementById('cAge').textContent  = '×'+age.toFixed(2);
+  document.getElementById('cCond').textContent = '×'+state.condCoef.toFixed(2);
+  document.getElementById('cMfr').textContent  = '×'+mfr.toFixed(2);
+
+  const logLabels = { visit:'🔧 Выезд специалиста', delivery:'🚛 Доставка → Москва', self:'🏭 Самовывоз' };
+  const cLog = document.getElementById('cLogistic');
+  if (state.logistic) {
+    cLog.textContent = logLabels[state.logistic];
+    cLog.style.color = state.logistic === 'delivery' ? 'var(--orange)' : 'var(--green)';
+  } else {
+    cLog.textContent = '— не выбрано'; cLog.style.color = 'var(--grey-soft)';
+  }
+
+  const model = document.getElementById('machineModel').value.trim();
+  document.getElementById('machineTagText').textContent =
+    (model || m.label) + ' · коэф. ' + coef.toFixed(2);
+
+  // Re-render system rows (prices update on coef change)
+  m.systems.forEach(s => renderSystemRow(s.id));
+
+  const selected = Object.entries(state.systems);
+  if (selected.length === 0) {
+    document.getElementById('lineItems').innerHTML =
+      `<div class="empty-hint"><div class="big">🔧</div>Выберите системы слева — расчёт появится здесь</div>`;
+    document.getElementById('totalBlock').style.display = 'none';
+    document.getElementById('noSelBlock').style.display = 'none';
+    return;
+  }
+
+  let totalMin = 0, totalMax = 0;
+  let maxDays = 0, totalParts = 0, maxSpec = 1;
+  let lines = '';
+
+  selected.forEach(([id, scope]) => {
+    const s = m.systems.find(x => x.id === id);
+    if (!s || !scope) return;
+    const base = s.base * SCOPE_MULT[scope] * coef;
+    const [lo, hi] = SCOPE_SPREAD[scope];
+    const vMin = Math.round(base * lo / 1000) * 1000;
+    const vMax = Math.round(base * hi / 1000) * 1000;
+    totalMin += vMin; totalMax += vMax;
+    const [dlo, dhi] = SCOPE_DAYS[scope];
+    if (dhi > maxDays) maxDays = dhi;
+    totalParts += Math.round(s.partsFull * SCOPE_MULT[scope] * 1.5);
+    if (scope === 'full') maxSpec = Math.max(maxSpec, 2);
+    lines += `<div class="li-row">
+      <span class="li-name">${s.name}</span>
+      <span class="li-val scope-${scope}">${fmtNum(vMin)}–${fmtNum(vMax)} ₽</span>
+    </div>`;
+  });
+
+  // Extras
+  let extrasTotal = 0;
+  state.extras.forEach(eid => {
+    if (eid === 'urgent') return;
+    const e = EXTRAS.find(x => x.id === eid);
+    if (e && e.price > 0) {
+      extrasTotal += e.price;
+      const offLabels = { spb:'из СПб', msk:'из Москвы', vlg:'из Волгограда' };
+      const lbl = eid === 'diag' ? `${e.icon} ${e.name} · специалист ${offLabels[state.diagOffice]}` : `${e.icon} ${e.name}`;
+      lines += `<div class="li-row"><span class="li-name">${lbl}</span><span class="li-val">${fmtNum(e.price)} ₽</span></div>`;
+    } else if (e && e.price === 0) {
+      lines += `<div class="li-row"><span class="li-name">${e.icon} ${e.name}</span><span class="li-val" style="color:#aaa">по факту</span></div>`;
+    }
+  });
+
+  // Urgent
+  if (state.urgent) {
+    const uMin = Math.round(totalMin * 0.5 / 1000) * 1000;
+    const uMax = Math.round(totalMax * 0.5 / 1000) * 1000;
+    totalMin += uMin; totalMax += uMax;
+    lines += `<div class="li-row"><span class="li-name">⚡ Срочный выезд (+50%)</span><span class="li-val scope-full">${fmtNum(uMin)}–${fmtNum(uMax)} ₽</span></div>`;
+  }
+
+  totalMin += extrasTotal; totalMax += extrasTotal;
+
+  // Delivery
+  const delivery = getDeliveryCost();
+  if (delivery.min > 0) {
+    lines += `<div class="li-row"><span class="li-name">🚛 Доставка в ЯФОР (Москва) и обратно</span><span class="li-val scope-major">${fmtNum(delivery.min)}–${fmtNum(delivery.max)} ₽</span></div>`;
+    totalMin += delivery.min; totalMax += delivery.max;
+
+    const est = document.getElementById('deliveryEstimate');
+    est.innerHTML = `<strong>${fmtNum(delivery.min)} – ${fmtNum(delivery.max)} ₽</strong>
+      Доставка туда + обратно (с учётом габаритов машины)<br>
+      <span style="font-size:10px;opacity:0.75">Уточняйте у менеджера для финального расчёта.</span>`;
+  }
+
+  document.getElementById('lineItems').innerHTML = lines;
+  document.getElementById('totalRange').textContent =
+    fmtNum(Math.round(totalMin/1000)*1000) + ' – ' + fmtNum(Math.round(totalMax/1000)*1000) + ' ₽';
+  document.getElementById('totalBlock').style.display = 'block';
+  document.getElementById('noSelBlock').style.display = 'none';
+  document.getElementById('tlDays').textContent  = '~' + maxDays;
+  document.getElementById('tlParts').textContent = totalParts + '–' + (totalParts*2);
+  document.getElementById('tlSpec').textContent  = maxSpec + (maxSpec > 1 ? '-3' : '–2');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════════════════
+function openModal() {
+  const total = document.getElementById('totalRange').textContent;
+  const model = document.getElementById('machineModel').value.trim();
+  const m = MACHINES[state.mtype];
+  document.getElementById('modalTotal').textContent = total;
+  document.getElementById('modalMachine').textContent = (model ? ' · '+model : '') + ' · ' + m.label;
+  // Sync equip type selector in modal
+  const sel = document.getElementById('cEquipType');
+  for (let i=0; i<sel.options.length; i++) {
+    if (sel.options[i].text === m.label) { sel.selectedIndex = i; break; }
+  }
+  document.getElementById('modalBody').style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal()           { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOnBg(e)      { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+function submitForm() {
+  const name = document.getElementById('cName').value.trim();
+  const phone = document.getElementById('cPhone').value.trim();
+  if (!name || !phone) { alert('Заполните имя и телефон'); return; }
+  document.getElementById('modalBody').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════════
+function fmtNum(n) { return n.toLocaleString('ru-RU'); }
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+(function init() {
+  const m = MACHINES[state.mtype];
+  document.getElementById('sizeLabel').textContent = m.sizeLabel;
+  const sel = document.getElementById('machineSize');
+  sel.innerHTML = m.sizes.map(s =>
+    `<option value="${s.coef}"${s.selected?' selected':''}>${s.label}</option>`
+  ).join('');
+  renderSystems();
+  renderExtras();
+  updateCalc();
+})();
+</script>
+</body>
+</html>
