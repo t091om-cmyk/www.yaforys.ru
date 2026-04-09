@@ -1261,7 +1261,7 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
           <label>Тип оборудования</label>
           <select id="hero-eq" required>
             <option value="">— Выберите оборудование —</option>
-            <option>Термоформер ЯFORM420</option>
+            <option>Термоформер</option>
             <option>Трейсилер ЯФОР</option>
             <option>Флоу-пак машина ЯFLOW</option>
             <option>Этикетировщик DIBAL</option>
@@ -1364,7 +1364,7 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
       <div class="product-card featured">
         <span class="product-badge badge-orange">🔥 Хит продаж</span>
         <div class="product-icon">🔲</div>
-        <div class="product-name">Термоформер ЯFORM420</div>
+        <div class="product-name">Термоформер</div>
         <div class="product-desc">Вакуумная и MAP-упаковка для мяса и молочной продукции. До 420 упаковок в цикл. 7+ форматов на одной машине.</div>
         <div class="product-specs">
           <div class="product-spec">Производительность: до 420 уп./цикл</div>
@@ -1580,11 +1580,11 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
 
     <div class="calchub-grid">
 
-      <a href="thermoformer-calculator.html" target="_blank" class="calchub-card featured-calc">
+      <a href="thermoformer-onepage.html" target="_blank" class="calchub-card featured-calc">
         <span class="calchub-badge-new">Хит</span>
-        <div class="calchub-icon">🔲</div>
-        <div class="calchub-name">Термоформер ЯFORM420</div>
-        <div class="calchub-desc">Подберём модель под ваш продукт, формат лотка и производительность в смену.</div>
+        <div class="calchub-icon">⚡</div>
+        <div class="calchub-name">Термоформер</div>
+        <div class="calchub-desc">Быстрый подбор термоформера за 1 минуту — только ключевые параметры без лишних шагов.</div>
         <span class="calchub-arrow">Открыть калькулятор →</span>
       </a>
 
@@ -1621,13 +1621,6 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
         <div class="calchub-name">Ремонт термоформера</div>
         <div class="calchub-desc">Рассчитайте стоимость капремонта или замены узлов. Укажите модель и симптомы — получите смету.</div>
         <span class="calchub-arrow" style="color:var(--orange)">Рассчитать стоимость →</span>
-      </a>
-
-      <a href="thermoformer-onepage.html" target="_blank" class="calchub-card">
-        <div class="calchub-icon">⚡</div>
-        <div class="calchub-name">Экспресс-подбор</div>
-        <div class="calchub-desc">Быстрый подбор термоформера за 1 минуту — только ключевые параметры без лишних шагов.</div>
-        <span class="calchub-arrow">Открыть →</span>
       </a>
 
       <!-- CTA card -->
@@ -1705,7 +1698,7 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
       <div class="why-card">
         <div class="why-icon">📊</div>
         <div class="why-title">7+ форматов на одной машине</div>
-        <div class="why-desc">Термоформер ЯFORM420 перекрывает все форматы вашего ассортимента. Переналадка — до 20 минут без инструментов.</div>
+        <div class="why-desc">Термоформер перекрывает все форматы вашего ассортимента. Переналадка — до 20 минут без инструментов.</div>
       </div>
       <div class="why-card">
         <div class="why-icon">🛡️</div>
@@ -2051,7 +2044,7 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
       <div>
         <div class="footer-col-title">Калькуляторы подбора</div>
         <div class="footer-links">
-          <a href="thermoformer-calculator.html" target="_blank">Термоформер ЯFORM420</a>
+          <a href="thermoformer-onepage.html" target="_blank">Термоформер</a>
           <a href="traysealer-calculator.html" target="_blank">Трейсилер ЯФОР</a>
           <a href="yaflow-calculator.html" target="_blank">Флоу-пак ЯFLOW</a>
           <a href="chestnyznak-calculator.html" target="_blank">Честный знак</a>
@@ -2101,7 +2094,7 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
           <label>Тип оборудования</label>
           <select id="modal-eq">
             <option value="">— Выберите оборудование —</option>
-            <option>Термоформер ЯFORM420</option>
+            <option>Термоформер</option>
             <option>Трейсилер ЯФОР</option>
             <option>Флоу-пак ЯFLOW</option>
             <option>Этикетировщик DIBAL</option>
@@ -2292,7 +2285,7 @@ function openModal(source) {
     title.textContent = 'Получить детальное КП';
     desc.textContent = `Подготовим КП под ваш запрос: ${calcAnswers[0]}, ${calcAnswers[1] || ''}.`;
     if (eq && calcAnswers[1]) {
-      const map = {'Вакуум / MAP':'Термоформер ЯFORM420','Лоток + плёнка':'Трейсилер ЯФОР','Флоу-пак / в плёнку':'Флоу-пак ЯFLOW','Этикетировка / ЧЗ':'Этикетировщик DIBAL'};
+      const map = {'Вакуум / MAP':'Термоформер','Лоток + плёнка':'Трейсилер ЯФОР','Флоу-пак / в плёнку':'Флоу-пак ЯFLOW','Этикетировка / ЧЗ':'Этикетировщик DIBAL'};
       eq.value = map[calcAnswers[1]] || '';
     }
   } else {
@@ -2380,7 +2373,7 @@ function openRepairModal() {
   if (eq) {
     eq.innerHTML = `
       <option value="">— Выберите оборудование —</option>
-      <option>Термоформер ЯFORM420</option>
+      <option>Термоформер</option>
       <option>Трейсилер ЯФОР</option>
       <option>Флоу-пак ЯFLOW</option>
       <option>Этикетировщик DIBAL</option>
