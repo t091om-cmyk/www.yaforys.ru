@@ -64,20 +64,20 @@ button { cursor: pointer; font-family: inherit; }
   letter-spacing: .3px;
 }
 .topbar-hotlink {
-  color: rgba(255,255,255,.9);
+  color: var(--gray-dark);
   text-decoration: none;
   font-size: .8rem;
   font-weight: 600;
-  padding: 3px 12px;
+  padding: 3px 14px;
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.25);
+  background: #FFF4ED;
+  border: 1.5px solid #F4B07A;
   transition: var(--transition);
   white-space: nowrap;
 }
 .topbar-hotlink:hover {
-  background: rgba(255,255,255,.12);
-  color: #fff;
-  border-color: rgba(255,255,255,.5);
+  background: #FDE8D8;
+  border-color: var(--orange);
 }
 /* HOT OFFERS */
 .hot-offers {
@@ -1144,11 +1144,14 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
      ============================================================ -->
 <div class="topbar">
   <div class="container">
-    <div class="topbar-links" style="width:100%;justify-content:center;gap:8px;">
+    <div class="topbar-links">
+      <span>🕐 Пн–Пт: 9:00–18:00 МСК</span>
+      <a href="mailto:sales@yaforys.ru">sales@yaforys.ru</a>
+      <a href="chestny-znak.html" class="topbar-badge" style="text-decoration:none;">🔴 Честный знак — внедряем под ключ</a>
+    </div>
+    <div class="topbar-links">
       <a href="remont.html" class="topbar-hotlink">🔧 Ремонт термоформера →</a>
-      <span style="color:rgba(255,255,255,.25);">|</span>
       <a href="thermoformer-calculator.html" class="topbar-hotlink">🧮 Расчёт термоформера →</a>
-      <span style="color:rgba(255,255,255,.25);">|</span>
       <a href="flowpack.html" class="topbar-hotlink">🐄 Флоу-пак для мяса и птицы →</a>
     </div>
   </div>
