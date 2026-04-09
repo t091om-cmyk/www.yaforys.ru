@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Подбор термоформера — ЯФОР</title>
+
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  НАСТРОЙКА EmailJS (занимает 5 минут):                      ║
+  ║  1. Зарегистрируйтесь на https://www.emailjs.com (бесплатно)║
+  ║  2. Добавьте Email Service (Gmail / Яндекс / smtp)          ║
+  ║  3. Создайте Email Template с переменными:                   ║
+  ║     {{from_name}}, {{company}}, {{phone}}, {{product}},      ║
+  ║     {{pack_size}}, {{depth}}, {{pack_type}}, {{output}},     ║
+  ║     {{current}}, {{model}}, {{to_email}}                     ║
+  ║  4. Замените значения ниже на ваши:                          ║
+  ║     EMAILJS_PUBLIC_KEY   → Account → API Keys               ║
+  ║     EMAILJS_SERVICE_ID   → Email Services → Service ID      ║
+  ║     EMAILJS_TEMPLATE_ID  → Email Templates → Template ID    ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ─── ВАШИ НАСТРОЙКИ EmailJS ───────────────────────────────────────────────
+  const EMAILJS_PUBLIC_KEY   = 'ВАШ_PUBLIC_KEY';   // ← замените
+  const EMAILJS_SERVICE_ID   = 'ВАШ_SERVICE_ID';   // ← замените
+  const EMAILJS_TEMPLATE_ID  = 'ВАШ_TEMPLATE_ID';  // ← замените
+  const TARGET_EMAIL         = 'sales@yaforys.ru';  // ← ваш email для получения заявок
+  // ─────────────────────────────────────────────────────────────────────────
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+</script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:       #1F4E79;
+    --blue-mid:   #2E75B6;
+    --blue-light: #D6E4F0;
+    --green:      #1E6B3C;
+    --green-pale: #E2EFDA;
+    --orange:     #C55A11;
+    --orange-pale:#FCE4D6;
+    --grey:       #444;
+    --grey-light: #F4F6F8;
+    --white:      #FFFFFF;
+    --radius:     12px;
+    --shadow:     0 4px 24px rgba(31,78,121,0.12);
+  }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--grey-light);
+    color: var(--grey);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── ОБЁРТКА ── */
+  .calc-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+
+  /* ── ЗАГОЛОВОК ── */
+  .calc-header {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 28px 32px 22px;
+    color: white;
+    text-align: center;
+  }
+  .calc-header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 12px;
+    margin-bottom: 10px;
+  }
+  .calc-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .calc-header p {
+    font-size: 14px;
+    opacity: 0.82;
+  }
+
+  /* ── ПРОГРЕСС-БАР ── */
+  .progress-bar-wrap {
+    background: white;
+    padding: 14px 32px 0;
+    border-left: 1px solid #e0e8f0;
+    border-right: 1px solid #e0e8f0;
+  }
+  .progress-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .step-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    cursor: default;
+  }
+  .step-dot .dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #DDE5EF;
+    color: #aab;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 1;
+  }
+  .step-dot.active .dot   { background: var(--blue-mid); color: white; box-shadow: 0 0 0 3px var(--blue-light); }
+  .step-dot.done .dot     { background: var(--green); color: white; }
+  .step-dot .label        { font-size: 10px; color: #aab; white-space: nowrap; text-align: center; }
+  .step-dot.active .label { color: var(--blue-mid); font-weight: 600; }
+  .step-dot.done .label   { color: var(--green); }
+  .step-line {
+    flex: 1; height: 2px;
+    background: #DDE5EF;
+    margin-bottom: 16px;
+    transition: background 0.3s;
+  }
+  .step-line.done { background: var(--green); }
+
+  /* ── КАРТОЧКА ШАГА ── */
+  .step-card {
+    background: white;
+    border-left: 1px solid #e0e8f0;
+    border-right: 1px solid #e0e8f0;
+    border-bottom: 1px solid #e0e8f0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 28px 32px 32px;
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+  .step-card.visible { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-card h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .step-card .hint {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+
+  /* ── ВАРИАНТЫ ОТВЕТОВ ── */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 480px) { .options-grid { grid-template-columns: 1fr; } }
+  .options-grid.cols-1 { grid-template-columns: 1fr; }
+
+  .option-btn {
+    border: 2px solid #DDE5EF;
+    border-radius: 10px;
+    background: white;
+    padding: 14px 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .option-btn:hover {
+    border-color: var(--blue-mid);
+    background: var(--blue-light);
+  }
+  .option-btn.selected {
+    border-color: var(--blue-mid);
+    background: var(--blue-light);
+    box-shadow: 0 0 0 1px var(--blue-mid);
+  }
+  .option-btn .icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .option-btn .text .title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue);
+    margin-bottom: 2px;
+  }
+  .option-btn .text .desc {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.4;
+  }
+
+  /* ── МУЛЬТИВЫБОР ── */
+  .multi-hint {
+    display: inline-block;
+    margin-left: 8px;
+    background: var(--blue-mid);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 10px;
+    vertical-align: middle;
+    letter-spacing: 0.3px;
+  }
+  .multi-check {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #C8D8EA;
+    border-radius: 5px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+    margin-top: 1px;
+    position: relative;
+  }
+  .multi-check::after {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 9px;
+    border: 2px solid white;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translate(-1px, -1px);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .option-btn.selected .multi-check {
+    background: var(--blue-mid);
+    border-color: var(--blue-mid);
+  }
+  .option-btn.selected .multi-check::after {
+    opacity: 1;
+  }
+  /* Подсчёт выбранных */
+  .selected-count {
+    display: none;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue-mid);
+    background: var(--blue-light);
+    border-radius: 10px;
+    padding: 2px 10px;
+    margin-left: 6px;
+  }
+  .selected-count.visible { display: inline-block; }
+
+  /* ── НАВИГАЦИЯ ── */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .btn {
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-back {
+    background: transparent;
+    color: #888;
+    border: 1.5px solid #DDE5EF;
+  }
+  .btn-back:hover { background: #f0f4f8; color: var(--grey); }
+  .btn-next {
+    background: var(--blue-mid);
+    color: white;
+    flex: 1;
+    max-width: 240px;
+  }
+  .btn-next:hover   { background: var(--blue); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-submit {
+    background: var(--orange);
+    color: white;
+    flex: 1;
+    max-width: 300px;
+    font-size: 15px;
+    padding: 13px 28px;
+  }
+  .btn-submit:hover { background: #a84d0e; }
+  .step-counter { font-size: 13px; color: #aab; }
+
+  /* ── КОНТАКТНАЯ ФОРМА ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+  @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--blue); }
+  .form-group input, .form-group select {
+    border: 1.5px solid #DDE5EF;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--grey);
+    background: white;
+    transition: border 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--blue-mid);
+    box-shadow: 0 0 0 3px var(--blue-light);
+  }
+  .consent { font-size: 12px; color: #888; line-height: 1.5; }
+  .consent a { color: var(--blue-mid); }
+
+  /* ── РЕЗУЛЬТАТ ── */
+  .result-card {
+    background: white;
+    border-left: 1px solid #e0e8f0;
+    border-right: 1px solid #e0e8f0;
+    border-bottom: 1px solid #e0e8f0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 32px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .result-card.visible { display: block; }
+
+  .result-model-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+    color: white;
+    border-radius: var(--radius);
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+  }
+  .result-title { font-size: 20px; font-weight: 700; color: var(--blue); margin-bottom: 6px; }
+  .result-subtitle { font-size: 14px; color: #888; margin-bottom: 24px; }
+
+  .result-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 480px) { .result-metrics { grid-template-columns: 1fr; } }
+  .metric-card {
+    background: var(--blue-light);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .metric-card .val { font-size: 24px; font-weight: 800; color: var(--blue-mid); }
+  .metric-card .key { font-size: 11px; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  .metric-card .sub { font-size: 11px; color: #888; }
+
+  .result-advantages {
+    margin-bottom: 24px;
+  }
+  .result-advantages h3 { font-size: 15px; font-weight: 700; color: var(--blue); margin-bottom: 12px; }
+  .adv-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #F0F4F8;
+  }
+  .adv-item:last-child { border-bottom: none; }
+  .adv-icon { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .adv-icon.green { background: var(--green-pale); color: var(--green); }
+  .adv-icon.orange { background: var(--orange-pale); color: var(--orange); }
+  .adv-item .adv-text .adv-title { font-size: 13px; font-weight: 600; color: var(--grey); }
+  .adv-item .adv-text .adv-desc  { font-size: 12px; color: #888; }
+
+  .options-list {
+    background: var(--orange-pale);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+  }
+  .options-list h4 { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 8px; }
+  .options-list ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+  .options-list ul li {
+    background: white;
+    border: 1px solid rgba(197,90,17,0.25);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  /* ── УСПЕХ ── */
+  .success-screen {
+    background: white;
+    border-left: 1px solid #e0e8f0;
+    border-right: 1px solid #e0e8f0;
+    border-bottom: 1px solid #e0e8f0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 48px 32px;
+    text-align: center;
+    display: none;
+  }
+  .success-screen.visible { display: block; }
+  .success-icon { font-size: 52px; margin-bottom: 16px; }
+  .success-screen h2 { font-size: 22px; font-weight: 700; color: var(--green); margin-bottom: 10px; }
+  .success-screen p { font-size: 15px; color: #666; max-width: 440px; margin: 0 auto 24px; line-height: 1.6; }
+  .success-contact { background: var(--blue-light); border-radius: 10px; padding: 16px 24px; display: inline-block; }
+  .success-contact p { font-size: 14px; color: var(--blue); font-weight: 600; margin: 0; }
+
+  /* ── ОШИБКА ── */
+  .error-msg {
+    background: #FEF0F0; border: 1px solid #f5c6c6;
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; color: #c0392b;
+    margin-bottom: 14px; display: none;
+  }
+  .error-msg.visible { display: block; }
+
+  /* ── LOADING ── */
+  .btn-submit.loading { opacity: 0.7; cursor: not-allowed; }
+  .btn-submit.loading::after {
+    content: ' ⏳';
+  }
+</style>
+</head>
+<body>
+<!-- ── BACK TO HOMEPAGE ─────────────────────────────── -->
+<div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:9px 20px;display:flex;align-items:center;gap:14px;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+  <a href="../yaforys_homepage.html"
+     style="display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.88);font-size:.84rem;font-weight:700;text-decoration:none;padding:6px 14px;border-radius:7px;border:1.5px solid rgba(255,255,255,.28);transition:all .2s;"
+     onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff';this.style.borderColor='rgba(255,255,255,.6)'"
+     onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.88)';this.style.borderColor='rgba(255,255,255,.28)'">
+    ← На главную
+  </a>
+  <span style="color:rgba(255,255,255,.3);font-size:.9rem;user-select:none;">|</span>
+  <span style="color:rgba(255,255,255,.55);font-size:.82rem;font-weight:500;letter-spacing:.2px;">www.yaforys.ru</span>
+  <div style="flex:1;"></div>
+  <a href="../yaforys_homepage.html#calculators"
+     style="color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;"
+     onmouseover="this.style.color='rgba(255,255,255,.9)'"
+     onmouseout="this.style.color='rgba(255,255,255,.55)'">
+    Все калькуляторы
+  </a>
+</div>
+
+
+<div class="calc-wrap">
+  <!-- ЗАГОЛОВОК -->
+  <div class="calc-header">
+    <div class="badge">Подбор оборудования · ЯФОР</div>
+    <h1>Какой термоформер подойдёт вашему производству?</h1>
+    <p>Ответьте на 6 вопросов — получите рекомендацию модели и расчёт эффекта</p>
+  </div>
+
+  <!-- ПРОГРЕСС -->
+  <div class="progress-bar-wrap">
+    <div class="progress-steps" id="progressSteps"></div>
+  </div>
+
+  <!-- ═══════════ ШАГ 1 — ТИП ПРОДУКЦИИ ═══════════ -->
+  <div class="step-card visible" id="step-1">
+    <h2>Что вы производите?</h2>
+    <p class="hint">Выберите тип продукции — это определит оптимальный вид упаковки</p>
+    <div class="options-grid" data-field="product">
+      <button class="option-btn" data-value="Мясо и птица (сырое, охлаждённое)">
+        <span class="icon">🥩</span>
+        <span class="text"><span class="title">Мясо и птица</span><span class="desc">Сырое, охлаждённое, замороженное</span></span>
+      </button>
+      <button class="option-btn" data-value="Колбасные изделия и деликатесы">
+        <span class="icon">🌭</span>
+        <span class="text"><span class="title">Колбаса и деликатесы</span><span class="desc">Нарезка, целые изделия, ветчина</span></span>
+      </button>
+      <button class="option-btn" data-value="Молочная продукция">
+        <span class="icon">🧀</span>
+        <span class="text"><span class="title">Молочная продукция</span><span class="desc">Сыры, масло, творог, сметана</span></span>
+      </button>
+      <button class="option-btn" data-value="Рыба и морепродукты">
+        <span class="icon">🐟</span>
+        <span class="text"><span class="title">Рыба и морепродукты</span><span class="desc">Свежая, солёная, копчёная, замороженная</span></span>
+      </button>
+      <button class="option-btn" data-value="Готовые блюда и полуфабрикаты">
+        <span class="icon">🍱</span>
+        <span class="text"><span class="title">Готовые блюда / п/ф</span><span class="desc">Пельмени, котлеты, салаты, охлаждённые блюда</span></span>
+      </button>
+      <button class="option-btn" data-value="Другая продукция">
+        <span class="icon">📦</span>
+        <span class="text"><span class="title">Другая продукция</span><span class="desc">Не из этого списка</span></span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <span class="step-counter">Шаг 1 из 6</span>
+      <button class="btn btn-next" id="next-1" disabled onclick="goNext(1)">Далее →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ ШАГ 2 — РАЗМЕР УПАКОВКИ ═══════════ -->
+  <div class="step-card" id="step-2">
+    <h2>Какой размер упаковки вам нужен?</h2>
+    <p class="hint">Внутренние размеры лотка (Ш × Д)</p>
+    <div class="options-grid" data-field="pack_size">
+      <button class="option-btn" data-value="Маленький (до 150×100 мм)">
+        <span class="icon">🔹</span>
+        <span class="text"><span class="title">Маленький (до 150×100 мм)</span><span class="desc">Нарезка 100–200 г, порционные изделия</span></span>
+      </button>
+      <button class="option-btn" data-value="Средний (150–280 × 100–200 мм)">
+        <span class="icon">🔷</span>
+        <span class="text"><span class="title">Средний (150–280 × 100–200 мм)</span><span class="desc">Стейки, колбаса, лоток 200–500 г</span></span>
+      </button>
+      <button class="option-btn" data-value="Большой (280–400 × 150–300 мм)">
+        <span class="icon">📐</span>
+        <span class="text"><span class="title">Большой (280–400 × 150–300 мм)</span><span class="desc">Крупные куски, птица, окорока</span></span>
+      </button>
+      <button class="option-btn" data-value="Несколько размеров / не определился">
+        <span class="icon">🔀</span>
+        <span class="text"><span class="title">Несколько размеров</span><span class="desc">Нужна гибкость / ещё не определились</span></span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-back" onclick="goBack(2)">← Назад</button>
+      <span class="step-counter">Шаг 2 из 6</span>
+      <button class="btn btn-next" id="next-2" disabled onclick="goNext(2)">Далее →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ ШАГ 3 — ГЛУБИНА ЛОТКА ═══════════ -->
+  <div class="step-card" id="step-3">
+    <h2>Какая нужна глубина лотка?</h2>
+    <p class="hint">Глубина определяет высоту продукта, который войдёт в упаковку</p>
+    <div class="options-grid" data-field="depth">
+      <button class="option-btn" data-value="Мелкая (до 30 мм)">
+        <span class="icon">📏</span>
+        <span class="text"><span class="title">Мелкая (до 30 мм)</span><span class="desc">Нарезка, плоские изделия, тонкие куски</span></span>
+      </button>
+      <button class="option-btn" data-value="Средняя (30–80 мм)">
+        <span class="icon">📐</span>
+        <span class="text"><span class="title">Средняя (30–80 мм)</span><span class="desc">Стейки, куски, порционные изделия</span></span>
+      </button>
+      <button class="option-btn" data-value="Глубокая (80–130 мм)">
+        <span class="icon">🫙</span>
+        <span class="text"><span class="title">Глубокая (80–130 мм)</span><span class="desc">Цельные куски, птица, крупные изделия</span></span>
+      </button>
+      <button class="option-btn" data-value="Не знаю / уточним">
+        <span class="icon">❓</span>
+        <span class="text"><span class="title">Не знаю / уточним</span><span class="desc">Специалист поможет подобрать</span></span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-back" onclick="goBack(3)">← Назад</button>
+      <span class="step-counter">Шаг 3 из 6</span>
+      <button class="btn btn-next" id="next-3" disabled onclick="goNext(3)">Далее →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ ШАГ 4 — ТИП УПАКОВКИ ═══════════ -->
+  <div class="step-card" id="step-4">
+    <h2>Какой тип упаковки нужен?</h2>
+    <p class="hint">
+      От этого зависит срок хранения и товарный вид продукции
+      <span class="multi-hint">Можно выбрать несколько</span>
+      <span class="selected-count" id="pack-type-count"></span>
+    </p>
+    <div class="options-grid cols-1" data-field="pack_type" data-multiselect="true">
+      <button class="option-btn" data-value="Вакуум">
+        <span class="multi-check"></span>
+        <span class="icon">💨</span>
+        <span class="text"><span class="title">Вакуум</span><span class="desc">Удаление воздуха → срок хранения в 3 раза дольше. Подходит для большинства мясных и молочных продуктов</span></span>
+      </button>
+      <button class="option-btn" data-value="MAP (вакуум + газ)">
+        <span class="multi-check"></span>
+        <span class="icon">🫧</span>
+        <span class="text"><span class="title">MAP — вакуум + газ (CO₂/N₂/O₂)</span><span class="desc">Срок хранения в 4–5 раз дольше, сохраняет естественный цвет мяса. Идеально для розничных сетей</span></span>
+      </button>
+      <button class="option-btn" data-value="Скин-упаковка">
+        <span class="multi-check"></span>
+        <span class="icon">✨</span>
+        <span class="text"><span class="title">Скин-упаковка (SKIN)</span><span class="desc">Плёнка плотно облегает продукт — премиальный вид, максимальный срок хранения, нет жидкости</span></span>
+      </button>
+      <button class="option-btn" data-value="Пока не определился" data-exclusive="true">
+        <span class="multi-check"></span>
+        <span class="icon">🤔</span>
+        <span class="text"><span class="title">Пока не определился</span><span class="desc">Помогите разобраться — специалист расскажет что выгоднее для вашего продукта</span></span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-back" onclick="goBack(4)">← Назад</button>
+      <span class="step-counter">Шаг 4 из 6</span>
+      <button class="btn btn-next" id="next-4" disabled onclick="goNext(4)">Далее →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ ШАГ 5 — ПРОИЗВОДИТЕЛЬНОСТЬ ═══════════ -->
+  <div class="step-card" id="step-5">
+    <h2>Сколько упаковок нужно делать в смену?</h2>
+    <p class="hint">Это поможет подобрать нужную конфигурацию машины (число дорожек)</p>
+    <div class="options-grid" data-field="output">
+      <button class="option-btn" data-value="До 1 000 упаковок/смену">
+        <span class="icon">🐢</span>
+        <span class="text"><span class="title">До 1 000 упаковок/смену</span><span class="desc">Небольшое производство, запуск</span></span>
+      </button>
+      <button class="option-btn" data-value="1 000 – 3 000 упаковок/смену">
+        <span class="icon">🔄</span>
+        <span class="text"><span class="title">1 000 – 3 000 упак./смену</span><span class="desc">Среднее производство</span></span>
+      </button>
+      <button class="option-btn" data-value="3 000 – 6 000 упаковок/смену">
+        <span class="icon">⚡</span>
+        <span class="text"><span class="title">3 000 – 6 000 упак./смену</span><span class="desc">Крупное производство, несколько линий</span></span>
+      </button>
+      <button class="option-btn" data-value="Более 6 000 упаковок/смену">
+        <span class="icon">🚀</span>
+        <span class="text"><span class="title">Более 6 000 упак./смену</span><span class="desc">Высокопроизводительная линия</span></span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-back" onclick="goBack(5)">← Назад</button>
+      <span class="step-counter">Шаг 5 из 6</span>
+      <button class="btn btn-next" id="next-5" disabled onclick="goNext(5)">Далее →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ ШАГ 6 — ТЕКУЩАЯ УПАКОВКА ═══════════ -->
+  <div class="step-card" id="step-6">
+    <h2>Как вы упаковываете продукцию сейчас?</h2>
+    <p class="hint">Это поможет оценить экономический эффект от внедрения термоформера</p>
+    <div class="options-grid" data-field="current">
+      <button class="option-btn" data-value="Ручная упаковка в плёнку / стрейч">
+        <span class="icon">👐</span>
+        <span class="text"><span class="title">Вручную / стрейч-плёнка</span><span class="desc">Медленно, негерметично, большие потери</span></span>
+      </button>
+      <button class="option-btn" data-value="Лоток + стрейч или термоусадка">
+        <span class="icon">🫙</span>
+        <span class="text"><span class="title">Лоток + стрейч / термоусадка</span><span class="desc">Есть упаковка, но короткий срок хранения</span></span>
+      </button>
+      <button class="option-btn" data-value="Замена существующего термоформера">
+        <span class="icon">🔧</span>
+        <span class="text"><span class="title">Замена старого термоформера</span><span class="desc">Морально/физически устарело оборудование</span></span>
+      </button>
+      <button class="option-btn" data-value="Новое производство / расширение">
+        <span class="icon">🏭</span>
+        <span class="text"><span class="title">Новое производство / расширение</span><span class="desc">Открытие новой линии или цеха</span></span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-back" onclick="goBack(6)">← Назад</button>
+      <span class="step-counter">Шаг 6 из 6</span>
+      <button class="btn btn-next" id="next-6" disabled onclick="showResult()">Показать рекомендацию →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ РЕЗУЛЬТАТ ═══════════ -->
+  <div class="result-card" id="result-card">
+    <div id="result-content"></div>
+
+    <!-- КОНТАКТНАЯ ФОРМА -->
+    <div style="border-top: 2px solid var(--blue-light); padding-top: 24px; margin-top: 4px;">
+      <h3 style="font-size: 17px; font-weight: 700; color: var(--blue); margin-bottom: 6px;">Получите точный расчёт и КП</h3>
+      <p style="font-size: 13px; color: #888; margin-bottom: 20px;">Наш специалист свяжется с вами в течение 2 часов в рабочее время и подготовит персональное коммерческое предложение</p>
+      <div class="error-msg" id="errorMsg">Пожалуйста, заполните все обязательные поля</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Ваше имя *</label>
+          <input type="text" id="f-name" placeholder="Иван Иванов">
+        </div>
+        <div class="form-group">
+          <label>Телефон *</label>
+          <input type="tel" id="f-phone" placeholder="+7 (___) ___-__-__">
+        </div>
+        <div class="form-group full">
+          <label>Название компании *</label>
+          <input type="text" id="f-company" placeholder="ООО Мясокомбинат Пример">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="f-email" placeholder="mail@company.ru">
+        </div>
+        <div class="form-group">
+          <label>Объём переработки в смену</label>
+          <input type="text" id="f-volume" placeholder="напр. 500 кг/смену">
+        </div>
+        <div class="form-group full">
+          <label>Комментарий (необязательно)</label>
+          <input type="text" id="f-comment" placeholder="Дополнительные пожелания или вопросы">
+        </div>
+      </div>
+      <div class="nav-row">
+        <p class="consent">Нажимая кнопку, вы соглашаетесь на обработку персональных данных в соответствии с <a href="#">политикой конфиденциальности</a></p>
+        <button class="btn btn-submit" id="submitBtn" onclick="submitForm()">Получить КП бесплатно</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ УСПЕХ ═══════════ -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✅</div>
+    <h2>Заявка отправлена!</h2>
+    <p>Спасибо! Наш специалист получил вашу заявку и свяжется с вами в течение <strong>2 рабочих часов</strong> для подготовки персонального коммерческого предложения.</p>
+    <div class="success-contact">
+      <p>Вопросы прямо сейчас? Звоните:<br>+7 (911) 927-48-67 — Сергей Пуховский</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────────────
+//  ДАННЫЕ И ЛОГИКА КАЛЬКУЛЯТОРА
+// ────────────────────────────────────────────────────────────────
+const TOTAL_STEPS = 6;
+let currentStep = 1;
+const answers = {};
+
+const STEPS_META = [
+  { id: 1, label: 'Продукт',     field: 'product'    },
+  { id: 2, label: 'Размер',      field: 'pack_size'  },
+  { id: 3, label: 'Глубина',     field: 'depth'      },
+  { id: 4, label: 'Упаковка',    field: 'pack_type'  },
+  { id: 5, label: 'Объём',       field: 'output'     },
+  { id: 6, label: 'Сейчас',      field: 'current'    },
+];
+
+// ── РЕКОМЕНДАЦИЯ МОДЕЛИ ──────────────────────────────────────────
+function getRecommendation() {
+  const size   = answers.pack_size  || '';
+  const output = answers.output     || '';
+  const depth  = answers.depth      || '';
+
+  // pack_type — теперь массив (мультивыбор)
+  const typeArr = Array.isArray(answers.pack_type) ? answers.pack_type : (answers.pack_type ? [answers.pack_type] : []);
+  const typeStr = typeArr.join(' ');
+
+  const isBig  = size.includes('Большой') || size.includes('Несколько');
+  const isHigh = output.includes('3 000') || output.includes('6 000') || output.includes('Более');
+  const isSkin = typeStr.includes('Скин');
+  const isMAP  = typeStr.includes('MAP');
+  const isDeep = depth.includes('Глубокая');
+
+  // Логика подбора модели
+  if (isBig && isHigh) {
+    return {
+      model:    'ЯFORM460×600',
+      sub:      'Максимальный формат · Высокая производительность',
+      desc:     'Оптимален для крупных форматов и высоких объёмов производства. Рабочая ширина 460 мм, шаг протяжки 600 мм — позволяет запускать несколько дорожек крупных лотков.',
+      metrics:  [
+        { val: '460 мм', key: 'Ширина плёнки',     sub: 'максимальное покрытие' },
+        { val: '8 цикл/мин', key: 'Произв-ть',    sub: 'до 6 000+ уп./смену' },
+        { val: '130 мм',     key: 'Глубина',        sub: 'для крупных продуктов' },
+      ],
+      advs: [
+        { icon: '✓', cls: 'green',  title: 'Несколько дорожек',       desc: '4–6 упаковок за один цикл при крупном формате' },
+        { icon: '✓', cls: 'green',  title: 'Максимальный охват',      desc: 'Самый широкий формат в линейке ЯФОР' },
+        { icon: '✓', cls: 'green',  title: 'Любые типы упаковки',     desc: 'Вакуум, MAP, Скин — все режимы доступны' },
+        { icon: '★', cls: 'orange', title: 'Автоматизация загрузки',  desc: 'Совместим с роботизированными загрузчиками' },
+      ],
+      options: getOptions(isMAP, isSkin),
+    };
+  }
+  if (isBig || isHigh) {
+    return {
+      model:    'ЯFORM420×600',
+      sub:      'Длинный шаг · Высокая производительность',
+      desc:     'Идеален для крупных и средних форматов с высоким объёмом производства. Шаг протяжки 600 мм позволяет упаковывать длинные продукты и запускать больше рядов.',
+      metrics:  [
+        { val: '420 мм',      key: 'Ширина плёнки',  sub: 'стандартный формат' },
+        { val: '7–8 цикл/мин', key: 'Произв-ть',    sub: 'до 4 000 уп./смену' },
+        { val: 'до 130 мм',   key: 'Глубина',        sub: 'крупные продукты' },
+      ],
+      advs: [
+        { icon: '✓', cls: 'green',  title: 'Длинный шаг 600 мм',      desc: 'Упаковка длинных изделий без ограничений' },
+        { icon: '✓', cls: 'green',  title: 'Высокая производительность', desc: 'До 4 000 упаковок за смену' },
+        { icon: '✓', cls: 'green',  title: 'Зона загрузки 1 500+ мм', desc: '4 оператора могут работать одновременно' },
+        { icon: '★', cls: 'orange', title: 'ROI за 18–24 мес.',        desc: 'При объёме от 500 кг/смену' },
+      ],
+      options: getOptions(isMAP, isSkin),
+    };
+  }
+  if (isDeep) {
+    return {
+      model:    'ЯFORM420×300',
+      sub:      'Стандартная модель · Глубокая формовка',
+      desc:     'Базовая и самая популярная модель ЯФОР. Глубокая формовка до 110–130 мм позволяет упаковывать крупные куски мяса и птицы. Гибкий и жёсткий тип плёнки.',
+      metrics:  [
+        { val: '420 мм',      key: 'Ширина плёнки',  sub: 'стандартный формат' },
+        { val: '7–8 цикл/мин', key: 'Произв-ть',    sub: 'до 3 000 уп./смену' },
+        { val: 'до 130 мм',   key: 'Глубина',        sub: 'глубокие лотки' },
+      ],
+      advs: [
+        { icon: '✓', cls: 'green',  title: 'Глубокая формовка 130 мм', desc: 'Для целой птицы, крупных кусков, окороков' },
+        { icon: '✓', cls: 'green',  title: 'Мягкая и жёсткая плёнка',  desc: 'PA/PE и PET/PE — гибкость без замены машины' },
+        { icon: '✓', cls: 'green',  title: 'AISI-304 + программа мойки', desc: 'Полное соответствие нормам ХАССП' },
+        { icon: '★', cls: 'orange', title: 'Срок хранения × 3',        desc: 'Вакуум: мясо до 21 дня вместо 5–7' },
+      ],
+      options: getOptions(isMAP, isSkin),
+    };
+  }
+  // default
+  return {
+    model:    'ЯFORM420×300',
+    sub:      'Универсальная модель · Оптимальный выбор',
+    desc:     'Самая востребованная модель в линейке ЯФОР. Оптимальный баланс производительности, форматного охвата и стоимости владения. Подходит для 80% задач мясопереработки и молочной промышленности.',
+    metrics:  [
+      { val: '420 мм',      key: 'Ширина плёнки', sub: 'стандарт рынка' },
+      { val: '7–8 цикл/мин', key: 'Произв-ть',   sub: 'до 2 500 уп./смену' },
+      { val: 'до 80 мм',    key: 'Глубина',       sub: 'стейки, колбаса' },
+    ],
+    advs: [
+      { icon: '✓', cls: 'green',  title: 'До 7 форматов на 1 машине', desc: '1×1, 2×1, 2×2, 3×2, 5×1 — переналадка 20 мин.' },
+      { icon: '✓', cls: 'green',  title: 'Срок хранения × 3–5',      desc: 'Вакуум или MAP без консервантов' },
+      { icon: '✓', cls: 'green',  title: 'Уже у 20+ клиентов в РФ',  desc: 'Продо, Рефтинская, Знаменский МК и др.' },
+      { icon: '★', cls: 'orange', title: 'Окупаемость 18–24 мес.',   desc: 'При объёме переработки от 300 кг/смену' },
+    ],
+    options: getOptions(isMAP, isSkin),
+  };
+}
+
+function getOptions(isMAP, isSkin) {
+  const opts = [];
+  if (isMAP)  opts.push('MAP-голова (газовая система)');
+  if (isSkin) opts.push('Скин-упаковка');
+  opts.push('Принтер этикеток Dibal 5000');
+  opts.push('Весовой контроль');
+  opts.push('Металлодетектор');
+  return opts;
+}
+
+// ── ОТОБРАЖЕНИЕ РЕЗУЛЬТАТА ──────────────────────────────────────
+function showResult() {
+  const rec = getRecommendation();
+  const el  = document.getElementById('result-content');
+
+  el.innerHTML = `
+    <div class="result-model-badge">★ Рекомендованная модель: ${rec.model}</div>
+    <div class="result-title">${rec.model}</div>
+    <div class="result-subtitle">${rec.sub}</div>
+    <div class="result-metrics">
+      ${rec.metrics.map(m => `
+        <div class="metric-card">
+          <div class="key">${m.key}</div>
+          <div class="val">${m.val}</div>
+          <div class="sub">${m.sub}</div>
+        </div>
+      `).join('')}
+    </div>
+    <p style="font-size:14px;color:#555;margin-bottom:20px;line-height:1.6;">${rec.desc}</p>
+    <div class="result-advantages">
+      <h3>Почему эта модель подходит вам:</h3>
+      ${rec.advs.map(a => `
+        <div class="adv-item">
+          <div class="adv-icon ${a.cls}">${a.icon}</div>
+          <div class="adv-text">
+            <div class="adv-title">${a.title}</div>
+            <div class="adv-desc">${a.desc}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    ${rec.options.length ? `
+    <div class="options-list">
+      <h4>Рекомендуемые опции для вашего продукта:</h4>
+      <ul>${rec.options.map(o => `<li>${o}</li>`).join('')}</ul>
+    </div>` : ''}
+    <div style="background:#F0F4F8;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#555;">
+      <strong>Ваши ответы:</strong>
+      ${Object.entries(answers).map(([k,v]) => {
+        const vals = Array.isArray(v) ? v : [v];
+        return vals.map(val => `<span style="display:inline-block;margin:2px 4px;background:white;border-radius:4px;padding:2px 8px;font-size:12px;">${val}</span>`).join('');
+      }).join('')}
+    </div>
+  `;
+
+  // показываем результат
+  hideAllSteps();
+  document.getElementById('result-card').classList.add('visible');
+
+  // сохраняем рекомендацию для отправки
+  window._recModel = rec.model;
+}
+
+// ── ПРОГРЕСС ─────────────────────────────────────────────────────
+function renderProgress() {
+  const wrap = document.getElementById('progressSteps');
+  wrap.innerHTML = '';
+  STEPS_META.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot' + (s.id === currentStep ? ' active' : '') + (s.id < currentStep ? ' done' : '');
+    dot.innerHTML = `<div class="dot">${s.id < currentStep ? '✓' : s.id}</div><div class="label">${s.label}</div>`;
+    wrap.appendChild(dot);
+    if (i < STEPS_META.length - 1) {
+      const line = document.createElement('div');
+      line.className = 'step-line' + (s.id < currentStep ? ' done' : '');
+      wrap.appendChild(line);
+    }
+  });
+}
+
+// ── НАВИГАЦИЯ ────────────────────────────────────────────────────
+function hideAllSteps() {
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const el = document.getElementById('step-' + i);
+    if (el) el.classList.remove('visible');
+  }
+  document.getElementById('result-card').classList.remove('visible');
+}
+
+function goNext(step) {
+  hideAllSteps();
+  currentStep = step + 1;
+  document.getElementById('step-' + currentStep).classList.add('visible');
+  renderProgress();
+  window.scrollTo(0, 0);
+}
+
+function goBack(step) {
+  hideAllSteps();
+  currentStep = step - 1;
+  document.getElementById('step-' + currentStep).classList.add('visible');
+  renderProgress();
+  window.scrollTo(0, 0);
+}
+
+// ── ВЫБОР ВАРИАНТА ───────────────────────────────────────────────
+document.querySelectorAll('.options-grid').forEach(grid => {
+  grid.addEventListener('click', e => {
+    const btn = e.target.closest('.option-btn');
+    if (!btn) return;
+
+    const field      = grid.dataset.field;
+    const value      = btn.dataset.value;
+    const isMulti    = grid.dataset.multiselect === 'true';
+    const isExclusive = btn.dataset.exclusive === 'true';
+
+    const stepCard = grid.closest('.step-card');
+    const stepNum  = parseInt(stepCard.id.replace('step-', ''));
+    const nextBtn  = document.getElementById('next-' + stepNum);
+
+    if (isMulti) {
+      // ── МУЛЬТИВЫБОР ──────────────────────────────────────
+      if (isExclusive) {
+        // «Пока не определился» — снимает остальные, выбирает только себя
+        grid.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[field] = [value];
+      } else {
+        // Снимаем эксклюзивный вариант если был выбран
+        grid.querySelectorAll('.option-btn[data-exclusive="true"]').forEach(b => b.classList.remove('selected'));
+
+        // Тогглим текущую кнопку
+        btn.classList.toggle('selected');
+
+        // Собираем все выбранные значения
+        const selected = [];
+        grid.querySelectorAll('.option-btn.selected').forEach(b => selected.push(b.dataset.value));
+        answers[field] = selected.length > 0 ? selected : null;
+      }
+
+      // Обновляем счётчик
+      const countEl = document.getElementById('pack-type-count');
+      if (countEl) {
+        const sel = grid.querySelectorAll('.option-btn.selected').length;
+        if (sel > 0) {
+          countEl.textContent = 'Выбрано: ' + sel;
+          countEl.classList.add('visible');
+        } else {
+          countEl.classList.remove('visible');
+        }
+      }
+
+      if (nextBtn) nextBtn.disabled = !answers[field] || answers[field].length === 0;
+
+    } else {
+      // ── ОДИНОЧНЫЙ ВЫБОР (все остальные шаги) ─────────────
+      grid.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      answers[field] = value;
+      if (nextBtn) nextBtn.disabled = false;
+    }
+  });
+});
+
+// ── ОТПРАВКА ФОРМЫ ───────────────────────────────────────────────
+async function submitForm() {
+  const name    = document.getElementById('f-name').value.trim();
+  const phone   = document.getElementById('f-phone').value.trim();
+  const company = document.getElementById('f-company').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const volume  = document.getElementById('f-volume').value.trim();
+  const comment = document.getElementById('f-comment').value.trim();
+
+  const errEl = document.getElementById('errorMsg');
+  errEl.classList.remove('visible');
+
+  if (!name || !phone || !company) {
+    errEl.textContent = 'Пожалуйста, заполните имя, телефон и название компании';
+    errEl.classList.add('visible');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  btn.textContent = 'Отправляем...';
+
+  const templateParams = {
+    to_email:  TARGET_EMAIL,
+    from_name: name,
+    company:   company,
+    phone:     phone,
+    user_email: email || '—',
+    volume:    volume || '—',
+    comment:   comment || '—',
+    model:     window._recModel || '—',
+    product:   answers.product    || '—',
+    pack_size: answers.pack_size  || '—',
+    depth:     answers.depth      || '—',
+    pack_type: Array.isArray(answers.pack_type) ? answers.pack_type.join(', ') : (answers.pack_type || '—'),
+    output:    answers.output     || '—',
+    current:   answers.current    || '—',
+  };
+
+  try {
+    // Проверяем: настроен ли EmailJS
+    if (EMAILJS_PUBLIC_KEY === 'ВАШ_PUBLIC_KEY') {
+      // Демо-режим: показываем успех без реальной отправки
+      console.log('EmailJS не настроен. Данные заявки:', templateParams);
+      await new Promise(r => setTimeout(r, 800)); // имитация запроса
+    } else {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+    }
+    // Успех
+    document.getElementById('result-card').classList.remove('visible');
+    document.getElementById('success-screen').classList.add('visible');
+    window.scrollTo(0, 0);
+  } catch(err) {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    btn.textContent = 'Получить КП бесплатно';
+    errEl.textContent = 'Ошибка отправки: ' + (err.text || err.message || 'Попробуйте ещё раз');
+    errEl.classList.add('visible');
+    console.error('EmailJS error:', err);
+  }
+}
+
+// ── ИНИЦИАЛИЗАЦИЯ ────────────────────────────────────────────────
+renderProgress();
+</script>
+</body>
+</html>

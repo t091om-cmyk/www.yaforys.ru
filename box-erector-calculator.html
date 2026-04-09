@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЯФОР — Подбор формирователя коробов</title>
+<style>
+  :root {
+    --blue:    #1F4E79;
+    --blue-m:  #2E75B6;
+    --blue-l:  #D6E4F0;
+    --blue-p:  #EEF4FB;
+    --orange:  #C55A11;
+    --orange-p:#FCE4D6;
+    --green:   #1E6B3C;
+    --green-p: #E2EFDA;
+    --grey:    #444;
+    --grey-l:  #F5F7FA;
+    --shadow:  0 2px 14px rgba(31,78,121,.11);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #EBF2FA; color: var(--grey); min-height: 100vh; }
+
+  header {
+    background: var(--blue); color: #fff;
+    padding: 16px 28px; display: flex; align-items: center; gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  header .logo {
+    font-size: 24px; font-weight: 900; letter-spacing: 1px;
+    border: 3px solid #fff; padding: 2px 9px; border-radius: 4px;
+  }
+  header h1 { font-size: 17px; font-weight: 700; }
+  header p  { font-size: 12px; opacity: .72; margin-top: 2px; }
+
+  .wrap {
+    max-width: 1160px; margin: 24px auto; padding: 0 14px;
+    display: grid; grid-template-columns: 1fr 390px; gap: 20px; align-items: start;
+  }
+  @media(max-width:880px){ .wrap{ grid-template-columns:1fr; } }
+
+  .card {
+    background: #fff; border-radius: 10px;
+    box-shadow: var(--shadow); padding: 22px 24px; margin-bottom: 16px;
+  }
+  .card:last-child { margin-bottom: 0; }
+  .card-title {
+    font-size: 14px; font-weight: 700; color: var(--blue);
+    border-bottom: 2px solid var(--blue-l);
+    padding-bottom: 10px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .step-badge {
+    background: var(--blue-m); color: #fff;
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; flex-shrink: 0;
+  }
+
+  /* ── КОНСТРУКЦИИ КОРОБОВ ── */
+  .box-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+  .box-type {
+    border: 2px solid var(--blue-l);
+    border-radius: 9px; background: var(--blue-p);
+    padding: 12px 8px 10px;
+    cursor: pointer; text-align: center;
+    transition: all .16s;
+    position: relative;
+  }
+  .box-type:hover { border-color: var(--blue-m); background: var(--blue-l); }
+  .box-type.active {
+    border-color: var(--blue-m); background: var(--blue-m);
+    box-shadow: 0 2px 8px rgba(46,117,182,.35);
+  }
+  .box-type.active .box-label { color: #fff; }
+  .box-type.active .box-sub   { color: rgba(255,255,255,.8); }
+  .box-icon { height: 54px; display: flex; align-items: center; justify-content: center; margin-bottom: 7px; }
+  .box-label { font-size: 12px; font-weight: 700; color: var(--blue); line-height: 1.3; }
+  .box-sub   { font-size: 10px; color: #888; margin-top: 2px; line-height: 1.3; }
+  .box-type.active .box-sub { color: rgba(255,255,255,.75); }
+
+  /* SVG box illustrations */
+  svg.box-svg { overflow: visible; }
+
+  /* ── РАЗМЕРЫ ── */
+  .dim-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .dim-group { display: flex; flex-direction: column; gap: 4px; }
+  .dim-group label { font-size: 12px; color: #888; }
+  .dim-group input {
+    width: 100px; padding: 8px 10px;
+    border: 2px solid var(--blue-l); border-radius: 7px;
+    font-size: 15px; font-weight: 700; color: var(--blue);
+    text-align: center; outline: none;
+    transition: border-color .15s;
+  }
+  .dim-group input:focus { border-color: var(--blue-m); }
+  .dim-sep { font-size: 20px; color: var(--blue-l); padding-bottom: 6px; }
+  .dim-note { font-size: 11px; color: #999; margin-top: 7px; }
+
+  /* ── SLIDER ── */
+  .slider-wrap { padding: 4px 0; }
+  .slider-row  { display: flex; align-items: center; gap: 12px; }
+  input[type=range] { flex: 1; accent-color: var(--blue-m); cursor: pointer; }
+  .slider-val {
+    min-width: 88px; text-align: center;
+    background: var(--blue); color: #fff;
+    padding: 5px 10px; border-radius: 6px;
+    font-weight: 700; font-size: 14px;
+  }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: #aaa; margin-top: 3px; }
+
+  /* ── PILLS ── */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    padding: 7px 14px; border-radius: 18px;
+    border: 2px solid var(--blue-l); background: var(--blue-p);
+    color: var(--blue); font-size: 13px; cursor: pointer;
+    transition: all .15s; font-weight: 500;
+  }
+  .pill:hover  { border-color: var(--blue-m); background: var(--blue-l); }
+  .pill.active { background: var(--blue-m); border-color: var(--blue-m); color: #fff; }
+
+  /* ── ROI INPUTS ── */
+  .roi-input-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 0; border-bottom: 1px solid var(--blue-l); gap: 10px;
+  }
+  .roi-input-row:last-child { border-bottom: none; }
+  .roi-input-row label { font-size: 13px; flex: 1; }
+  .roi-input-row input {
+    width: 88px; padding: 5px 8px;
+    border: 2px solid var(--blue-l); border-radius: 6px;
+    font-size: 14px; font-weight: 700; color: var(--blue);
+    text-align: right; outline: none; flex-shrink: 0;
+  }
+  .roi-input-row input:focus { border-color: var(--blue-m); }
+  .roi-input-row .unit { font-size: 11px; color: #999; min-width: 38px; }
+
+  /* ── RESULT PANEL ── */
+  .result-panel {
+    background: var(--blue); color: #fff;
+    border-radius: 10px; box-shadow: var(--shadow);
+    padding: 20px 20px 16px; position: sticky; top: 18px;
+  }
+  .result-panel h2 { font-size: 14px; font-weight: 700; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,.2); }
+
+  .model-card {
+    background: rgba(255,255,255,.10); border-radius: 8px;
+    padding: 13px 13px 10px; margin-bottom: 9px;
+    border: 1px solid rgba(255,255,255,.15);
+  }
+  .model-card.top { background: rgba(255,255,255,.17); border: 2px solid rgba(255,255,255,.38); }
+  .model-top-row  { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; }
+  .model-name     { font-size: 16px; font-weight: 800; }
+  .model-type     { font-size: 11px; opacity: .7; margin-top: 1px; margin-bottom: 7px; }
+  .model-desc     { font-size: 12px; opacity: .85; margin-bottom: 9px; line-height: 1.4; }
+  .model-specs    { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 9px; }
+  .spec-tag       { font-size: 11px; background: rgba(255,255,255,.15); border-radius: 4px; padding: 3px 7px; }
+  .model-compat   { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 9px; }
+  .compat-tag     { font-size: 10px; background: rgba(255,255,255,.12); border-radius: 3px; padding: 2px 6px; color: rgba(255,255,255,.8); }
+  .compat-tag.active-type { background: var(--orange); color: #fff; font-weight: 700; }
+  .model-badge    { font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: 700; white-space: nowrap; }
+  .badge-best     { background: var(--orange); color: #fff; }
+  .badge-ok       { background: rgba(255,255,255,.22); color: #fff; }
+  .model-price-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,.15); padding-top: 8px; }
+  .model-price    { font-size: 17px; font-weight: 800; }
+  .model-price-sub{ font-size: 11px; opacity: .65; }
+
+  /* ── ROI BLOCK ── */
+  .roi-block { background: var(--green-p); border-radius: 8px; padding: 13px 15px; margin-top: 12px; color: var(--grey); }
+  .roi-block h3  { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 9px; }
+  .roi-row { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; border-bottom: 1px solid rgba(0,0,0,.05); }
+  .roi-row:last-child { border-bottom: none; }
+  .roi-row .lbl { color: #555; }
+  .roi-row .val { font-weight: 700; color: var(--blue); }
+  .roi-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; color: var(--green); padding-top: 9px; margin-top: 5px; border-top: 2px solid var(--green); }
+
+  /* ── EMPTY / WARNING ── */
+  .empty-state { text-align: center; padding: 22px 10px; opacity: .6; }
+  .empty-state .icon { font-size: 34px; margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; line-height: 1.5; }
+  .warn-box { background: var(--orange-p); border-left: 4px solid var(--orange); border-radius: 0 6px 6px 0; padding: 10px 13px; font-size: 12px; color: var(--grey); margin-top: 10px; line-height: 1.45; }
+
+  /* ── CTA ── */
+  .cta-block { background: var(--orange); border-radius: 8px; padding: 14px; text-align: center; margin-top: 14px; color: #fff; }
+  .cta-block p { font-size: 12px; margin-bottom: 6px; opacity: .9; }
+  .cta-block a { color: #fff; font-weight: 800; font-size: 15px; text-decoration: none; display: block; }
+</style>
+</head>
+<body>
+<!-- ── BACK TO HOMEPAGE ─────────────────────────────── -->
+<div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:9px 20px;display:flex;align-items:center;gap:14px;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+  <a href="../yaforys_homepage.html"
+     style="display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.88);font-size:.84rem;font-weight:700;text-decoration:none;padding:6px 14px;border-radius:7px;border:1.5px solid rgba(255,255,255,.28);transition:all .2s;"
+     onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff';this.style.borderColor='rgba(255,255,255,.6)'"
+     onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.88)';this.style.borderColor='rgba(255,255,255,.28)'">
+    ← На главную
+  </a>
+  <span style="color:rgba(255,255,255,.3);font-size:.9rem;user-select:none;">|</span>
+  <span style="color:rgba(255,255,255,.55);font-size:.82rem;font-weight:500;letter-spacing:.2px;">www.yaforys.ru</span>
+  <div style="flex:1;"></div>
+  <a href="../yaforys_homepage.html#calculators"
+     style="color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;"
+     onmouseover="this.style.color='rgba(255,255,255,.9)'"
+     onmouseout="this.style.color='rgba(255,255,255,.55)'">
+    Все калькуляторы
+  </a>
+</div>
+
+
+<header>
+  <div class="logo">ЯФОР</div>
+  <div>
+    <h1>Подбор формирователя коробов</h1>
+    <p>Выберите конструкцию короба и параметры — получите рекомендацию и расчёт окупаемости</p>
+  </div>
+</header>
+
+<div class="wrap">
+<div><!-- LEFT -->
+
+  <!-- ШАГ 1: КОНСТРУКЦИЯ КОРОБА -->
+  <div class="card">
+    <div class="card-title"><span class="step-badge">1</span>Конструкция короба</div>
+    <div class="box-grid" id="boxGrid">
+
+      <!-- Плоский короб -->
+      <div class="box-type active" data-box="flat" onclick="setBox('flat',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <rect x="2" y="18" width="56" height="30" rx="2" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <rect x="2" y="18" width="56" height="9" rx="1" fill="#2E75B6" opacity=".35"/>
+            <line x1="2" y1="27" x2="58" y2="27" stroke="#2E75B6" stroke-width="1.5"/>
+            <!-- крышка -->
+            <rect x="8" y="4" width="44" height="16" rx="2" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5" stroke-dasharray="4 2"/>
+            <polyline points="8,20 8,4 52,4 52,20" fill="none" stroke="#2E75B6" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="box-label">Плоский короб</div>
+        <div class="box-sub">Пицца, торт, кондитерские</div>
+      </div>
+
+      <!-- Открытый лоток -->
+      <div class="box-type" data-box="platform" onclick="setBox('platform',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <path d="M4,42 L4,22 L56,22 L56,42 Z" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <path d="M4,22 L14,10 L46,10 L56,22" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="14" y1="10" x2="14" y2="22" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="46" y1="10" x2="46" y2="22" stroke="#2E75B6" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="box-label">Открытый лоток</div>
+        <div class="box-sub">Платформа (FEFCO 0201)</div>
+      </div>
+
+      <!-- Лоток с колоннами -->
+      <div class="box-type" data-box="column" onclick="setBox('column',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <path d="M4,42 L4,22 L56,22 L56,42 Z" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <path d="M4,22 L14,10 L46,10 L56,22" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="14" y1="10" x2="14" y2="22" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="46" y1="10" x2="46" y2="22" stroke="#2E75B6" stroke-width="1.5"/>
+            <!-- колонны -->
+            <rect x="11" y="22" width="8" height="20" fill="#2E75B6" opacity=".4" rx="1"/>
+            <rect x="41" y="22" width="8" height="20" fill="#2E75B6" opacity=".4" rx="1"/>
+          </svg>
+        </div>
+        <div class="box-label">Лоток с колоннами</div>
+        <div class="box-sub">Для штабелирования</div>
+      </div>
+
+      <!-- Двойная стенка -->
+      <div class="box-type" data-box="dwall" onclick="setBox('dwall',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <path d="M4,44 L4,20 L56,20 L56,44 Z" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <path d="M4,20 L14,8 L46,8 L56,20" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="14" y1="8" x2="14" y2="20" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="46" y1="8" x2="46" y2="20" stroke="#2E75B6" stroke-width="1.5"/>
+            <!-- двойная стенка -->
+            <path d="M10,44 L10,26 L50,26 L50,44" fill="none" stroke="#2E75B6" stroke-width="2" stroke-dasharray="0"/>
+            <path d="M10,26 L17,20" stroke="#2E75B6" stroke-width="1.5"/>
+            <path d="M50,26 L50,20" stroke="#2E75B6" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="box-label">Двойная стенка</div>
+        <div class="box-sub">Усиленный лоток</div>
+      </div>
+
+      <!-- P-84 -->
+      <div class="box-type" data-box="p84" onclick="setBox('p84',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <!-- обёрточный короб/полулоток P-84 -->
+            <rect x="4" y="14" width="52" height="28" rx="2" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <rect x="4" y="14" width="52" height="10" rx="2" fill="#2E75B6" opacity=".3"/>
+            <!-- клапаны -->
+            <rect x="4" y="42" width="16" height="8" rx="1" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.2" stroke-dasharray="3 2"/>
+            <rect x="40" y="42" width="16" height="8" rx="1" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.2" stroke-dasharray="3 2"/>
+          </svg>
+        </div>
+        <div class="box-label">P-84</div>
+        <div class="box-sub">Полулоток с клапанами</div>
+      </div>
+
+      <!-- Пюнет C1 -->
+      <div class="box-type" data-box="punnet" onclick="setBox('punnet',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <!-- низ -->
+            <path d="M8,48 L4,38 L56,38 L52,48 Z" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <!-- боковые -->
+            <line x1="4" y1="38" x2="14" y2="24" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="56" y1="38" x2="46" y2="24" stroke="#2E75B6" stroke-width="1.5"/>
+            <!-- верх -->
+            <path d="M14,24 L46,24 L52,14 L8,14 Z" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="14" y1="24" x2="8" y2="14" stroke="#2E75B6" stroke-width="1.2"/>
+            <line x1="46" y1="24" x2="52" y2="14" stroke="#2E75B6" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="box-label">Пюнет C1</div>
+        <div class="box-sub">Верх + низ (Top &amp; Bottom)</div>
+      </div>
+
+      <!-- Авто-замок -->
+      <div class="box-type" data-box="autolock" onclick="setBox('autolock',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <rect x="6" y="14" width="48" height="32" rx="2" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <!-- крышка авто-замок -->
+            <path d="M6,14 L18,4 L42,4 L54,14" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="18" y1="4" x2="18" y2="14" stroke="#2E75B6" stroke-width="1.2"/>
+            <line x1="42" y1="4" x2="42" y2="14" stroke="#2E75B6" stroke-width="1.2"/>
+            <!-- замок -->
+            <rect x="24" y="10" width="12" height="8" rx="2" fill="#2E75B6" opacity=".5"/>
+            <rect x="27" y="7" width="6" height="6" rx="3" fill="none" stroke="#2E75B6" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="box-label">Авто-замок</div>
+        <div class="box-sub">Самофиксирующийся</div>
+      </div>
+
+      <!-- Американка RSC -->
+      <div class="box-type" data-box="rsc" onclick="setBox('rsc',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <!-- корпус -->
+            <rect x="8" y="18" width="44" height="28" rx="2" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <!-- верхние клапаны (2 штуки) -->
+            <rect x="8"  y="6"  width="18" height="13" rx="1" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5"/>
+            <rect x="34" y="6"  width="18" height="13" rx="1" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5"/>
+            <!-- линия сгиба верха -->
+            <line x1="8"  y1="18" x2="8"  y2="6"  stroke="#2E75B6" stroke-width="1" stroke-dasharray="3 2"/>
+            <line x1="26" y1="18" x2="26" y2="6"  stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="34" y1="18" x2="34" y2="6"  stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="52" y1="18" x2="52" y2="6"  stroke="#2E75B6" stroke-width="1" stroke-dasharray="3 2"/>
+            <!-- нижние клапаны -->
+            <rect x="8"  y="46" width="18" height="6" rx="1" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.2" stroke-dasharray="3 2"/>
+            <rect x="34" y="46" width="18" height="6" rx="1" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.2" stroke-dasharray="3 2"/>
+          </svg>
+        </div>
+        <div class="box-label">Американка (RSC)</div>
+        <div class="box-sub">4-клапанный, FEFCO 0201</div>
+      </div>
+
+      <!-- Конический -->
+      <div class="box-type" data-box="conical" onclick="setBox('conical',this)">
+        <div class="box-icon">
+          <svg class="box-svg" width="60" height="54" viewBox="0 0 60 54">
+            <!-- конический лоток (трапеция сверху) -->
+            <path d="M10,44 L2,22 L58,22 L50,44 Z" fill="#D6E4F0" stroke="#2E75B6" stroke-width="2"/>
+            <path d="M2,22 L14,10 L46,10 L58,22" fill="#EEF4FB" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="14" y1="10" x2="10" y2="22" stroke="#2E75B6" stroke-width="1.5"/>
+            <line x1="46" y1="10" x2="50" y2="22" stroke="#2E75B6" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="box-label">Конический</div>
+        <div class="box-sub">Трапециевидный лоток</div>
+      </div>
+
+    </div><!-- /box-grid -->
+  </div><!-- /card 1 -->
+
+  <!-- ШАГ 2: РАЗМЕРЫ ЗАГОТОВКИ (БЛАНКА) -->
+  <div class="card">
+    <div class="card-title"><span class="step-badge">2</span>Размер заготовки (бланка картона), мм</div>
+    <div class="dim-row">
+      <div class="dim-group">
+        <label>Длина бланка</label>
+        <input type="number" id="blankL" value="600" min="100" max="1400" oninput="calc()">
+      </div>
+      <div class="dim-sep">×</div>
+      <div class="dim-group">
+        <label>Ширина бланка</label>
+        <input type="number" id="blankW" value="400" min="100" max="1200" oninput="calc()">
+      </div>
+    </div>
+    <div class="dim-note">* Для плоских коробов (пицца/торт) укажите размер развёртки</div>
+
+    <div style="margin-top:16px">
+      <div class="card-title" style="border:none;padding:0;margin-bottom:10px;font-size:13px">Высота готового короба, мм</div>
+      <div class="dim-row">
+        <div class="dim-group">
+          <label>Высота</label>
+          <input type="number" id="boxH" value="80" min="10" max="300" oninput="calc()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ШАГ 3: ПРОИЗВОДИТЕЛЬНОСТЬ -->
+  <div class="card">
+    <div class="card-title"><span class="step-badge">3</span>Требуемая производительность</div>
+    <div class="slider-wrap">
+      <div class="slider-row">
+        <input type="range" id="speedSlider" min="1" max="40" value="15" step="1" oninput="onSpeed(this.value)">
+        <div class="slider-val" id="speedVal">15 кор./мин</div>
+      </div>
+      <div class="slider-labels">
+        <span>1</span><span>10</span><span>20</span><span>30</span><span>40</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ШАГ 4: ПРОДУКТ -->
+  <div class="card">
+    <div class="card-title"><span class="step-badge">4</span>Продукт в коробе</div>
+    <div class="pills" id="prodPills">
+      <button class="pill active" data-prod="any"    onclick="setProd('any',this)">Любой</button>
+      <button class="pill" data-prod="meat"   onclick="setProd('meat',this)">🥩 Мясо / птица</button>
+      <button class="pill" data-prod="fish"   onclick="setProd('fish',this)">🐟 Рыба</button>
+      <button class="pill" data-prod="bakery" onclick="setProd('bakery',this)">🍕 Пицца / выпечка</button>
+      <button class="pill" data-prod="veg"    onclick="setProd('veg',this)">🥦 Овощи / фрукты</button>
+      <button class="pill" data-prod="fridge" onclick="setProd('fridge',this)">❄️ Замороженные</button>
+    </div>
+  </div>
+
+  <!-- ШАГ 5: ROI ПАРАМЕТРЫ -->
+  <div class="card">
+    <div class="card-title"><span class="step-badge">5</span>Параметры для расчёта окупаемости</div>
+    <div>
+      <div class="roi-input-row">
+        <label>Коробов в сутки (план / факт)</label>
+        <input type="number" id="rCpd" value="3000" min="100" oninput="calc()">
+        <span class="unit">кор.</span>
+      </div>
+      <div class="roi-input-row">
+        <label>Операторов сейчас на ручной сборке</label>
+        <input type="number" id="rOps" value="5" min="1" max="20" oninput="calc()">
+        <span class="unit">чел.</span>
+      </div>
+      <div class="roi-input-row">
+        <label>ФОТ одного оператора</label>
+        <input type="number" id="rSal" value="55000" min="20000" oninput="calc()">
+        <span class="unit">₽/мес</span>
+      </div>
+      <div class="roi-input-row">
+        <label>Курс EUR / руб.</label>
+        <input type="number" id="rEur" value="95" min="50" oninput="calc()">
+        <span class="unit">₽/€</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /LEFT -->
+
+<!-- RIGHT: RESULT -->
+<div>
+  <div class="result-panel">
+    <h2>🎯 Рекомендованные модели</h2>
+    <div id="resultModels">
+      <div class="empty-state">
+        <div class="icon">📦</div>
+        <p>Выберите конструкцию короба и параметры — система подберёт подходящие машины</p>
+      </div>
+    </div>
+    <div id="roiPanel" style="display:none">
+      <div class="roi-block">
+        <h3>📊 Расчёт окупаемости</h3>
+        <div id="roiRows"></div>
+        <div class="roi-total">
+          <span>Окупаемость</span>
+          <span id="roiPayback">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="cta-block">
+      <p>Нужен точный расчёт под ваш бланк?</p>
+      <a href="tel:+78001234567">📞 Связаться с ЯФОР</a>
+    </div>
+  </div>
+</div><!-- /RIGHT -->
+
+</div><!-- /wrap -->
+
+<script>
+// ── ДАННЫЕ МОДЕЛЕЙ ────────────────────────────────────────────────────────────
+const MODELS = [
+  {
+    id:        'gpk',
+    name:      'GPK-43H25EP',
+    typeLabel: 'Формирователь гофрокоробов (Китай)',
+    priceEUR:  17500,           // ~1 659 247 руб. / 95 ≈ 17 466 EUR (КП Тандер 2023)
+    priceRUB:  1659247,         // фиксированная рублёвая цена из КП
+    speedMax:  30,
+    blankLMax: 400, blankWMax: 300,  // Д 200–400, Ш 120–300 мм
+    boxHMax:   300,                   // В до 300 мм
+    boxes:     ['rsc'],               // только американка (RSC)
+    prod:      ['meat','fish','veg','fridge','bakery','any'],
+    opsAfter:  1,
+    desc:      'Специализированный формирователь гофрокоробов RSC (американка). Серводривод, магазин 1 500 мм. Поставляется с заклейщиком GPC50.',
+    specs:     ['30 кор./мин', 'Д 200–400 × Ш 120–300 × В 100–300 мм', 'Серводривод', 'Магазин 1 500 мм'],
+  },
+  {
+    id:        'ycz',
+    name:      'YCZ',
+    typeLabel: 'Собственное производство ЯФОР',
+    priceEUR:  67319,
+    speedMax:  40,
+    blankLMax: 300, blankWMax: 300,
+    boxHMax:   60,
+    boxes:     ['flat'],                      // только плоские
+    prod:      ['bakery', 'any'],
+    opsAfter:  1,
+    desc:      'Единственная машина для плоских коробов: пицца, торт, кондитерские. Горячий клей NORDSON.',
+    specs:     ['До 40 кор./мин', '200–300 × 200–300 мм', 'H: 15–60 мм', 'Картон 350–600 г/м²'],
+  },
+  {
+    id:        'q1530',
+    name:      'BOIX Q-1530',
+    typeLabel: 'BOIX (Испания)',
+    priceEUR:  105785,
+    speedMax:  30,
+    blankLMax: 1300, blankWMax: 1100,
+    boxHMax:   250,
+    boxes:     ['platform','column','dwall','p84','punnet','autolock','conical','rsc'],
+    prod:      ['meat','fish','veg','fridge','any'],
+    opsAfter:  1,
+    desc:      'Универсальный формирователь лотков среднего класса. 99 программ клея, 15 мин переналадка.',
+    specs:     ['До 30 кор./мин', 'Бланк до 1300×1100 мм', '99 программ', 'Melton NC-16'],
+  },
+  {
+    id:        'e7',
+    name:      'E-7 SMIPAC',
+    typeLabel: 'SMIPAC (Франция)',
+    priceEUR:  110769,
+    speedMax:  35,
+    blankLMax: 1300, blankWMax: 1000,
+    boxHMax:   250,
+    boxes:     ['platform','column','dwall','rsc'],
+    prod:      ['meat','fish','veg','fridge','any'],
+    opsAfter:  1,
+    desc:      'Усиленная серия с запатентованной системой загиба углов SMI PAC. 100 программ.',
+    specs:     ['До 35 кор./мин', 'Бланк до 1300×1000 мм', '100 программ', 'SMI PAC corner'],
+  },
+  {
+    id:        'fp4',
+    name:      'BOIX FP-4/2M-3',
+    typeLabel: 'BOIX (Испания)',
+    priceEUR:  126405,
+    speedMax:  35,
+    blankLMax: 1300, blankWMax: 1100,
+    boxHMax:   250,
+    boxes:     ['platform','column','dwall','p84','conical','rsc'],
+    prod:      ['meat','fish','veg','fridge','any'],
+    opsAfter:  1,
+    desc:      'Тяжёлая серия для крупных форматов. Высокая жёсткость рамы, 6 скоростей до 35/мин.',
+    specs:     ['До 35 кор./мин', 'Бланк до 1300×1100 мм', '60 программ', '2 000 кг рама'],
+  },
+  {
+    id:        'q2400',
+    name:      'BOIX Q-2400',
+    typeLabel: 'BOIX (Испания)',
+    priceEUR:  135477,
+    speedMax:  35,
+    blankLMax: 1300, blankWMax: 1100,
+    boxHMax:   108,
+    boxes:     ['platform','column','dwall','p84','punnet','autolock','conical','rsc'],
+    prod:      ['meat','fish','veg','fridge','any'],
+    opsAfter:  1,
+    desc:      'Флагман BOIX. Максимум программ (48), 2 синхромотора, Mitsubishi GOT 1000.',
+    specs:     ['До 35 кор./мин', '48 программ клея', '2 мотора с энкодерами', 'BOIX Connect'],
+  },
+];
+
+// ── СОСТОЯНИЕ ─────────────────────────────────────────────────────────────────
+let state = { box: 'flat', speed: 15, prod: 'any' };
+
+// ── ХЕНДЛЕРЫ ──────────────────────────────────────────────────────────────────
+function setBox(val, el) {
+  state.box = val;
+  document.querySelectorAll('.box-type').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  calc();
+}
+
+function onSpeed(v) {
+  state.speed = +v;
+  document.getElementById('speedVal').textContent = v + ' кор./мин';
+  calc();
+}
+
+function setProd(val, btn) {
+  state.prod = val;
+  document.querySelectorAll('#prodPills .pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  calc();
+}
+
+// ── СКОРИНГ ───────────────────────────────────────────────────────────────────
+function score(m) {
+  const bL  = +document.getElementById('blankL').value || 600;
+  const bW  = +document.getElementById('blankW').value || 400;
+  const bH  = +document.getElementById('boxH').value   || 80;
+
+  // Жёсткие ограничения
+  if (!m.boxes.includes(state.box)) return -1;          // конструкция не поддерживается
+  if (state.speed > m.speedMax)     return -1;          // скорость превышает максимум
+  if (bL > m.blankLMax || bW > m.blankWMax) return -1; // бланк слишком большой
+  if (bH > m.boxHMax)               return -1;          // высота не вмещается
+
+  let s = 100;
+
+  // Утилизация скорости
+  const ratio = state.speed / m.speedMax;
+  if (ratio > 0.75) s += 20; else if (ratio < 0.3) s -= 10;
+
+  // Размер бланка — предпочитаем ближайшее соответствие
+  const fitL = bL / m.blankLMax, fitW = bW / m.blankWMax;
+  if (fitL > 0.6 && fitW > 0.6) s += 10;
+  if (fitL > 0.9 || fitW > 0.9) s -= 5; // близко к лимиту
+
+  // Продукт
+  if (state.prod !== 'any' && m.prod.includes(state.prod)) s += 15;
+
+  // Цена (бонус за более дешёвую при прочих равных)
+  s -= Math.round(m.priceEUR / 10000);
+
+  return s;
+}
+
+// ── ГЛАВНЫЙ РАСЧЁТ ────────────────────────────────────────────────────────────
+function calc() {
+  const scored = MODELS
+    .map(m => ({ m, s: score(m) }))
+    .filter(x => x.s >= 0)
+    .sort((a, b) => b.s - a.s);
+
+  renderModels(scored);
+  renderROI(scored);
+}
+
+// ── РЕНДЕР МОДЕЛЕЙ ────────────────────────────────────────────────────────────
+const BOX_LABELS = {
+  flat:     'Плоский короб',  platform: 'Открытый лоток',
+  column:   'С колоннами',    dwall:    'Двойная стенка',
+  p84:      'P-84',           punnet:   'Пюнет C1',
+  autolock: 'Авто-замок',     conical:  'Конический',
+  rsc:      'Американка (RSC)',
+};
+
+function renderModels(scored) {
+  const el  = document.getElementById('resultModels');
+  const eur = +document.getElementById('rEur').value || 95;
+
+  if (!scored.length) {
+    el.innerHTML = `
+      <div class="empty-state"><div class="icon">🔍</div>
+        <p>Ни одна из машин не подходит под заданные параметры.<br>Проверьте размеры бланка или снизьте производительность.</p>
+      </div>
+      <div class="warn-box">Если задача нестандартная — свяжитесь с нами: подберём решение или запросим у производителя.</div>`;
+    document.getElementById('roiPanel').style.display = 'none';
+    return;
+  }
+
+  const top3 = scored.slice(0, 3);
+  el.innerHTML = top3.map((x, i) => {
+    const m = x.m;
+    // GPK имеет фиксированную рублёвую цену из КП
+    const priceRub  = m.priceRUB ? m.priceRUB : Math.round(m.priceEUR * eur / 1000) * 1000;
+    const priceDisp = m.priceRUB
+      ? `${priceRub.toLocaleString('ru')} ₽`
+      : `от ${m.priceEUR.toLocaleString('ru')} €`;
+    const priceSubDisp = m.priceRUB
+      ? `≈ ${Math.round(priceRub / eur).toLocaleString('ru')} € по курсу`
+      : `≈ ${priceRub.toLocaleString('ru')} ₽ (без НДС)`;
+    const isTop = i === 0;
+    const badge = isTop
+      ? `<span class="model-badge badge-best">⭐ Лучший выбор</span>`
+      : `<span class="model-badge badge-ok">#${i+1}</span>`;
+
+    // Совместимые конструкции: активная — выделена
+    const compatTags = m.boxes.map(b =>
+      `<span class="compat-tag ${b === state.box ? 'active-type' : ''}">${BOX_LABELS[b]}</span>`
+    ).join('');
+
+    return `
+    <div class="model-card ${isTop ? 'top' : ''}">
+      <div class="model-top-row">
+        <div class="model-name">${m.name}</div>${badge}
+      </div>
+      <div class="model-type">${m.typeLabel}</div>
+      <div class="model-desc">${m.desc}</div>
+      <div class="model-specs">
+        ${m.specs.map(s => `<span class="spec-tag">${s}</span>`).join('')}
+      </div>
+      <div style="font-size:10px;opacity:.65;margin-bottom:4px">Конструкции коробов:</div>
+      <div class="model-compat">${compatTags}</div>
+      <div class="model-price-row">
+        <div>
+          <div class="model-price">${priceDisp}</div>
+          <div class="model-price-sub">${priceSubDisp}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── РЕНДЕР ROI ────────────────────────────────────────────────────────────────
+function fmt(n) { return Math.round(n).toLocaleString('ru'); }
+
+function renderROI(scored) {
+  const panel = document.getElementById('roiPanel');
+  if (!scored.length) { panel.style.display = 'none'; return; }
+
+  const best   = scored[0].m;
+  const eur    = +document.getElementById('rEur').value || 95;
+  const cpd    = +document.getElementById('rCpd').value || 3000;
+  const ops    = +document.getElementById('rOps').value || 5;
+  const sal    = +document.getElementById('rSal').value || 55000;
+
+  const opsAfter    = best.opsAfter;
+  const opsSaved    = Math.max(0, ops - opsAfter);
+  const fotSaving   = opsSaved * sal * 12;
+  // Снижение брака бланков: ~2.5% → 0.3% (условно 1.5 руб./короб экономия)
+  const wasteSaving = Math.round(cpd * 365 * 1.5);
+  const totalAnnual = fotSaving + wasteSaving;
+  const priceRub    = best.priceRUB ? best.priceRUB : best.priceEUR * eur;
+  const payMonths   = totalAnnual > 0 ? Math.ceil(priceRub / (totalAnnual / 12)) : null;
+
+  document.getElementById('roiRows').innerHTML = `
+    <div class="roi-row"><span class="lbl">Модель</span><span class="val">${best.name}</span></div>
+    <div class="roi-row"><span class="lbl">Инвестиция</span><span class="val">${fmt(priceRub)} ₽</span></div>
+    <div class="roi-row"><span class="lbl">Операторов: сейчас → после</span><span class="val">${ops} → ${opsAfter} чел.</span></div>
+    <div class="roi-row"><span class="lbl">Экономия ФОТ / год</span><span class="val">${fmt(fotSaving)} ₽</span></div>
+    <div class="roi-row"><span class="lbl">Снижение потерь картона / год</span><span class="val">~${fmt(wasteSaving)} ₽</span></div>
+    <div class="roi-row"><span class="lbl">Итого экономия / год</span><span class="val">${fmt(totalAnnual)} ₽</span></div>
+  `;
+  document.getElementById('roiPayback').textContent =
+    payMonths
+      ? (payMonths <= 12 ? `${payMonths} мес.` : `${(payMonths / 12).toFixed(1)} лет`)
+      : '— уточните параметры';
+
+  panel.style.display = 'block';
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+calc();
+</script>
+</body>
+</html>

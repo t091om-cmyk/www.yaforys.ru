@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЯФОР — Упаковочное оборудование для пищевой промышленности | www.yaforys.ru</title>
+<meta name="description" content="Термоформеры, трейсилеры, флоу-пак машины и этикетировщики для мясо-, птице- и молочного производства. Подбор, поставка, монтаж, сервис.">
+<style>
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue-dark:   #1F4E79;
+  --blue-mid:    #2E75B6;
+  --blue-light:  #D6E8F7;
+  --blue-pale:   #EEF5FB;
+  --green:       #1E7B3A;
+  --green-light: #E6F4EB;
+  --orange:      #C55A11;
+  --orange-light:#FEF0E7;
+  --red:         #C00000;
+  --gray-dark:   #2C2C2C;
+  --gray-mid:    #555;
+  --gray-light:  #F4F6F8;
+  --white:       #FFFFFF;
+  --shadow-sm:   0 2px 8px rgba(31,78,121,.10);
+  --shadow-md:   0 6px 24px rgba(31,78,121,.15);
+  --shadow-lg:   0 12px 48px rgba(31,78,121,.20);
+  --radius:      10px;
+  --radius-lg:   18px;
+  --transition:  .25s ease;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; color: var(--gray-dark); background: var(--white); line-height: 1.6; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; font-family: inherit; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section-title { font-size: 2rem; font-weight: 700; color: var(--blue-dark); text-align: center; margin-bottom: 12px; }
+.section-subtitle { font-size: 1.05rem; color: var(--gray-mid); text-align: center; max-width: 680px; margin: 0 auto 48px; }
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.topbar {
+  background: var(--blue-dark);
+  color: rgba(255,255,255,.75);
+  font-size: .82rem;
+  padding: 7px 0;
+}
+.topbar .container { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.topbar a { color: rgba(255,255,255,.85); }
+.topbar a:hover { color: #fff; }
+.topbar-links { display: flex; gap: 20px; align-items: center; }
+.topbar-badge {
+  background: var(--orange);
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: .3px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid #E0EAF4;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  gap: 24px;
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-mark {
+  width: 44px; height: 44px;
+  background: var(--blue-dark);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 900; color: #fff;
+  letter-spacing: -1px;
+}
+.logo-text { line-height: 1.2; }
+.logo-text strong { display: block; font-size: 1.25rem; font-weight: 800; color: var(--blue-dark); }
+.logo-text span { font-size: .75rem; color: var(--gray-mid); }
+nav { display: flex; gap: 4px; align-items: center; }
+nav a {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: .92rem;
+  font-weight: 500;
+  color: var(--gray-dark);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+nav a:hover { background: var(--blue-pale); color: var(--blue-dark); }
+nav a.active { color: var(--blue-mid); font-weight: 600; }
+.header-cta { display: flex; align-items: center; gap: 16px; }
+.header-phone { font-size: 1.05rem; font-weight: 700; color: var(--blue-dark); white-space: nowrap; }
+.header-phone small { display: block; font-size: .75rem; font-weight: 400; color: var(--gray-mid); }
+.btn-header {
+  background: var(--orange);
+  color: #fff;
+  font-size: .88rem;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  white-space: nowrap;
+  transition: var(--transition);
+  letter-spacing: .2px;
+}
+.btn-header:hover { background: #A84A0F; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(197,90,17,.35); }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, #163A5F 60%, #0F2B4A 100%);
+  padding: 80px 0 70px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -120px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(46,117,182,.3) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(46,117,182,.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero .container { display: grid; grid-template-columns: 1fr 420px; gap: 56px; align-items: center; position: relative; z-index: 1; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.25);
+  color: rgba(255,255,255,.9);
+  font-size: .82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  letter-spacing: .3px;
+}
+.hero-badge-dot { width: 8px; height: 8px; background: #4CE058; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.6; transform:scale(1.3); } }
+.hero h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  letter-spacing: -.5px;
+}
+.hero h1 em { color: #6EC6F5; font-style: normal; }
+.hero-desc {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,.78);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 540px;
+}
+.hero-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 44px; }
+.btn-primary {
+  background: var(--orange);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 10px;
+  border: none;
+  transition: var(--transition);
+  letter-spacing: .2px;
+}
+.btn-primary:hover { background: #A84A0F; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(197,90,17,.45); }
+.btn-ghost {
+  background: transparent;
+  color: rgba(255,255,255,.9);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,.35);
+  transition: var(--transition);
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,.7); background: rgba(255,255,255,.08); }
+.hero-stats { display: flex; gap: 32px; }
+.hero-stat-item { }
+.hero-stat-num { font-size: 1.9rem; font-weight: 800; color: #fff; line-height: 1; }
+.hero-stat-num sup { font-size: 1rem; }
+.hero-stat-label { font-size: .78rem; color: rgba(255,255,255,.6); margin-top: 3px; line-height: 1.3; }
+
+/* Hero form card */
+.hero-form-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-lg);
+}
+.hero-form-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--blue-dark);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.hero-form-desc {
+  font-size: .84rem;
+  color: var(--gray-mid);
+  text-align: center;
+  margin-bottom: 22px;
+  line-height: 1.4;
+}
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: .82rem; font-weight: 600; color: var(--gray-dark); margin-bottom: 5px; }
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #D0DEEC;
+  border-radius: 8px;
+  font-size: .92rem;
+  font-family: inherit;
+  color: var(--gray-dark);
+  background: var(--white);
+  transition: border-color var(--transition);
+  outline: none;
+}
+.form-group input:focus,
+.form-group select:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(46,117,182,.12); }
+.btn-form-submit {
+  width: 100%;
+  background: var(--blue-dark);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  transition: var(--transition);
+  margin-top: 4px;
+}
+.btn-form-submit:hover { background: var(--blue-mid); transform: translateY(-1px); }
+.form-privacy {
+  font-size: .75rem;
+  color: var(--gray-mid);
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* ============================================================
+   TRUST BAR
+   ============================================================ */
+.trustbar {
+  background: var(--blue-pale);
+  border-bottom: 1px solid #D6E8F7;
+  padding: 18px 0;
+}
+.trustbar .container { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+.trust-item { display: flex; align-items: center; gap: 10px; }
+.trust-icon { font-size: 1.4rem; }
+.trust-text strong { display: block; font-size: .95rem; font-weight: 700; color: var(--blue-dark); }
+.trust-text span { font-size: .78rem; color: var(--gray-mid); }
+.trust-divider { width: 1px; height: 40px; background: #C0D8EF; }
+
+/* ============================================================
+   PRODUCTS SECTION
+   ============================================================ */
+.products-section { padding: 80px 0; background: var(--white); }
+.products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.product-card {
+  border: 1.5px solid #E0EAF4;
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--blue-mid);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition);
+}
+.product-card:hover {
+  border-color: var(--blue-mid);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.product-card:hover::before { transform: scaleX(1); }
+.product-card.featured {
+  border-color: var(--blue-mid);
+  background: linear-gradient(160deg, var(--blue-pale) 0%, var(--white) 100%);
+}
+.product-card.featured::before { transform: scaleX(1); }
+.product-badge {
+  display: inline-block;
+  font-size: .72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+.badge-blue { background: var(--blue-light); color: var(--blue-dark); }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-orange { background: var(--orange-light); color: var(--orange); }
+.product-icon {
+  width: 54px; height: 54px;
+  background: var(--blue-dark);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 18px;
+  transition: var(--transition);
+}
+.product-card:hover .product-icon { transform: scale(1.08); }
+.product-name { font-size: 1.12rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 8px; }
+.product-desc { font-size: .88rem; color: var(--gray-mid); line-height: 1.6; margin-bottom: 18px; }
+.product-specs { display: flex; flex-direction: column; gap: 6px; margin-bottom: 22px; }
+.product-spec {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .83rem;
+  color: var(--gray-dark);
+}
+.product-spec::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+.product-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--blue-mid);
+  transition: gap var(--transition);
+}
+.product-link:hover { gap: 10px; }
+.product-link-arrow { font-size: 1rem; }
+
+/* ============================================================
+   CALCULATOR SECTION
+   ============================================================ */
+.calc-section {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, #1A3F66 100%);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+.calc-section::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -150px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(46,117,182,.25) 0%, transparent 70%);
+}
+.calc-wrapper { display: grid; grid-template-columns: 1fr 520px; gap: 64px; align-items: center; position: relative; z-index: 1; }
+.calc-promo h2 { font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 16px; line-height: 1.2; }
+.calc-promo h2 em { color: #6EC6F5; font-style: normal; }
+.calc-promo p { font-size: 1rem; color: rgba(255,255,255,.75); line-height: 1.7; margin-bottom: 28px; }
+.calc-benefits { display: flex; flex-direction: column; gap: 14px; }
+.calc-benefit { display: flex; align-items: center; gap: 12px; }
+.calc-benefit-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: rgba(255,255,255,.12);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.calc-benefit-text { font-size: .92rem; color: rgba(255,255,255,.85); line-height: 1.4; }
+.calc-benefit-text strong { color: #fff; }
+
+/* Calculator widget */
+.calc-widget {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  box-shadow: var(--shadow-lg);
+}
+.calc-widget-title { font-size: 1.15rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
+.calc-widget-sub { font-size: .84rem; color: var(--gray-mid); margin-bottom: 26px; }
+.calc-steps { display: flex; gap: 0; margin-bottom: 28px; }
+.calc-step-dot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.calc-step-dot:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: #E0EAF4;
+  z-index: 0;
+}
+.calc-step-dot:not(:last-child).done::after { background: var(--blue-mid); }
+.step-circle {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid #D0DEEC;
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem;
+  font-weight: 700;
+  color: #9BB4CC;
+  position: relative;
+  z-index: 1;
+  transition: var(--transition);
+}
+.calc-step-dot.active .step-circle { border-color: var(--blue-mid); background: var(--blue-mid); color: #fff; }
+.calc-step-dot.done .step-circle { border-color: var(--blue-mid); background: var(--blue-mid); color: #fff; }
+.step-label { font-size: .68rem; color: #9BB4CC; margin-top: 5px; text-align: center; font-weight: 500; }
+.calc-step-dot.active .step-label { color: var(--blue-mid); font-weight: 700; }
+
+/* Calculator questions */
+.calc-question { display: none; }
+.calc-question.active { display: block; }
+.calc-q-title { font-size: .95rem; font-weight: 700; color: var(--gray-dark); margin-bottom: 14px; }
+.calc-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.calc-option {
+  border: 1.5px solid #E0EAF4;
+  border-radius: 8px;
+  padding: 12px 10px;
+  font-size: .84rem;
+  font-weight: 500;
+  color: var(--gray-dark);
+  background: var(--white);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  line-height: 1.3;
+}
+.calc-option:hover { border-color: var(--blue-mid); background: var(--blue-pale); color: var(--blue-dark); }
+.calc-option.selected { border-color: var(--blue-mid); background: var(--blue-pale); color: var(--blue-dark); font-weight: 700; }
+.calc-nav { display: flex; justify-content: space-between; align-items: center; }
+.btn-calc-back {
+  background: none;
+  border: 1.5px solid #D0DEEC;
+  color: var(--gray-mid);
+  font-size: .88rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+.btn-calc-back:hover { border-color: var(--blue-mid); color: var(--blue-dark); }
+.btn-calc-next {
+  background: var(--blue-dark);
+  color: #fff;
+  font-size: .92rem;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  transition: var(--transition);
+}
+.btn-calc-next:hover { background: var(--blue-mid); }
+.btn-calc-next:disabled { opacity: .5; cursor: default; }
+
+/* Calculator result */
+.calc-result { display: none; }
+.calc-result.active { display: block; }
+.result-box {
+  background: linear-gradient(135deg, var(--blue-pale) 0%, #EAF4FF 100%);
+  border: 2px solid var(--blue-mid);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+.result-emoji { font-size: 2.5rem; margin-bottom: 8px; }
+.result-title { font-size: 1.1rem; font-weight: 800; color: var(--blue-dark); margin-bottom: 6px; }
+.result-desc { font-size: .85rem; color: var(--gray-mid); line-height: 1.5; margin-bottom: 16px; }
+.result-specs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 16px; }
+.result-spec-tag {
+  background: rgba(46,117,182,.12);
+  color: var(--blue-dark);
+  font-size: .78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.btn-get-offer {
+  width: 100%;
+  background: var(--orange);
+  color: #fff;
+  font-size: .95rem;
+  font-weight: 700;
+  padding: 13px;
+  border-radius: 8px;
+  border: none;
+  transition: var(--transition);
+}
+.btn-get-offer:hover { background: #A84A0F; }
+.calc-restart {
+  display: block;
+  text-align: center;
+  font-size: .82rem;
+  color: var(--gray-mid);
+  margin-top: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.calc-restart:hover { color: var(--blue-mid); }
+
+/* ============================================================
+   CALCULATORS HUB
+   ============================================================ */
+.calchub-section { padding: 64px 0 72px; background: var(--white); border-top: 1px solid #E0EAF4; }
+.calchub-label {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--blue-pale); color: var(--blue-dark);
+  font-size: .78rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 20px; margin: 0 auto 14px;
+  display: flex; width: fit-content;
+}
+.calchub-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 40px;
+}
+.calchub-card {
+  background: var(--white);
+  border: 1.5px solid #E0EAF4;
+  border-radius: var(--radius);
+  padding: 22px 18px 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.calchub-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(46,117,182,.04) 0%, transparent 70%);
+  opacity: 0; transition: opacity var(--transition);
+}
+.calchub-card:hover { border-color: var(--blue-mid); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.calchub-card:hover::after { opacity: 1; }
+.calchub-card.featured-calc { border-color: var(--orange); background: linear-gradient(160deg, #FEF6F0 0%, var(--white) 100%); }
+.calchub-card.featured-calc:hover { border-color: #A84A0F; box-shadow: 0 6px 24px rgba(197,90,17,.18); }
+.calchub-icon {
+  width: 46px; height: 46px;
+  border-radius: 12px;
+  background: var(--blue-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.35rem; margin-bottom: 14px;
+  transition: transform var(--transition);
+}
+.calchub-card:hover .calchub-icon { transform: scale(1.08); }
+.calchub-card.featured-calc .calchub-icon { background: var(--orange); }
+.calchub-name { font-size: .95rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; line-height: 1.3; }
+.calchub-card.featured-calc .calchub-name { color: var(--orange); }
+.calchub-desc { font-size: .8rem; color: var(--gray-mid); line-height: 1.55; margin-bottom: 14px; }
+.calchub-arrow {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .8rem; font-weight: 700; color: var(--blue-mid);
+  transition: gap var(--transition);
+}
+.calchub-card.featured-calc .calchub-arrow { color: var(--orange); }
+.calchub-card:hover .calchub-arrow { gap: 9px; }
+.calchub-badge-new {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--orange); color: #fff;
+  font-size: .65rem; font-weight: 800; letter-spacing: .5px; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 8px;
+}
+
+@media (max-width: 1024px) { .calchub-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .calchub-grid { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   CLIENTS SECTION
+   ============================================================ */
+.clients-section { padding: 64px 0; background: var(--gray-light); }
+.clients-title { font-size: 1.7rem; font-weight: 700; color: var(--blue-dark); text-align: center; margin-bottom: 10px; }
+.clients-sub { font-size: .95rem; color: var(--gray-mid); text-align: center; margin-bottom: 44px; }
+.clients-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 48px; }
+.client-stat {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #E0EAF4;
+}
+.client-stat-num { font-size: 2.4rem; font-weight: 900; color: var(--blue-dark); line-height: 1; margin-bottom: 8px; }
+.client-stat-num span { font-size: 1.6rem; }
+.client-stat-label { font-size: .85rem; color: var(--gray-mid); line-height: 1.4; }
+.clients-logos { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; }
+.client-logo-item {
+  padding: 18px 28px;
+  border-right: 1px solid #DDE8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.client-logo-item:last-child { border-right: none; }
+.client-logo-text {
+  font-size: .95rem;
+  font-weight: 800;
+  color: #9BB4CC;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color var(--transition);
+}
+.client-logo-item:hover .client-logo-text { color: var(--blue-dark); }
+
+/* ============================================================
+   WHY SECTION
+   ============================================================ */
+.why-section { padding: 80px 0; background: var(--white); }
+.why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.why-card {
+  padding: 32px 24px;
+  border-radius: var(--radius-lg);
+  background: var(--blue-pale);
+  border: 1px solid #D6E8F7;
+  transition: var(--transition);
+}
+.why-card:hover { background: var(--blue-light); transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+.why-icon { font-size: 2.2rem; margin-bottom: 16px; }
+.why-title { font-size: 1.05rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 10px; }
+.why-desc { font-size: .88rem; color: var(--gray-mid); line-height: 1.65; }
+
+/* ============================================================
+   SERVICE SECTION
+   ============================================================ */
+.service-section { padding: 80px 0; background: var(--gray-light); }
+.service-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+
+/* Left: service types */
+.service-types { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.service-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 26px 22px;
+  border: 1.5px solid #E0EAF4;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--blue-mid);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition);
+}
+.service-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); border-color: var(--blue-mid); }
+.service-card:hover::before { transform: scaleX(1); }
+.service-card-icon { font-size: 2rem; margin-bottom: 12px; }
+.service-card-title { font-size: 1rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 8px; }
+.service-card-desc { font-size: .83rem; color: var(--gray-mid); line-height: 1.6; }
+.service-card-tag {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: .73rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 12px;
+}
+.tag-urgent { background: #FCE4D6; color: var(--orange); }
+.tag-planned { background: var(--blue-light); color: var(--blue-dark); }
+.tag-remote { background: var(--green-light); color: var(--green); }
+
+/* Right: SLA + repair calc CTA */
+.service-right { }
+.service-sla {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  border: 1.5px solid #E0EAF4;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.service-sla-title { font-size: 1.05rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.sla-rows { display: flex; flex-direction: column; gap: 0; }
+.sla-row {
+  display: flex;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid #EEF3F8;
+  gap: 14px;
+}
+.sla-row:last-child { border-bottom: none; }
+.sla-icon { font-size: 1.3rem; width: 32px; flex-shrink: 0; text-align: center; }
+.sla-info { flex: 1; }
+.sla-info strong { display: block; font-size: .92rem; font-weight: 700; color: var(--gray-dark); }
+.sla-info span { font-size: .8rem; color: var(--gray-mid); }
+.sla-time {
+  font-size: .9rem;
+  font-weight: 800;
+  color: var(--blue-dark);
+  white-space: nowrap;
+  background: var(--blue-pale);
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.sla-time.urgent { color: var(--orange); background: #FEF0E7; }
+
+.repair-calc-cta {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, #1A3F66 100%);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  color: rgba(255,255,255,.9);
+}
+.repair-calc-cta-icon { font-size: 2rem; margin-bottom: 12px; }
+.repair-calc-cta-title { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.repair-calc-cta-desc { font-size: .85rem; color: rgba(255,255,255,.72); line-height: 1.6; margin-bottom: 18px; }
+.btn-repair-calc {
+  display: block;
+  width: 100%;
+  background: var(--orange);
+  color: #fff;
+  font-size: .92rem;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.btn-repair-calc:hover { background: #A84A0F; transform: translateY(-1px); }
+.btn-repair-service {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  background: transparent;
+  color: rgba(255,255,255,.8);
+  font-size: .85rem;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(255,255,255,.3);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.btn-repair-service:hover { border-color: rgba(255,255,255,.7); color: #fff; }
+
+/* Responsive service */
+@media (max-width: 1024px) {
+  .service-layout { grid-template-columns: 1fr; gap: 36px; }
+  .service-types { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .service-types { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   CONTACTS SECTION
+   ============================================================ */
+.contacts-section { padding: 80px 0; background: var(--white); }
+.contacts-grid { display: flex; flex-direction: column; gap: 32px; margin-top: 48px; }
+.contact-card {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  border: 1.5px solid #E0EAF4;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.contact-card:hover { box-shadow: var(--shadow-md); border-color: var(--blue-mid); }
+.contact-info {
+  padding: 36px 32px;
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
+.contact-city-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--blue-pale);
+  color: var(--blue-dark);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  width: fit-content;
+}
+.contact-office-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--blue-dark);
+  margin-bottom: 20px;
+}
+.contact-rows { display: flex; flex-direction: column; gap: 12px; }
+.contact-row { display: flex; align-items: flex-start; gap: 11px; }
+.contact-row-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: var(--blue-pale);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.contact-row-body { }
+.contact-row-label { font-size: .72rem; color: var(--gray-mid); font-weight: 600; text-transform: uppercase; letter-spacing: .3px; margin-bottom: 2px; }
+.contact-row-value { font-size: .93rem; color: var(--gray-dark); font-weight: 500; line-height: 1.45; }
+.contact-row-value a { color: var(--blue-mid); font-weight: 700; }
+.contact-row-value a:hover { text-decoration: underline; }
+.contact-social { display: flex; gap: 10px; margin-top: 20px; }
+.social-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid #D0DEEC;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem;
+  color: var(--gray-mid);
+  transition: var(--transition);
+  cursor: pointer;
+  background: var(--white);
+}
+.social-btn:hover { border-color: var(--blue-mid); color: var(--blue-dark); background: var(--blue-pale); transform: translateY(-2px); }
+.contact-map {
+  min-height: 240px;
+  background: #E8F0F8;
+  position: relative;
+  overflow: hidden;
+}
+.contact-map iframe {
+  width: 100%; height: 100%;
+  border: none;
+  display: block;
+  min-height: 240px;
+}
+.contact-map-placeholder {
+  width: 100%; height: 100%;
+  min-height: 240px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #D6E8F7 0%, #EEF5FB 100%);
+  color: var(--blue-mid);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.contact-map-placeholder:hover { background: linear-gradient(135deg, #C2DDEF 0%, #E2EFF8 100%); }
+.map-pin-icon { font-size: 2.5rem; }
+
+@media (max-width: 860px) {
+  .contact-card { grid-template-columns: 1fr; }
+  .contact-map { min-height: 220px; }
+  .contact-map iframe { min-height: 220px; }
+}
+
+/* ============================================================
+   CTA BANNER
+   ============================================================ */
+.cta-banner {
+  background: linear-gradient(90deg, var(--orange) 0%, #E06B1A 100%);
+  padding: 56px 0;
+}
+.cta-banner .container { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+.cta-banner-text h2 { font-size: 1.75rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.cta-banner-text p { font-size: 1rem; color: rgba(255,255,255,.85); }
+.cta-banner-actions { display: flex; gap: 14px; align-items: center; flex-shrink: 0; }
+.btn-cta-white {
+  background: #fff;
+  color: var(--orange);
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 14px 28px;
+  border-radius: 10px;
+  border: none;
+  transition: var(--transition);
+}
+.btn-cta-white:hover { background: #FFF3EC; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.15); }
+.btn-cta-outline {
+  background: transparent;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,.6);
+  transition: var(--transition);
+}
+.btn-cta-outline:hover { border-color: #fff; background: rgba(255,255,255,.1); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--blue-dark);
+  padding: 56px 0 24px;
+  color: rgba(255,255,255,.7);
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand { }
+.footer-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.footer-logo-mark {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,.15);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; font-weight: 900; color: #fff;
+}
+.footer-logo-name strong { display: block; font-size: 1.15rem; font-weight: 800; color: #fff; }
+.footer-logo-name span { font-size: .72rem; color: rgba(255,255,255,.5); }
+.footer-about { font-size: .87rem; line-height: 1.65; margin-bottom: 20px; max-width: 280px; }
+.footer-contacts a { color: rgba(255,255,255,.85); font-size: .95rem; font-weight: 600; display: block; margin-bottom: 4px; }
+.footer-contacts span { font-size: .78rem; }
+.footer-col-title { font-size: .9rem; font-weight: 700; color: #fff; margin-bottom: 16px; letter-spacing: .3px; }
+.footer-links { display: flex; flex-direction: column; gap: 9px; }
+.footer-links a { font-size: .85rem; color: rgba(255,255,255,.65); transition: color var(--transition); }
+.footer-links a:hover { color: #fff; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .8rem;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.footer-bottom a { color: rgba(255,255,255,.5); }
+.footer-bottom a:hover { color: rgba(255,255,255,.85); }
+
+/* ============================================================
+   STICKY WHATSAPP
+   ============================================================ */
+.sticky-wa {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.wa-btn {
+  width: 58px; height: 58px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,.5);
+  transition: var(--transition);
+  font-size: 1.7rem;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  animation: wa-pulse 3s infinite;
+}
+@keyframes wa-pulse {
+  0%,100% { box-shadow: 0 4px 20px rgba(37,211,102,.5); }
+  50% { box-shadow: 0 4px 32px rgba(37,211,102,.75), 0 0 0 8px rgba(37,211,102,.12); }
+}
+.wa-btn:hover { background: #1EBE5A; transform: scale(1.1); }
+.wa-tooltip {
+  background: var(--white);
+  color: var(--gray-dark);
+  font-size: .82rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  display: none;
+}
+.sticky-wa:hover .wa-tooltip { display: block; }
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 9998;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  animation: modal-in .25s ease;
+}
+@keyframes modal-in { from { opacity:0; transform:scale(.95) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
+.modal-close {
+  position: absolute;
+  top: 16px; right: 20px;
+  font-size: 1.5rem;
+  color: #9BB4CC;
+  background: none;
+  border: none;
+  line-height: 1;
+  cursor: pointer;
+}
+.modal-close:hover { color: var(--gray-dark); }
+.modal-title { font-size: 1.35rem; font-weight: 800; color: var(--blue-dark); margin-bottom: 8px; }
+.modal-desc { font-size: .9rem; color: var(--gray-mid); margin-bottom: 24px; line-height: 1.5; }
+.modal-success { display: none; text-align: center; padding: 20px 0; }
+.modal-success-icon { font-size: 3rem; margin-bottom: 14px; }
+.modal-success-title { font-size: 1.3rem; font-weight: 800; color: var(--blue-dark); margin-bottom: 8px; }
+.modal-success-desc { font-size: .9rem; color: var(--gray-mid); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .hero .container { grid-template-columns: 1fr; gap: 40px; }
+  .hero-form-card { max-width: 480px; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .calc-wrapper { grid-template-columns: 1fr; gap: 40px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+@media (max-width: 768px) {
+  .section-title { font-size: 1.6rem; }
+  .hero h1 { font-size: 2rem; }
+  .products-grid { grid-template-columns: 1fr; }
+  .clients-stats { grid-template-columns: repeat(2, 1fr); }
+  .why-grid { grid-template-columns: 1fr 1fr; }
+  nav { display: none; }
+  .topbar-links { gap: 12px; }
+  .hero-stats { gap: 20px; flex-wrap: wrap; }
+  .cta-banner .container { flex-direction: column; text-align: center; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .trust-divider { display: none; }
+  .trustbar .container { gap: 20px; }
+}
+@media (max-width: 480px) {
+  .clients-stats { grid-template-columns: 1fr 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
+  .calc-options { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     TOP BAR
+     ============================================================ -->
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-links">
+      <span>🕐 Пн–Пт: 9:00–18:00 МСК</span>
+      <a href="mailto:sales@yaforys.ru">sales@yaforys.ru</a>
+      <span class="topbar-badge">🔴 Честный знак — внедряем под ключ</span>
+    </div>
+    <div class="topbar-links">
+      <a href="#">Сервис и запчасти</a>
+      <a href="#">Кейсы</a>
+      <a href="#">О компании</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <div class="logo-mark">ЯФ</div>
+        <div class="logo-text">
+          <strong>ЯФОР</strong>
+          <span>Упаковочное оборудование</span>
+        </div>
+      </a>
+      <nav>
+        <a href="#products" class="active">Оборудование</a>
+        <a href="#calculators">Калькуляторы</a>
+        <a href="#service">Сервис</a>
+        <a href="#">Кейсы</a>
+        <a href="#">О нас</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <div class="header-cta">
+        <div class="header-phone">
+          <a href="tel:+78001234567">8 800 XXX-XX-XX</a>
+          <small>Бесплатно по России</small>
+        </div>
+        <button class="btn-header" onclick="openModal('Заказать звонок')">Заказать звонок</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Поставки по всей России • Монтаж за 5 дней
+      </div>
+      <h1>
+        Упаковочное оборудование<br>
+        для <em>мяса, птицы</em><br>
+        и молочной продукции
+      </h1>
+      <p class="hero-desc">
+        Термоформеры, трейсилеры, флоу-пак машины и этикетировщики DIBAL.
+        Увеличьте скорость упаковки, продлите срок хранения продукта
+        и выполните требования <strong style="color:#6EC6F5">Честного знака</strong> — под ключ.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="openModal('Получить КП')">Получить КП за 24 часа →</button>
+        <button class="btn-ghost" onclick="document.getElementById('calc').scrollIntoView({behavior:'smooth'})">Подобрать оборудование</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">200<sup>+</sup></div>
+          <div class="hero-stat-label">внедрений<br>по России</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">15</div>
+          <div class="hero-stat-label">лет опыта<br>в отрасли</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">21</div>
+          <div class="hero-stat-label">день срок хранения<br>в MAP-упаковке</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">5</div>
+          <div class="hero-stat-label">дней монтаж<br>«под ключ»</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Form -->
+    <div class="hero-form-card">
+      <div class="hero-form-title">Получить коммерческое предложение</div>
+      <div class="hero-form-desc">Подберём модель под ваш продукт и производительность. КП — за 24 часа.</div>
+      <form onsubmit="submitHeroForm(event)">
+        <div class="form-group">
+          <label>Тип оборудования</label>
+          <select id="hero-eq" required>
+            <option value="">— Выберите оборудование —</option>
+            <option>Термоформер ЯFORM420</option>
+            <option>Трейсилер ЯФОР</option>
+            <option>Флоу-пак машина ЯFLOW</option>
+            <option>Этикетировщик DIBAL</option>
+            <option>Картонэректор</option>
+            <option>Оборудование Честного знака</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Продукт для упаковки</label>
+          <select id="hero-prod" required>
+            <option value="">— Выберите продукт —</option>
+            <option>Мясо и мясная продукция</option>
+            <option>Птица и полуфабрикаты</option>
+            <option>Молочная продукция</option>
+            <option>Рыба и морепродукты</option>
+            <option>Хлебобулочные изделия</option>
+            <option>Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ваше имя</label>
+          <input type="text" placeholder="Иван Петров" required>
+        </div>
+        <div class="form-group">
+          <label>Телефон</label>
+          <input type="tel" placeholder="+7 (___) ___-__-__" required>
+        </div>
+        <button type="submit" class="btn-form-submit">Получить КП →</button>
+        <div class="form-privacy">🔒 Нажимая кнопку, вы соглашаетесь с <a href="#" style="color:var(--blue-mid)">политикой конфиденциальности</a></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TRUST BAR
+     ============================================================ -->
+<div class="trustbar">
+  <div class="container">
+    <div class="trust-item">
+      <span class="trust-icon">🏭</span>
+      <div class="trust-text">
+        <strong>Прямые поставки</strong>
+        <span>от производителей</span>
+      </div>
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <span class="trust-icon">🔧</span>
+      <div class="trust-text">
+        <strong>Монтаж «под ключ»</strong>
+        <span>5 дней по России</span>
+      </div>
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <span class="trust-icon">📦</span>
+      <div class="trust-text">
+        <strong>Запчасти на складе</strong>
+        <span>отгрузка за 24 часа</span>
+      </div>
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <span class="trust-icon">📋</span>
+      <div class="trust-text">
+        <strong>Честный знак</strong>
+        <span>внедрение под ключ</span>
+      </div>
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <span class="trust-icon">🔧</span>
+      <div class="trust-text">
+        <strong>Ремонт за 24ч</strong>
+        <span>выезд инженера по России</span>
+      </div>
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <span class="trust-icon">💳</span>
+      <div class="trust-text">
+        <strong>Лизинг и рассрочка</strong>
+        <span>для юридических лиц</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PRODUCTS
+     ============================================================ -->
+<section class="products-section" id="products">
+  <div class="container">
+    <h2 class="section-title">Оборудование ЯФОР</h2>
+    <p class="section-subtitle">Полный цикл упаковки: от формирования лотка до нанесения маркировки Честного знака</p>
+    <div class="products-grid">
+
+      <div class="product-card featured">
+        <span class="product-badge badge-orange">🔥 Хит продаж</span>
+        <div class="product-icon">🔲</div>
+        <div class="product-name">Термоформер ЯFORM420</div>
+        <div class="product-desc">Вакуумная и MAP-упаковка для мяса и молочной продукции. До 420 упаковок в цикл. 7+ форматов на одной машине.</div>
+        <div class="product-specs">
+          <div class="product-spec">Производительность: до 420 уп./цикл</div>
+          <div class="product-spec">MAP-упаковка: срок хранения до 21 дня</div>
+          <div class="product-spec">Корпус AISI-304, быстрая переналадка</div>
+          <div class="product-spec">Поддержка SKIN и вакуумного формата</div>
+        </div>
+        <a href="#" class="product-link">Подробнее и КП <span class="product-link-arrow">→</span></a>
+      </div>
+
+      <div class="product-card">
+        <span class="product-badge badge-blue">Птица и мясо</span>
+        <div class="product-icon">🗂️</div>
+        <div class="product-name">Трейсилер ЯФОР</div>
+        <div class="product-desc">Автоматическая запайка лотков. Вакуум, MAP, SKIN-плёнка. Для птицеводства и мясопереработки.</div>
+        <div class="product-specs">
+          <div class="product-spec">До 72 лотка/мин (модель 450VG)</div>
+          <div class="product-spec">Переналадка 15 мин без инструментов</div>
+          <div class="product-spec">Совместимость с 95% лотков рынка</div>
+        </div>
+        <a href="#" class="product-link">Подробнее и КП <span class="product-link-arrow">→</span></a>
+      </div>
+
+      <div class="product-card">
+        <span class="product-badge badge-blue">Хлебобулочные / сыр</span>
+        <div class="product-icon">📦</div>
+        <div class="product-name">Флоу-пак ЯFLOW</div>
+        <div class="product-desc">Горизонтальная упаковка в плёнку. Сыр, выпечка, кондитерка, полуфабрикаты. Переналадка 10 минут.</div>
+        <div class="product-specs">
+          <div class="product-spec">До 220 упаковок/мин</div>
+          <div class="product-spec">Формат 10–500 мм по длине</div>
+          <div class="product-spec">Интеграция с принтерами маркировки</div>
+        </div>
+        <a href="#" class="product-link">Подробнее и КП <span class="product-link-arrow">→</span></a>
+      </div>
+
+      <div class="product-card">
+        <span class="product-badge badge-green">Честный знак</span>
+        <div class="product-icon">🏷️</div>
+        <div class="product-name">Этикетировщик DIBAL</div>
+        <div class="product-desc">Весовая маркировка с поддержкой ГИС МТ (Честный знак). До 150 упаковок/мин. Точность ±1 г.</div>
+        <div class="product-specs">
+          <div class="product-spec">Поддержка ГИС МТ для мяса и молока</div>
+          <div class="product-spec">Печать и нанесение 2D-кода</div>
+          <div class="product-spec">Интеграция с весами и МД</div>
+        </div>
+        <a href="#" class="product-link">Подробнее и КП <span class="product-link-arrow">→</span></a>
+      </div>
+
+      <div class="product-card">
+        <span class="product-badge badge-blue">Вторичная упаковка</span>
+        <div class="product-icon">📫</div>
+        <div class="product-name">Картонэректор</div>
+        <div class="product-desc">Автоматическое формирование и склейка гофрокоробов. 99 программ, охватывает 95% форматов рынка.</div>
+        <div class="product-specs">
+          <div class="product-spec">До 40 коробов/мин</div>
+          <div class="product-spec">Переналадка 15–20 мин</div>
+          <div class="product-spec">Бренды: ЯФОР, BOIX, SMIPAC</div>
+        </div>
+        <a href="#" class="product-link">Подробнее и КП <span class="product-link-arrow">→</span></a>
+      </div>
+
+      <div class="product-card" style="background:linear-gradient(160deg,#FEF0E7 0%,#fff 100%);border-color:#F4B07A;">
+        <span class="product-badge badge-orange">⚡ Обязательно с 2025</span>
+        <div class="product-icon" style="background:var(--orange)">📲</div>
+        <div class="product-name">Честный знак — под ключ</div>
+        <div class="product-desc">Сканеры, принтеры этикеток, весовые этикетировщики с 2D-кодом. Внедрение ГИС МТ для мяса и молока.</div>
+        <div class="product-specs">
+          <div class="product-spec">Обязательная маркировка с 2025 г.</div>
+          <div class="product-spec">Подключение к ГИС МТ Честный знак</div>
+          <div class="product-spec">Обучение и сопровождение персонала</div>
+        </div>
+        <a href="#" class="product-link" style="color:var(--orange)">Внедрить Честный знак <span class="product-link-arrow">→</span></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CALCULATOR
+     ============================================================ -->
+<section class="calc-section" id="calc">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-promo">
+        <h2>Подберём оборудование<br>за <em>3 минуты</em></h2>
+        <p>Ответьте на 4 вопроса — и получите рекомендацию модели с характеристиками и ориентировочной стоимостью. Без звонков и ожидания.</p>
+        <div class="calc-benefits">
+          <div class="calc-benefit">
+            <div class="calc-benefit-icon">⚡</div>
+            <div class="calc-benefit-text"><strong>Мгновенный результат</strong><br>Рекомендация модели сразу в браузере</div>
+          </div>
+          <div class="calc-benefit">
+            <div class="calc-benefit-icon">🎯</div>
+            <div class="calc-benefit-text"><strong>Точный подбор</strong><br>Учитываем продукт, объём и тип упаковки</div>
+          </div>
+          <div class="calc-benefit">
+            <div class="calc-benefit-icon">📄</div>
+            <div class="calc-benefit-text"><strong>КП за 24 часа</strong><br>Менеджер пришлёт детальное предложение</div>
+          </div>
+          <div class="calc-benefit">
+            <div class="calc-benefit-icon">🔧</div>
+            <div class="calc-benefit-text"><strong>Бесплатная консультация</strong><br>Технолог ответит на вопросы по оборудованию</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALCULATOR WIDGET -->
+      <div class="calc-widget" id="calc-widget">
+        <div class="calc-widget-title">🔍 Быстрый подбор оборудования</div>
+        <div class="calc-widget-sub">4 шага → рекомендация модели</div>
+
+        <!-- Progress steps -->
+        <div class="calc-steps" id="calc-steps">
+          <div class="calc-step-dot active" id="step-dot-0">
+            <div class="step-circle">1</div>
+            <div class="step-label">Продукт</div>
+          </div>
+          <div class="calc-step-dot" id="step-dot-1">
+            <div class="step-circle">2</div>
+            <div class="step-label">Тип уп.</div>
+          </div>
+          <div class="calc-step-dot" id="step-dot-2">
+            <div class="step-circle">3</div>
+            <div class="step-label">Объём</div>
+          </div>
+          <div class="calc-step-dot" id="step-dot-3">
+            <div class="step-circle">4</div>
+            <div class="step-label">Задача</div>
+          </div>
+        </div>
+
+        <!-- Step 0: Product -->
+        <div class="calc-question active" id="calc-q-0">
+          <div class="calc-q-title">1. Какой продукт нужно упаковывать?</div>
+          <div class="calc-options">
+            <button class="calc-option" onclick="selectOption(0,'Мясо и птица')">🥩 Мясо и птица</button>
+            <button class="calc-option" onclick="selectOption(0,'Молочная продукция')">🥛 Молочная продукция</button>
+            <button class="calc-option" onclick="selectOption(0,'Рыба и морепродукты')">🐟 Рыба и море­продукты</button>
+            <button class="calc-option" onclick="selectOption(0,'Хлеб и кондитерка')">🍞 Хлеб и конди­терка</button>
+          </div>
+          <div class="calc-nav">
+            <span></span>
+            <button class="btn-calc-next" id="next-0" disabled onclick="nextStep(0)">Далее →</button>
+          </div>
+        </div>
+
+        <!-- Step 1: Packaging type -->
+        <div class="calc-question" id="calc-q-1">
+          <div class="calc-q-title">2. Нужный тип упаковки?</div>
+          <div class="calc-options">
+            <button class="calc-option" onclick="selectOption(1,'Вакуум / MAP')">🫙 Вакуум / MAP</button>
+            <button class="calc-option" onclick="selectOption(1,'Лоток + плёнка')">📦 Лоток + плёнка</button>
+            <button class="calc-option" onclick="selectOption(1,'Флоу-пак / в плёнку')">🎁 Флоу-пак / в плёнку</button>
+            <button class="calc-option" onclick="selectOption(1,'Этикетировка / ЧЗ')">🏷️ Этикетировка / ЧЗ</button>
+          </div>
+          <div class="calc-nav">
+            <button class="btn-calc-back" onclick="prevStep(1)">← Назад</button>
+            <button class="btn-calc-next" id="next-1" disabled onclick="nextStep(1)">Далее →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Volume -->
+        <div class="calc-question" id="calc-q-2">
+          <div class="calc-q-title">3. Объём производства (в смену)?</div>
+          <div class="calc-options">
+            <button class="calc-option" onclick="selectOption(2,'до 500 кг/смену')">до 500 кг</button>
+            <button class="calc-option" onclick="selectOption(2,'500–2000 кг/смену')">500 — 2 000 кг</button>
+            <button class="calc-option" onclick="selectOption(2,'2000–10000 кг/смену')">2 000 — 10 000 кг</button>
+            <button class="calc-option" onclick="selectOption(2,'более 10000 кг/смену')">более 10 000 кг</button>
+          </div>
+          <div class="calc-nav">
+            <button class="btn-calc-back" onclick="prevStep(2)">← Назад</button>
+            <button class="btn-calc-next" id="next-2" disabled onclick="nextStep(2)">Далее →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Task -->
+        <div class="calc-question" id="calc-q-3">
+          <div class="calc-q-title">4. Главная задача?</div>
+          <div class="calc-options">
+            <button class="calc-option" onclick="selectOption(3,'Увеличить срок хранения')">⏳ Увеличить срок хранения</button>
+            <button class="calc-option" onclick="selectOption(3,'Ускорить упаковку')">⚡ Ускорить упаковку</button>
+            <button class="calc-option" onclick="selectOption(3,'Честный знак')">📲 Выполнить требования ЧЗ</button>
+            <button class="calc-option" onclick="selectOption(3,'Снизить затраты')">💰 Снизить затраты</button>
+          </div>
+          <div class="calc-nav">
+            <button class="btn-calc-back" onclick="prevStep(3)">← Назад</button>
+            <button class="btn-calc-next" id="next-3" disabled onclick="showResult()">Показать результат →</button>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="calc-result" id="calc-result">
+          <div class="result-box" id="result-box"></div>
+          <button class="btn-get-offer" onclick="openModal('КП по результату калькулятора')">Получить подробное КП → Бесплатно</button>
+          <span class="calc-restart" onclick="restartCalc()">← Начать заново</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CALCULATORS HUB
+     ============================================================ -->
+<section class="calchub-section" id="calculators">
+  <div class="container">
+    <div class="calchub-label">🧮 Онлайн-калькуляторы ЯФОР</div>
+    <h2 class="section-title">Все калькуляторы подбора</h2>
+    <p class="section-subtitle">Подберите оборудование самостоятельно за 3 минуты — или рассчитайте стоимость ремонта</p>
+
+    <div class="calchub-grid">
+
+      <a href="Calc/thermoformer-calculator.html" target="_blank" class="calchub-card featured-calc">
+        <span class="calchub-badge-new">Хит</span>
+        <div class="calchub-icon">🔲</div>
+        <div class="calchub-name">Термоформер ЯFORM420</div>
+        <div class="calchub-desc">Подберём модель под ваш продукт, формат лотка и производительность в смену.</div>
+        <span class="calchub-arrow">Открыть калькулятор →</span>
+      </a>
+
+      <a href="Calc/traysealer-calculator.html" target="_blank" class="calchub-card">
+        <div class="calchub-icon">🗂️</div>
+        <div class="calchub-name">Трейсилер ЯФОР</div>
+        <div class="calchub-desc">Выбор модели трейсилера по типу лотка, скорости и технологии упаковки (вакуум / MAP / SKIN).</div>
+        <span class="calchub-arrow">Открыть калькулятор →</span>
+      </a>
+
+      <a href="Calc/yaflow-calculator.html" target="_blank" class="calchub-card">
+        <div class="calchub-icon">📦</div>
+        <div class="calchub-name">Флоу-пак ЯFLOW</div>
+        <div class="calchub-desc">Подбор горизонтальной упаковочной машины по продукту, габаритам и скорости линии.</div>
+        <span class="calchub-arrow">Открыть калькулятор →</span>
+      </a>
+
+      <a href="Calc/box-erector-calculator.html" target="_blank" class="calchub-card">
+        <div class="calchub-icon">📫</div>
+        <div class="calchub-name">Картонэректор</div>
+        <div class="calchub-desc">Выбор формирователя коробов по формату, скорости и типу клея. 95% форматов рынка.</div>
+        <span class="calchub-arrow">Открыть калькулятор →</span>
+      </a>
+
+      <a href="Calc/chestnyznak-calculator.html" target="_blank" class="calchub-card">
+        <div class="calchub-icon" style="background:var(--green)">📲</div>
+        <div class="calchub-name">Честный знак</div>
+        <div class="calchub-desc">Подбор оборудования для маркировки ГИС МТ: сканеры, принтеры, весовые этикетировщики.</div>
+        <span class="calchub-arrow" style="color:var(--green)">Открыть калькулятор →</span>
+      </a>
+
+      <a href="Calc/thermoformer-repair-calculator.html" target="_blank" class="calchub-card">
+        <div class="calchub-icon" style="background:var(--orange)">🔧</div>
+        <div class="calchub-name">Ремонт термоформера</div>
+        <div class="calchub-desc">Рассчитайте стоимость капремонта или замены узлов. Укажите модель и симптомы — получите смету.</div>
+        <span class="calchub-arrow" style="color:var(--orange)">Рассчитать стоимость →</span>
+      </a>
+
+      <a href="Calc/thermoformer-onepage.html" target="_blank" class="calchub-card">
+        <div class="calchub-icon">⚡</div>
+        <div class="calchub-name">Экспресс-подбор</div>
+        <div class="calchub-desc">Быстрый подбор термоформера за 1 минуту — только ключевые параметры без лишних шагов.</div>
+        <span class="calchub-arrow">Открыть →</span>
+      </a>
+
+      <!-- CTA card -->
+      <div class="calchub-card" style="background:linear-gradient(135deg,var(--blue-dark) 0%,#1A3F66 100%);border-color:transparent;cursor:default;" onclick="openModal('Получить КП')">
+        <div class="calchub-icon" style="background:rgba(255,255,255,.15)">💬</div>
+        <div class="calchub-name" style="color:#fff">Нужна помощь с выбором?</div>
+        <div class="calchub-desc" style="color:rgba(255,255,255,.72)">Менеджер-технолог подберёт оборудование под вашу задачу и пришлёт КП за 24 часа.</div>
+        <button style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:.82rem;font-weight:700;cursor:pointer;width:100%;transition:background .2s;" onmouseover="this.style.background='#A84A0F'" onmouseout="this.style.background='var(--orange)'">Получить КП от технолога →</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CLIENTS
+     ============================================================ -->
+<section class="clients-section">
+  <div class="container">
+    <div class="clients-title">Нам доверяют лидеры отрасли</div>
+    <div class="clients-sub">Реальные проекты для мясных холдингов и птицефабрик по всей России</div>
+    <div class="clients-stats">
+      <div class="client-stat">
+        <div class="client-stat-num">200<span>+</span></div>
+        <div class="client-stat-label">успешных внедрений</div>
+      </div>
+      <div class="client-stat">
+        <div class="client-stat-num">15</div>
+        <div class="client-stat-label">лет на рынке<br>упаковочного оборудования</div>
+      </div>
+      <div class="client-stat">
+        <div class="client-stat-num">7</div>
+        <div class="client-stat-label">продуктовых линеек<br>в портфеле</div>
+      </div>
+      <div class="client-stat">
+        <div class="client-stat-num">24ч</div>
+        <div class="client-stat-label">среднее время<br>выставления КП</div>
+      </div>
+    </div>
+    <div class="clients-logos">
+      <div class="client-logo-item"><div class="client-logo-text">Черкизово</div></div>
+      <div class="client-logo-item"><div class="client-logo-text">Продо</div></div>
+      <div class="client-logo-item"><div class="client-logo-text">Рефтинская ПФ</div></div>
+      <div class="client-logo-item"><div class="client-logo-text">Алтайский Бройлер</div></div>
+      <div class="client-logo-item"><div class="client-logo-text">Кудряшевский МК</div></div>
+      <div class="client-logo-item"><div class="client-logo-text">Знаменский МК</div></div>
+      <div class="client-logo-item"><div class="client-logo-text">Тандер</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WHY YAFOR
+     ============================================================ -->
+<section class="why-section">
+  <div class="container">
+    <h2 class="section-title">Почему выбирают ЯФОР</h2>
+    <p class="section-subtitle">Комплексный подход к упаковке от подбора оборудования до сервисного обслуживания</p>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🏭</div>
+        <div class="why-title">Прямые поставки без переплат</div>
+        <div class="why-desc">Работаем напрямую с производителями оборудования. Никаких посредников — цена ниже рынка на 10–18%.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🔧</div>
+        <div class="why-title">Монтаж «под ключ» за 5 дней</div>
+        <div class="why-desc">Выезжаем в любой регион России. Установка, пуско-наладка, обучение операторов — всё включено в стоимость.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📦</div>
+        <div class="why-title">Запчасти на складе всегда</div>
+        <div class="why-desc">Держим складской запас расходников и критичных деталей. Отгрузка за 24 часа — остановка линии минимальна.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📊</div>
+        <div class="why-title">7+ форматов на одной машине</div>
+        <div class="why-desc">Термоформер ЯFORM420 перекрывает все форматы вашего ассортимента. Переналадка — до 20 минут без инструментов.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🛡️</div>
+        <div class="why-title">Гарантия 12 месяцев</div>
+        <div class="why-desc">Официальная гарантия на всё оборудование. Сервисный контракт — для критически важных линий с приоритетным выездом.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">💳</div>
+        <div class="why-title">Лизинг и рассрочка</div>
+        <div class="why-desc">Помогаем оформить лизинг с аккредитованными партнёрами. Минимальный аванс — от 10%. Платёж — из операционной прибыли.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SERVICE & REPAIR
+     ============================================================ -->
+<section class="service-section" id="service">
+  <div class="container">
+    <h2 class="section-title">Сервис и ремонт оборудования</h2>
+    <p class="section-subtitle">Выезд по всей России. Запчасти на складе — остановка линии сведена к минимуму</p>
+
+    <div class="service-layout">
+
+      <!-- Service types grid -->
+      <div>
+        <div class="service-types">
+
+          <div class="service-card">
+            <div class="service-card-icon">🚨</div>
+            <div class="service-card-title">Аварийный ремонт</div>
+            <div class="service-card-desc">Выезд инженера при внеплановой остановке линии. Диагностика и устранение неисправности на месте.</div>
+            <span class="service-card-tag tag-urgent">Выезд за 24ч</span>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-icon">🔩</div>
+            <div class="service-card-title">Капитальный ремонт</div>
+            <div class="service-card-desc">Полная диагностика, замена изношенных узлов, регулировка и восстановление работоспособности термоформера, трейсилера или флоу-пака.</div>
+            <span class="service-card-tag tag-planned">Плановый</span>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-icon">📦</div>
+            <div class="service-card-title">Запчасти и расходники</div>
+            <div class="service-card-desc">Ножи, плёнки, уплотнители, нагревательные элементы, пресс-формы. Отгрузка со склада за 24 часа.</div>
+            <span class="service-card-tag tag-planned">Доставка 1–3 дня</span>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-icon">🖥️</div>
+            <div class="service-card-title">Удалённая диагностика</div>
+            <div class="service-card-desc">Подключение к панели управления через VPN. Настройка параметров, обновление ПО, устранение программных ошибок без выезда.</div>
+            <span class="service-card-tag tag-remote">Бесплатно</span>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-icon">📋</div>
+            <div class="service-card-title">ТО по регламенту</div>
+            <div class="service-card-desc">Плановое техническое обслуживание по графику. Предотвращает аварийные остановки, продлевает ресурс оборудования.</div>
+            <span class="service-card-tag tag-planned">По договору</span>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-icon">🎓</div>
+            <div class="service-card-title">Обучение операторов</div>
+            <div class="service-card-desc">Обучение персонала работе с оборудованием, правилам ухода, диагностике типовых ошибок. На месте или онлайн.</div>
+            <span class="service-card-tag tag-remote">В стоимости монтажа</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right: SLA + repair calculator CTA -->
+      <div class="service-right">
+
+        <div class="service-sla">
+          <div class="service-sla-title">⏱️ Гарантированное время реакции</div>
+          <div class="sla-rows">
+            <div class="sla-row">
+              <div class="sla-icon">📞</div>
+              <div class="sla-info">
+                <strong>Первичная консультация</strong>
+                <span>Телефон, WhatsApp, email</span>
+              </div>
+              <div class="sla-time urgent">15 мин</div>
+            </div>
+            <div class="sla-row">
+              <div class="sla-icon">🖥️</div>
+              <div class="sla-info">
+                <strong>Удалённая диагностика</strong>
+                <span>Подключение к панели управления</span>
+              </div>
+              <div class="sla-time urgent">2 часа</div>
+            </div>
+            <div class="sla-row">
+              <div class="sla-icon">🚗</div>
+              <div class="sla-info">
+                <strong>Выезд инженера</strong>
+                <span>Аварийный ремонт, Москва и МО</span>
+              </div>
+              <div class="sla-time urgent">24 часа</div>
+            </div>
+            <div class="sla-row">
+              <div class="sla-icon">✈️</div>
+              <div class="sla-info">
+                <strong>Выезд в регионы</strong>
+                <span>По всей России</span>
+              </div>
+              <div class="sla-time">1–3 дня</div>
+            </div>
+            <div class="sla-row">
+              <div class="sla-icon">📦</div>
+              <div class="sla-info">
+                <strong>Отгрузка запчастей</strong>
+                <span>Со склада при наличии</span>
+              </div>
+              <div class="sla-time">24 часа</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="repair-calc-cta">
+          <div class="repair-calc-cta-icon">🔧</div>
+          <div class="repair-calc-cta-title">Рассчитайте стоимость ремонта</div>
+          <div class="repair-calc-cta-desc">Укажите модель термоформера и характер неисправности — получите ориентировочную стоимость ремонта и список запчастей за 24 часа.</div>
+          <button class="btn-repair-calc" onclick="openRepairModal()">Рассчитать стоимость ремонта →</button>
+          <button class="btn-repair-service" onclick="openModal('Вызвать инженера')">Вызвать инженера на объект</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACTS
+     ============================================================ -->
+<section class="contacts-section" id="contacts">
+  <div class="container">
+    <h2 class="section-title">Контакты</h2>
+    <p class="section-subtitle">Три офиса по России — Москва, Санкт-Петербург, Волгоград</p>
+
+    <div class="contacts-grid">
+
+      <!-- МОСКВА -->
+      <div class="contact-card">
+        <div class="contact-info">
+          <span class="contact-city-badge">📍 Москва</span>
+          <div class="contact-office-title">Главный офис</div>
+          <div class="contact-rows">
+            <div class="contact-row">
+              <div class="contact-row-icon">📞</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Телефон</div>
+                <div class="contact-row-value"><a href="tel:+74957084129">+7 (495) 708-41-29</a></div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">✉️</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Email</div>
+                <div class="contact-row-value"><a href="mailto:info@yaforys.ru">info@yaforys.ru</a></div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">🏢</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Адрес</div>
+                <div class="contact-row-value">Москва, 1-й Проезд Перова Поля,<br>д. 9 стр. 2, помещение 8, комната 25</div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">🕐</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Режим работы</div>
+                <div class="contact-row-value">Пн–Пт: 9:00–18:00 МСК</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-map">
+          <iframe
+            src="https://yandex.ru/map-widget/v1/?ll=37.778&z=15&pt=37.778,55.748&text=1-й Проезд Перова Поля, 9с2, Москва"
+            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- САНКТ-ПЕТЕРБУРГ -->
+      <div class="contact-card">
+        <div class="contact-info">
+          <span class="contact-city-badge">📍 Санкт-Петербург</span>
+          <div class="contact-office-title">Офис в Санкт-Петербурге</div>
+          <div class="contact-rows">
+            <div class="contact-row">
+              <div class="contact-row-icon">📞</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Телефон</div>
+                <div class="contact-row-value"><a href="tel:+74957084129">+7 (495) 708-41-29</a></div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">✉️</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Email</div>
+                <div class="contact-row-value"><a href="mailto:info@yaforys.ru">info@yaforys.ru</a></div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">🏢</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Адрес</div>
+                <div class="contact-row-value">Санкт-Петербург,<br>Проспект Шаумяна, 8, комната 318</div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">🕐</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Режим работы</div>
+                <div class="contact-row-value">Пн–Пт: 9:00–18:00 МСК</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-map">
+          <iframe
+            src="https://yandex.ru/map-widget/v1/?ll=30.406&z=15&pt=30.406,59.951&text=Проспект Шаумяна 8, Санкт-Петербург"
+            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- ВОЛГОГРАД -->
+      <div class="contact-card">
+        <div class="contact-info">
+          <span class="contact-city-badge">📍 Волгоград</span>
+          <div class="contact-office-title">Офис в Волгограде</div>
+          <div class="contact-rows">
+            <div class="contact-row">
+              <div class="contact-row-icon">📞</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Телефон</div>
+                <div class="contact-row-value"><a href="tel:+79610740099">+7 (961) 074-00-99</a></div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">✉️</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Email</div>
+                <div class="contact-row-value"><a href="mailto:sales@yaforys.ru">sales@yaforys.ru</a></div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">🏢</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Адрес</div>
+                <div class="contact-row-value">Волгоград, ул. Донская, 16, офис 410</div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-row-icon">🕐</div>
+              <div class="contact-row-body">
+                <div class="contact-row-label">Режим работы</div>
+                <div class="contact-row-value">Пн–Пт: 9:00–18:00 МСК</div>
+              </div>
+            </div>
+          </div>
+          <div class="contact-social">
+            <a href="#" class="social-btn" title="ВКонтакте">💙</a>
+            <a href="#" class="social-btn" title="Telegram">✈️</a>
+            <a href="#" class="social-btn" title="WhatsApp">💬</a>
+          </div>
+        </div>
+        <div class="contact-map">
+          <iframe
+            src="https://yandex.ru/map-widget/v1/?ll=44.516&z=15&pt=44.516,48.707&text=ул. Донская 16, Волгоград"
+            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA BANNER
+     ============================================================ -->
+<section class="cta-banner">
+  <div class="container">
+    <div class="cta-banner-text">
+      <h2>Получите КП за 24 часа</h2>
+      <p>Оставьте заявку — менеджер позвонит в рабочее время, уточнит задачу и пришлёт предложение</p>
+    </div>
+    <div class="cta-banner-actions">
+      <button class="btn-cta-white" onclick="openModal('Получить КП')">Получить КП →</button>
+      <button class="btn-cta-outline" onclick="openModal('Заказать звонок')">Заказать звонок</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-mark">ЯФ</div>
+          <div class="footer-logo-name">
+            <strong>ЯФОР</strong>
+            <span>Упаковочное оборудование</span>
+          </div>
+        </div>
+        <p class="footer-about">Поставки, монтаж и сервисное обслуживание упаковочного оборудования для пищевой промышленности по всей России с 2009 года.</p>
+        <div class="footer-contacts">
+          <a href="tel:+78001234567">8 800 XXX-XX-XX</a>
+          <span>Бесплатный звонок по России</span>
+          <a href="mailto:sales@yaforys.ru" style="margin-top:10px">sales@yaforys.ru</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Оборудование</div>
+        <div class="footer-links">
+          <a href="#">Термоформеры ЯFORM420</a>
+          <a href="#">Трейсилеры ЯФОР</a>
+          <a href="#">Флоу-пак ЯFLOW</a>
+          <a href="#">Этикетировщики DIBAL</a>
+          <a href="#">Картонэректоры</a>
+          <a href="#">Честный знак</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Компания</div>
+        <div class="footer-links">
+          <a href="#">О компании</a>
+          <a href="#">Кейсы клиентов</a>
+          <a href="#">Сервис и поддержка</a>
+          <a href="#">Расходные материалы</a>
+          <a href="#">Лизинг</a>
+          <a href="#">Блог</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Калькуляторы подбора</div>
+        <div class="footer-links">
+          <a href="Calc/thermoformer-calculator.html" target="_blank">Калькулятор термоформера</a>
+          <a href="Calc/traysealer-calculator.html" target="_blank">Калькулятор трейсилера</a>
+          <a href="Calc/yaflow-calculator.html" target="_blank">Калькулятор флоу-пак</a>
+          <a href="Calc/chestnyznak-calculator.html" target="_blank">Калькулятор Честного знака</a>
+          <a href="Calc/box-erector-calculator.html" target="_blank">Калькулятор картонэректора</a>
+          <a href="Calc/thermoformer-repair-calculator.html" target="_blank">Калькулятор ремонта</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2009–2026 ЯФОР. Все права защищены.</span>
+      <div style="display:flex;gap:20px;">
+        <a href="#">Политика конфиденциальности</a>
+        <a href="#">Реквизиты</a>
+        <a href="#">Карта сайта</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     STICKY WHATSAPP
+     ============================================================ -->
+<div class="sticky-wa">
+  <div class="wa-tooltip">Написать в WhatsApp</div>
+  <button class="wa-btn" onclick="openModal('WhatsApp')" title="Написать в WhatsApp">💬</button>
+</div>
+
+<!-- ============================================================
+     MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div id="modal-form-content">
+      <div class="modal-title" id="modal-title">Получить коммерческое предложение</div>
+      <div class="modal-desc" id="modal-desc">Заполните форму — менеджер свяжется в течение 1 рабочего часа и пришлёт детальное КП.</div>
+      <form onsubmit="submitModal(event)">
+        <div class="form-group">
+          <label>Ваше имя *</label>
+          <input type="text" placeholder="Иван Петров" required>
+        </div>
+        <div class="form-group">
+          <label>Телефон *</label>
+          <input type="tel" placeholder="+7 (___) ___-__-__" required>
+        </div>
+        <div class="form-group">
+          <label>Тип оборудования</label>
+          <select id="modal-eq">
+            <option value="">— Выберите оборудование —</option>
+            <option>Термоформер ЯFORM420</option>
+            <option>Трейсилер ЯФОР</option>
+            <option>Флоу-пак ЯFLOW</option>
+            <option>Этикетировщик DIBAL</option>
+            <option>Картонэректор</option>
+            <option>Честный знак</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Комментарий</label>
+          <input type="text" placeholder="Например: мясопереработка, 3 т/смену">
+        </div>
+        <button type="submit" class="btn-form-submit">Отправить заявку →</button>
+        <div class="form-privacy">🔒 Данные защищены. Не передаём третьим лицам.</div>
+      </form>
+    </div>
+    <div class="modal-success" id="modal-success">
+      <div class="modal-success-icon">✅</div>
+      <div class="modal-success-title">Заявка принята!</div>
+      <div class="modal-success-desc">Менеджер свяжется с вами в течение 1 рабочего часа.<br>Ждите звонка или письма на вашу почту.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ---- Calculator State ----
+const calcAnswers = {};
+let calcStep = 0;
+const totalSteps = 4;
+
+function selectOption(step, value) {
+  calcAnswers[step] = value;
+  // Update visual selection
+  const q = document.getElementById('calc-q-' + step);
+  q.querySelectorAll('.calc-option').forEach(btn => {
+    btn.classList.toggle('selected', btn.textContent.trim().includes(value.split(' ')[1] || value.split(' ')[0]));
+  });
+  // Smarter: match by the value directly
+  q.querySelectorAll('.calc-option').forEach(btn => {
+    if (btn.getAttribute('onclick').includes(value)) {
+      btn.classList.add('selected');
+    } else {
+      btn.classList.remove('selected');
+    }
+  });
+  const nextBtn = document.getElementById('next-' + step);
+  if (nextBtn) nextBtn.disabled = false;
+}
+
+function nextStep(from) {
+  if (!calcAnswers[from]) return;
+  // Mark current done
+  const dot = document.getElementById('step-dot-' + from);
+  dot.classList.remove('active');
+  dot.classList.add('done');
+  // Activate next
+  const nextDot = document.getElementById('step-dot-' + (from + 1));
+  if (nextDot) nextDot.classList.add('active');
+  // Hide current Q
+  document.getElementById('calc-q-' + from).classList.remove('active');
+  // Show next Q
+  const nextQ = document.getElementById('calc-q-' + (from + 1));
+  if (nextQ) nextQ.classList.add('active');
+  calcStep = from + 1;
+}
+
+function prevStep(current) {
+  // Hide current
+  document.getElementById('calc-q-' + current).classList.remove('active');
+  const curDot = document.getElementById('step-dot-' + current);
+  curDot.classList.remove('active');
+  // Restore previous
+  const prev = current - 1;
+  document.getElementById('calc-q-' + prev).classList.add('active');
+  const prevDot = document.getElementById('step-dot-' + prev);
+  prevDot.classList.remove('done');
+  prevDot.classList.add('active');
+  calcStep = prev;
+}
+
+function showResult() {
+  if (!calcAnswers[3]) return;
+  // Mark last step done
+  const dot = document.getElementById('step-dot-3');
+  dot.classList.remove('active');
+  dot.classList.add('done');
+  document.getElementById('calc-q-3').classList.remove('active');
+
+  // Determine recommendation
+  const prod = calcAnswers[0] || '';
+  const pack = calcAnswers[1] || '';
+  const vol  = calcAnswers[2] || '';
+  const task = calcAnswers[3] || '';
+
+  let model = '', emoji = '', specs = [], desc = '';
+
+  if (pack.includes('Флоу-пак')) {
+    model = 'ЯFLOW-30 / ЯFLOW-450TR';
+    emoji = '📦';
+    desc = 'Горизонтальный флоу-пак с автоматической подачей. Подходит для вашего продукта и объёма.';
+    specs = ['До 220 уп./мин', 'Переналадка 10 мин', 'Интеграция с принтером'];
+  } else if (pack.includes('Этикетировка') || task.includes('ЧЗ')) {
+    model = 'DIBAL LS-5000 + сканер ЧЗ';
+    emoji = '🏷️';
+    desc = 'Весовой этикетировщик с поддержкой ГИС МТ. Полное соответствие требованиям Честного знака.';
+    specs = ['150 уп./мин', 'Точность ±1 г', 'ГИС МТ — сертифицирован'];
+  } else if (pack.includes('Лоток')) {
+    if (vol.includes('10000') || vol.includes('2000')) {
+      model = 'Трейсилер ЯФОР TSA1000VG';
+      emoji = '🗂️';
+      desc = 'Автоматический трейсилер для больших объёмов. Вакуум и MAP, поддержка SKIN-плёнки.';
+      specs = ['72 лотка/мин', 'MAP + SKIN', 'Сталь AISI-304'];
+    } else {
+      model = 'Трейсилер ЯФОР TSA620VG';
+      emoji = '🗂️';
+      desc = 'Компактный трейсилер для среднего объёма. Быстрая переналадка, простое обслуживание.';
+      specs = ['До 40 лотков/мин', 'Вакуум + MAP', 'Переналадка 15 мин'];
+    }
+  } else {
+    // Default: thermoformer
+    if (vol.includes('10000') || vol.includes('2000')) {
+      model = 'ЯFORM420 2×2 (двухполосный)';
+      emoji = '🔲';
+      desc = 'Высокопроизводительный термоформер для больших объёмов. MAP-упаковка увеличивает срок хранения до 21 дня.';
+      specs = ['420 уп./цикл', 'MAP 21 день', '7 форматов'];
+    } else {
+      model = 'ЯFORM420 1×1 / 2×1';
+      emoji = '🔲';
+      desc = 'Универсальный термоформер для среднего объёма. Поддерживает вакуум, MAP и SKIN-упаковку.';
+      specs = ['До 200 уп./цикл', 'Вакуум + MAP', 'Быстрая переналадка'];
+    }
+  }
+
+  const box = document.getElementById('result-box');
+  box.innerHTML = `
+    <div class="result-emoji">${emoji}</div>
+    <div class="result-title">Рекомендуем: ${model}</div>
+    <div class="result-desc">${desc}</div>
+    <div class="result-specs">
+      ${specs.map(s => `<span class="result-spec-tag">${s}</span>`).join('')}
+    </div>
+    <div style="font-size:.8rem;color:var(--gray-mid)">
+      ✓ Подходит для: ${prod} · ${vol} · задача: ${task}
+    </div>
+  `;
+  document.getElementById('calc-result').classList.add('active');
+}
+
+function restartCalc() {
+  // Reset state
+  Object.keys(calcAnswers).forEach(k => delete calcAnswers[k]);
+  calcStep = 0;
+  // Reset questions
+  for (let i = 0; i < 4; i++) {
+    const q = document.getElementById('calc-q-' + i);
+    q.classList.remove('active');
+    q.querySelectorAll('.calc-option').forEach(o => o.classList.remove('selected'));
+    const dot = document.getElementById('step-dot-' + i);
+    dot.classList.remove('active', 'done');
+    const next = document.getElementById('next-' + i);
+    if (next) next.disabled = true;
+  }
+  document.getElementById('calc-q-0').classList.add('active');
+  document.getElementById('step-dot-0').classList.add('active');
+  document.getElementById('calc-result').classList.remove('active');
+}
+
+// ---- Modal ----
+function openModal(source) {
+  const overlay = document.getElementById('modal-overlay');
+  const title = document.getElementById('modal-title');
+  const desc = document.getElementById('modal-desc');
+  const eq = document.getElementById('modal-eq');
+  overlay.classList.add('open');
+  document.getElementById('modal-form-content').style.display = '';
+  document.getElementById('modal-success').style.display = 'none';
+
+  if (source === 'Заказать звонок') {
+    title.textContent = 'Заказать обратный звонок';
+    desc.textContent = 'Укажите номер — перезвоним в течение 15 минут в рабочее время.';
+  } else if (source === 'WhatsApp') {
+    title.textContent = 'Написать менеджеру';
+    desc.textContent = 'Мы ответим в WhatsApp в течение 15 минут.';
+  } else if (source === 'КП по результату калькулятора' && calcAnswers[0]) {
+    title.textContent = 'Получить детальное КП';
+    desc.textContent = `Подготовим КП под ваш запрос: ${calcAnswers[0]}, ${calcAnswers[1] || ''}.`;
+    if (eq && calcAnswers[1]) {
+      const map = {'Вакуум / MAP':'Термоформер ЯFORM420','Лоток + плёнка':'Трейсилер ЯФОР','Флоу-пак / в плёнку':'Флоу-пак ЯFLOW','Этикетировка / ЧЗ':'Этикетировщик DIBAL'};
+      eq.value = map[calcAnswers[1]] || '';
+    }
+  } else {
+    title.textContent = 'Получить коммерческое предложение';
+    desc.textContent = 'Заполните форму — менеджер свяжется в течение 1 рабочего часа.';
+  }
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function submitModal(e) {
+  e.preventDefault();
+  document.getElementById('modal-form-content').style.display = 'none';
+  document.getElementById('modal-success').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('modal-success').style.display = 'none';
+    document.getElementById('modal-form-content').style.display = '';
+  }, 3500);
+}
+
+function submitHeroForm(e) {
+  e.preventDefault();
+  openModal('Получить КП');
+}
+
+// ---- Smooth nav ----
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+
+// ---- Repair Modal ----
+function openRepairModal() {
+  const overlay = document.getElementById('modal-overlay');
+  const title = document.getElementById('modal-title');
+  const desc  = document.getElementById('modal-desc');
+  const eq    = document.getElementById('modal-eq');
+  overlay.classList.add('open');
+  document.getElementById('modal-form-content').style.display = '';
+  document.getElementById('modal-success').style.display = 'none';
+  title.textContent = '🔧 Рассчитать стоимость ремонта';
+  desc.textContent  = 'Укажите оборудование и характер неисправности — пришлём смету и список запчастей в течение 24 часов.';
+  if (eq) {
+    eq.innerHTML = `
+      <option value="">— Выберите оборудование —</option>
+      <option>Термоформер ЯFORM420</option>
+      <option>Трейсилер ЯФОР</option>
+      <option>Флоу-пак ЯFLOW</option>
+      <option>Этикетировщик DIBAL</option>
+      <option>Картонэректор</option>
+      <option>Другое оборудование</option>
+    `;
+    eq.closest('.form-group').querySelector('label').textContent = 'Модель оборудования';
+  }
+  // replace comment field label
+  const commentInput = document.querySelector('#modal-form-content input[placeholder="Например: мясопереработка, 3 т/смену"]');
+  if (commentInput) {
+    commentInput.placeholder = 'Опишите неисправность: коды ошибок, симптомы';
+    commentInput.closest('.form-group').querySelector('label').textContent = 'Характер неисправности';
+  }
+  document.body.style.overflow = 'hidden';
+}
+
+// ---- Escape closes modal ----
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>

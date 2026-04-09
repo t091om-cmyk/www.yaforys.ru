@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор капремонта термоформера — ЯФОР</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:        #1F4E79;
+  --blue-mid:    #2E75B6;
+  --blue-light:  #D6E4F0;
+  --blue-pale:   #EEF4FB;
+  --orange:      #C55A11;
+  --orange-mid:  #E06B1A;
+  --orange-pale: #FDE8D8;
+  --green:       #1E6B3C;
+  --green-pale:  #E2EFDA;
+  --red:         #C0392B;
+  --red-pale:    #FDECEA;
+  --yellow:      #D4A017;
+  --yellow-pale: #FEF9E7;
+  --grey:        #3A3A3A;
+  --grey-soft:   #6B7280;
+  --grey-light:  #F2F5F8;
+  --border:      #DDE5EF;
+  --white:       #FFFFFF;
+  --radius:      10px;
+  --shadow:      0 4px 20px rgba(31,78,121,0.10);
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+  background: var(--grey-light);
+  color: var(--grey);
+  min-height: 100vh;
+}
+
+/* ── HEADER ─────────────────────────────────────── */
+.page-header {
+  background: linear-gradient(130deg, #1a3a5c 0%, var(--blue-mid) 100%);
+  padding: 28px 24px 24px;
+  text-align: center;
+  color: white;
+}
+.page-header .badge {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  padding: 3px 14px;
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+.page-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.page-header p  { font-size: 13px; opacity: 0.78; }
+
+/* ── LAYOUT ─────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 16px 48px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .right-col { order: -1; }
+}
+
+/* ── SECTION CARD ────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--blue-pale);
+  border-bottom: 1px solid var(--border);
+}
+.card-head .icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: var(--blue-mid);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.card-head h3 { font-size: 14px; font-weight: 700; color: var(--blue); }
+.card-head .sub { font-size: 12px; color: var(--grey-soft); margin-left: auto; }
+
+.head-actions { display: flex; gap: 6px; margin-left: auto; }
+.head-btn {
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.head-btn-all   { color: var(--green);  border-color: var(--green); }
+.head-btn-all:hover   { background: var(--green-pale); }
+.head-btn-clear { color: var(--red);    border-color: #e0b0aa; }
+.head-btn-clear:hover { background: var(--red-pale); }
+.card-body { padding: 18px; }
+
+/* ── MACHINE PARAMS ──────────────────────────────── */
+.params-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 500px) { .params-grid { grid-template-columns: 1fr; } }
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--grey-soft);
+  margin-bottom: 6px;
+}
+.field input,
+.field select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--grey);
+  background: white;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.field input:focus,
+.field select:focus { outline: none; border-color: var(--blue-mid); }
+
+.field.full { grid-column: 1 / -1; }
+
+/* ── CONDITION PICKER ────────────────────────────── */
+.condition-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+@media (max-width: 500px) { .condition-grid { grid-template-columns: 1fr 1fr; } }
+
+.cond-btn {
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s;
+  background: white;
+}
+.cond-btn .emoji { font-size: 20px; display: block; margin-bottom: 4px; }
+.cond-btn .lbl   { font-size: 11px; font-weight: 600; color: var(--grey-soft); }
+.cond-btn .coef  { font-size: 10px; color: #aaa; margin-top: 2px; }
+.cond-btn:hover  { border-color: var(--blue-mid); }
+.cond-btn.sel-green  { border-color: var(--green); background: var(--green-pale); }
+.cond-btn.sel-green .lbl { color: var(--green); }
+.cond-btn.sel-yellow { border-color: var(--yellow); background: var(--yellow-pale); }
+.cond-btn.sel-yellow .lbl { color: var(--yellow); }
+.cond-btn.sel-orange { border-color: var(--orange); background: var(--orange-pale); }
+.cond-btn.sel-orange .lbl { color: var(--orange); }
+.cond-btn.sel-red    { border-color: var(--red); background: var(--red-pale); }
+.cond-btn.sel-red .lbl { color: var(--red); }
+
+/* ── SYSTEMS LIST ────────────────────────────────── */
+.system-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f4f8;
+}
+.system-row:last-child { border-bottom: none; }
+
+.sys-check {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  background: white;
+}
+.sys-check.checked {
+  border-color: var(--blue-mid);
+  background: var(--blue-mid);
+}
+.sys-check.checked::after {
+  content: '✓';
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sys-info { flex: 1; min-width: 0; }
+.sys-info .sys-name { font-size: 13px; font-weight: 600; color: var(--grey); }
+.sys-info .sys-desc { font-size: 11px; color: var(--grey-soft); margin-top: 1px; }
+
+.sys-scope {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.scope-btn {
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--grey-soft);
+  background: white;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.scope-btn:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+.scope-btn.scope-minor.active  { background: var(--green-pale);  border-color: var(--green);  color: var(--green); }
+.scope-btn.scope-major.active  { background: var(--orange-pale); border-color: var(--orange); color: var(--orange); }
+.scope-btn.scope-full.active   { background: var(--red-pale);    border-color: var(--red);    color: var(--red); }
+
+.sys-base-price {
+  font-size: 11px;
+  color: #aaa;
+  flex-shrink: 0;
+  text-align: right;
+  min-width: 70px;
+}
+
+/* ── EXTRAS ──────────────────────────────────────── */
+.extras-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 500px) { .extras-grid { grid-template-columns: 1fr; } }
+
+.extra-item {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  transition: all 0.18s;
+  background: white;
+}
+.extra-item:hover { border-color: var(--blue-mid); }
+.extra-item.active { border-color: var(--blue-mid); background: var(--blue-pale); }
+.extra-item .eicon { font-size: 20px; flex-shrink: 0; }
+.extra-item .etxt .ename { font-size: 12px; font-weight: 700; color: var(--grey); }
+.extra-item .etxt .eprice { font-size: 11px; color: var(--grey-soft); margin-top: 1px; }
+.extra-item .echk {
+  margin-left: auto; width: 16px; height: 16px;
+  border: 2px solid var(--border); border-radius: 4px;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.extra-item.active .echk { border-color: var(--blue-mid); background: var(--blue-mid); }
+.extra-item.active .echk::after { content: '✓'; color: white; font-size: 10px; font-weight: 700; }
+
+/* ── RIGHT PANEL ─────────────────────────────────── */
+.right-col { position: sticky; top: 20px; }
+
+.summary-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+}
+.summary-head {
+  background: linear-gradient(130deg, var(--blue) 0%, var(--blue-mid) 100%);
+  padding: 16px 18px;
+  color: white;
+}
+.summary-head h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.summary-head p  { font-size: 12px; opacity: 0.75; }
+
+.summary-body { padding: 16px 18px; }
+
+.machine-tag {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--blue-pale);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+  font-size: 12px; color: var(--blue);
+}
+.machine-tag strong { font-size: 13px; }
+
+.coef-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: var(--grey-soft);
+  padding: 4px 0;
+  border-bottom: 1px dashed #eee;
+}
+.coef-row:last-of-type { border-bottom: none; }
+.coef-row .val { font-weight: 700; color: var(--grey); }
+
+.divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+.line-items { margin-bottom: 12px; }
+.li-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 12px; padding: 4px 0;
+  border-bottom: 1px solid #f5f7fa;
+}
+.li-row:last-child { border-bottom: none; }
+.li-row .li-name { color: var(--grey-soft); flex: 1; padding-right: 8px; }
+.li-row .li-val  { font-weight: 600; color: var(--grey); white-space: nowrap; }
+.li-row .li-val.scope-minor { color: var(--green); }
+.li-row .li-val.scope-major { color: var(--orange); }
+.li-row .li-val.scope-full  { color: var(--red); }
+
+.empty-hint {
+  text-align: center;
+  padding: 20px 10px;
+  color: var(--grey-soft);
+  font-size: 12px;
+}
+.empty-hint .big { font-size: 28px; margin-bottom: 6px; }
+
+.total-block {
+  background: var(--blue-pale);
+  border-radius: 8px;
+  padding: 12px 14px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.total-block .total-label { font-size: 11px; color: var(--grey-soft); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+.total-block .total-range { font-size: 22px; font-weight: 800; color: var(--blue); line-height: 1.2; }
+.total-block .total-sub   { font-size: 11px; color: var(--grey-soft); margin-top: 4px; }
+
+.timeline-block {
+  display: flex; gap: 8px;
+  margin-bottom: 14px;
+}
+.tl-item {
+  flex: 1; text-align: center;
+  background: var(--grey-light);
+  border-radius: 8px;
+  padding: 8px 4px;
+}
+.tl-item .tv { font-size: 15px; font-weight: 800; color: var(--blue); }
+.tl-item .tl { font-size: 10px; color: var(--grey-soft); margin-top: 2px; }
+
+.btn-primary {
+  display: block; width: 100%;
+  background: linear-gradient(130deg, var(--orange) 0%, var(--orange-mid) 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.btn-primary:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(197,90,17,0.3); }
+
+.btn-secondary {
+  display: block; width: 100%;
+  background: white;
+  color: var(--blue);
+  border: 1.5px solid var(--blue-mid);
+  border-radius: 8px;
+  padding: 11px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.btn-secondary:hover { background: var(--blue-pale); }
+
+/* ── WARNING NOTE ─────────────────────────────────── */
+.note {
+  background: var(--yellow-pale);
+  border: 1px solid #e8d08a;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  color: #7a5900;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.note strong { display: block; margin-bottom: 2px; }
+
+/* ── SCOPE LEGEND ─────────────────────────────────── */
+.legend {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.leg-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--grey-soft);
+}
+.leg-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.leg-dot.minor { background: var(--green); }
+.leg-dot.major { background: var(--orange); }
+.leg-dot.full  { background: var(--red); }
+
+/* ── LOGISTICS ───────────────────────────────────── */
+.logistic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 600px) { .logistic-grid { grid-template-columns: 1fr; } }
+
+.logistic-btn {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  cursor: pointer;
+  background: white;
+  transition: all 0.18s;
+}
+.logistic-btn:hover { border-color: var(--blue-mid); }
+.logistic-btn.active-visit    { border-color: var(--green);  background: var(--green-pale); }
+.logistic-btn.active-delivery { border-color: var(--orange); background: var(--orange-pale); }
+.logistic-btn.active-self     { border-color: var(--blue-mid); background: var(--blue-pale); }
+
+.log-icon  { font-size: 22px; margin-bottom: 6px; }
+.log-title { font-size: 12px; font-weight: 700; color: var(--grey); margin-bottom: 5px; line-height: 1.3; }
+.log-desc  { font-size: 11px; color: var(--grey-soft); line-height: 1.4; margin-bottom: 8px; }
+.log-tag   { display: inline-block; border-radius: 4px; padding: 2px 7px; font-size: 10px; font-weight: 700; }
+.tag-green  { background: var(--green-pale); color: var(--green); }
+.tag-orange { background: var(--orange-pale); color: var(--orange); }
+.tag-grey   { background: #f0f0f0; color: var(--grey-soft); }
+
+.office-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+@media (max-width: 500px) { .office-grid { grid-template-columns: 1fr; } }
+
+.office-btn {
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 10px;
+  cursor: pointer;
+  text-align: center;
+  background: white;
+  transition: all 0.18s;
+}
+.office-btn:hover { border-color: var(--blue-mid); }
+.office-btn.active-office { border-color: var(--blue-mid); background: var(--blue-pale); }
+.off-icon { font-size: 18px; margin-bottom: 4px; }
+.off-name { font-size: 12px; font-weight: 700; color: var(--grey); }
+.off-sub  { font-size: 10px; color: var(--grey-soft); margin-top: 2px; }
+.office-btn.active-office .off-name { color: var(--blue); }
+
+.delivery-dest-badge {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--orange-pale);
+  border: 1.5px solid #e8c4a0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+.delivery-dest-badge span { font-size: 22px; flex-shrink: 0; }
+.ddb-title { font-size: 13px; color: var(--orange); font-weight: 600; }
+.ddb-sub   { font-size: 11px; color: var(--grey-soft); margin-top: 2px; }
+
+/* Диагностика — выбор офиса */
+.diag-office-block {
+  grid-column: 1 / -1;
+  background: var(--blue-pale);
+  border: 1.5px solid var(--blue-light);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: -4px;
+  display: none;
+}
+.diag-office-block.visible { display: block; }
+.diag-office-block label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.6px; color: var(--blue); margin-bottom: 8px; display: block;
+}
+.diag-offices {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.diag-off-btn {
+  border: 1.5px solid var(--blue-light);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  background: white;
+  color: var(--grey-soft);
+  transition: all 0.15s;
+}
+.diag-off-btn:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+.diag-off-btn.active { border-color: var(--blue-mid); background: var(--blue-mid); color: white; }
+
+.delivery-estimate {
+  background: var(--orange-pale);
+  border: 1px solid #e8c4a0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--orange);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.delivery-estimate strong { font-size: 15px; font-weight: 800; display: block; margin-bottom: 2px; }
+
+/* ── CONTACT MODAL ────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  max-width: 480px; width: 100%;
+  overflow: hidden;
+  animation: popIn 0.25s ease;
+}
+@keyframes popIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.modal-head {
+  background: linear-gradient(130deg, var(--blue) 0%, var(--blue-mid) 100%);
+  color: white; padding: 20px 24px;
+}
+.modal-head h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.modal-head p  { font-size: 12px; opacity: 0.78; }
+.modal-body { padding: 20px 24px; }
+.modal-field { margin-bottom: 14px; }
+.modal-field label { display: block; font-size: 12px; font-weight: 700; color: var(--grey-soft); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.modal-field input, .modal-field textarea {
+  width: 100%; padding: 10px 13px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-family: inherit;
+  transition: border-color 0.2s;
+}
+.modal-field input:focus, .modal-field textarea:focus { outline: none; border-color: var(--blue-mid); }
+.modal-field textarea { resize: vertical; min-height: 70px; }
+.modal-summary-box {
+  background: var(--blue-pale); border-radius: 8px;
+  padding: 12px 14px; margin-bottom: 16px;
+  font-size: 12px; color: var(--blue);
+}
+.modal-summary-box strong { display: block; font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+.modal-footer { display: flex; gap: 10px; }
+.modal-footer .btn-primary  { flex: 1; }
+.modal-footer .btn-cancel {
+  padding: 11px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--grey-soft);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.modal-footer .btn-cancel:hover { background: var(--grey-light); }
+
+.success-msg {
+  text-align: center; padding: 30px 20px; display: none;
+}
+.success-msg .big { font-size: 48px; margin-bottom: 12px; }
+.success-msg h4 { font-size: 18px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+.success-msg p  { font-size: 13px; color: var(--grey-soft); }
+
+/* ── PRINT BUTTON ─────────────────────────────────── */
+.print-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 11px; color: var(--grey-soft);
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 0; margin-top: 6px; width: 100%;
+  justify-content: center;
+}
+.print-btn:hover { color: var(--blue); }
+
+@media print {
+  .btn-primary, .btn-secondary, .print-btn, .modal-overlay { display: none !important; }
+  body { background: white; }
+  .right-col { position: static; }
+}
+</style>
+</head>
+<body>
+<!-- ── BACK TO HOMEPAGE ─────────────────────────────── -->
+<div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:9px 20px;display:flex;align-items:center;gap:14px;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+  <a href="../yaforys_homepage.html"
+     style="display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.88);font-size:.84rem;font-weight:700;text-decoration:none;padding:6px 14px;border-radius:7px;border:1.5px solid rgba(255,255,255,.28);transition:all .2s;"
+     onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff';this.style.borderColor='rgba(255,255,255,.6)'"
+     onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.88)';this.style.borderColor='rgba(255,255,255,.28)'">
+    ← На главную
+  </a>
+  <span style="color:rgba(255,255,255,.3);font-size:.9rem;user-select:none;">|</span>
+  <span style="color:rgba(255,255,255,.55);font-size:.82rem;font-weight:500;letter-spacing:.2px;">www.yaforys.ru</span>
+  <div style="flex:1;"></div>
+  <a href="../yaforys_homepage.html#calculators"
+     style="color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;"
+     onmouseover="this.style.color='rgba(255,255,255,.9)'"
+     onmouseout="this.style.color='rgba(255,255,255,.55)'">
+    Все калькуляторы
+  </a>
+</div>
+
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="badge">Сервисный калькулятор · ЯФОР</div>
+  <h1>🔧 Калькулятор стоимости капитального ремонта</h1>
+  <p>Термоформеры любых марок и размеров · Предварительный расчёт за 2 минуты</p>
+</div>
+
+<div class="layout">
+
+  <!-- ═══ ЛЕВАЯ КОЛОНКА ══════════════════════════════ -->
+  <div class="left-col">
+
+    <!-- 1. МАШИНА -->
+    <div class="card">
+      <div class="card-head">
+        <div class="icon">⚙️</div>
+        <h3>1. Параметры машины</h3>
+        <span class="sub">Влияет на коэффициент стоимости</span>
+      </div>
+      <div class="card-body">
+        <div class="params-grid">
+          <div class="field">
+            <label>Марка / модель</label>
+            <input type="text" id="machineModel" placeholder="ЯFORM420, Multivac R145..." oninput="updateCalc()">
+          </div>
+          <div class="field">
+            <label>Ширина плёнки, мм</label>
+            <select id="filmWidth" onchange="updateCalc()">
+              <option value="0.7">до 300 мм (компактная)</option>
+              <option value="0.85">301–380 мм</option>
+              <option value="1.0" selected>381–450 мм (базовая)</option>
+              <option value="1.2">451–520 мм</option>
+              <option value="1.45">521–650 мм</option>
+              <option value="1.7">651–800 мм</option>
+              <option value="2.1">свыше 800 мм (крупная)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Возраст машины</label>
+            <select id="machineAge" onchange="updateCalc()">
+              <option value="0.8">до 3 лет</option>
+              <option value="0.9">3–5 лет</option>
+              <option value="1.0" selected>5–8 лет</option>
+              <option value="1.15">8–12 лет</option>
+              <option value="1.35">12–18 лет</option>
+              <option value="1.6">свыше 18 лет</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Производитель</label>
+            <select id="mfrType" onchange="updateCalc()">
+              <option value="1.0">Российский (ЯФОР, ПМ)</option>
+              <option value="1.0">Белорусский / СНГ</option>
+              <option value="1.25">Европейский (Multivac, Ulma, Variovac)</option>
+              <option value="1.15">Азиатский (Hualian, JLPK и др.)</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>Текущее состояние машины</label>
+            <div class="condition-grid">
+              <div class="cond-btn sel-green" data-coef="0.85" data-sel="g" onclick="selectCond(this,'sel-green')">
+                <span class="emoji">🟢</span>
+                <div class="lbl">Рабочее</div>
+                <div class="coef">плановый ТО</div>
+              </div>
+              <div class="cond-btn" data-coef="1.0" data-sel="y" onclick="selectCond(this,'sel-yellow')">
+                <span class="emoji">🟡</span>
+                <div class="lbl">Износ</div>
+                <div class="coef">частые сбои</div>
+              </div>
+              <div class="cond-btn" data-coef="1.3" data-sel="o" onclick="selectCond(this,'sel-orange')">
+                <span class="emoji">🟠</span>
+                <div class="lbl">Аварийное</div>
+                <div class="coef">не работает</div>
+              </div>
+              <div class="cond-btn" data-coef="1.65" data-sel="r" onclick="selectCond(this,'sel-red')">
+                <span class="emoji">🔴</span>
+                <div class="lbl">Критическое</div>
+                <div class="coef">долгий простой</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. СИСТЕМЫ -->
+    <div class="card">
+      <div class="card-head">
+        <div class="icon">🔩</div>
+        <h3>2. Узлы и системы — выберите и укажите объём работ</h3>
+        <div class="head-actions">
+          <button class="head-btn head-btn-all" onclick="selectAllSystems()">✅ Выбрать все</button>
+          <button class="head-btn head-btn-clear" onclick="clearAllSystems()">🗑 Очистить</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="legend">
+          <div class="leg-item"><div class="leg-dot minor"></div> Мелкий (регулировка, замена деталей)</div>
+          <div class="leg-item"><div class="leg-dot major"></div> Средний (частичная замена узла)</div>
+          <div class="leg-item"><div class="leg-dot full"></div> Полный (замена / восстановление)</div>
+        </div>
+
+        <div id="systemsContainer">
+          <!-- Строки генерируются JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. ЛОГИСТИКА -->
+    <div class="card">
+      <div class="card-head">
+        <div class="icon">🚛</div>
+        <h3>3. Логистика — способ выполнения работ</h3>
+        <span class="sub" id="logisticHint" style="color:var(--orange)"></span>
+      </div>
+      <div class="card-body">
+
+        <div class="logistic-grid">
+          <div class="logistic-btn" id="log_visit" onclick="setLogistic('visit')">
+            <div class="log-icon">🔧</div>
+            <div class="log-title">Выезд специалиста к вам</div>
+            <div class="log-desc">Рекомендуется для планового ТО и мелкого ремонта. Командировочные и проезд включены в стоимость работ.</div>
+            <div class="log-tag tag-green">Плановое ТО / Мелкий ремонт</div>
+          </div>
+          <div class="logistic-btn" id="log_delivery" onclick="setLogistic('delivery')">
+            <div class="log-icon">🚛</div>
+            <div class="log-title">Доставка оборудования в ЯФОР</div>
+            <div class="log-desc">Для среднего и капитального ремонта. Машина доставляется в наш сервисный центр, ремонтируется в условиях мастерской.</div>
+            <div class="log-tag tag-orange">Средний / Полный ремонт</div>
+          </div>
+          <div class="logistic-btn" id="log_self" onclick="setLogistic('self')">
+            <div class="log-icon">🏭</div>
+            <div class="log-title">Самовывоз</div>
+            <div class="log-desc">Клиент доставляет машину самостоятельно. Стоимость доставки не включается в смету.</div>
+            <div class="log-tag tag-grey">Экономия на логистике</div>
+          </div>
+        </div>
+
+        <div id="deliveryBlock" style="display:none; margin-top:16px;">
+
+          <div class="delivery-dest-badge">
+            <span>🏭</span>
+            <div>
+              <div class="ddb-title">Сервисный центр ЯФОР — <strong>Москва</strong></div>
+              <div class="ddb-sub">Единственный сервисный центр для приёма оборудования на капремонт</div>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:12px;">
+            <label id="distLabel">Расстояние от вас до Москвы</label>
+            <select id="deliveryDist" onchange="updateCalc()">
+              <option value="0">В черте города / до 100 км</option>
+              <option value="1">101–300 км</option>
+              <option value="2">301–600 км</option>
+              <option value="3">601–1000 км</option>
+              <option value="4">1001–2000 км</option>
+              <option value="5">свыше 2000 км</option>
+            </select>
+          </div>
+          <div id="deliveryEstimate" class="delivery-estimate"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. ДОП. РАБОТЫ -->
+    <div class="card">
+      <div class="card-head">
+        <div class="icon">📋</div>
+        <h3>4. Дополнительные работы и услуги</h3>
+      </div>
+      <div class="card-body">
+        <div class="extras-grid" id="extrasContainer">
+          <!-- Генерируется JS -->
+        </div>
+        <div class="diag-office-block" id="diagOfficeBlock">
+          <label>🔍 Из какого офиса выедет специалист?</label>
+          <div class="diag-offices">
+            <button class="diag-off-btn active" id="doff_spb" onclick="setDiagOffice('spb')">🏙️ Санкт-Петербург</button>
+            <button class="diag-off-btn" id="doff_msk" onclick="setDiagOffice('msk')">🏙️ Москва</button>
+            <button class="diag-off-btn" id="doff_vlg" onclick="setDiagOffice('vlg')">🏙️ Волгоград</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ ПРАВАЯ КОЛОНКА ═════════════════════════════ -->
+  <div class="right-col">
+    <div class="summary-card">
+      <div class="summary-head">
+        <h3>💰 Предварительный расчёт</h3>
+        <p>Обновляется автоматически</p>
+      </div>
+      <div class="summary-body">
+
+        <div class="machine-tag" id="machineTag">
+          <span>⚙️</span>
+          <span id="machineTagText">Термоформер · Введите данные</span>
+        </div>
+
+        <div class="coef-row"><span>Коэф. размера:</span><span class="val" id="cSize">×1.0</span></div>
+        <div class="coef-row"><span>Коэф. возраста:</span><span class="val" id="cAge">×1.0</span></div>
+        <div class="coef-row"><span>Коэф. состояния:</span><span class="val" id="cCond">×0.85</span></div>
+        <div class="coef-row"><span>Производитель:</span><span class="val" id="cMfr">×1.0</span></div>
+        <div class="coef-row"><span>Логистика:</span><span class="val" id="cLogistic" style="color:var(--grey-soft)">не выбрано</span></div>
+
+        <div class="divider"></div>
+
+        <div class="line-items" id="lineItems">
+          <div class="empty-hint">
+            <div class="big">🔧</div>
+            Выберите системы слева — расчёт появится здесь
+          </div>
+        </div>
+
+        <div id="totalBlock" style="display:none">
+          <div class="total-block">
+            <div class="total-label">Стоимость ремонта (без НДС)</div>
+            <div class="total-range" id="totalRange">—</div>
+            <div class="total-sub" id="totalSub">без учёта запчастей на замену</div>
+          </div>
+
+          <div class="timeline-block" id="timelineBlock">
+            <div class="tl-item"><div class="tv" id="tlDays">—</div><div class="tl">рабочих дней</div></div>
+            <div class="tl-item"><div class="tv" id="tlParts">—</div><div class="tl">позиций з/ч</div></div>
+            <div class="tl-item"><div class="tv" id="tlSpec">—</div><div class="tl">специалистов</div></div>
+          </div>
+
+          <button class="btn-primary" onclick="openModal()">📞 Получить точную смету</button>
+          <button class="btn-secondary" onclick="window.print()">🖨️ Распечатать расчёт</button>
+
+          <div class="note">
+            <strong>⚠️ Предварительная оценка</strong>
+            Точная стоимость определяется после технической диагностики. Выезд специалиста — бесплатно в радиусе 500 км от СПб.
+          </div>
+        </div>
+
+        <div id="noSelBlock" style="display:none">
+          <div class="note">
+            Выберите хотя бы одну систему для ремонта
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>📋 Запрос точной сметы</h3>
+      <p>Специалист свяжется в течение 2 часов</p>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="modal-summary-box">
+        <div style="font-size:11px;color:#5b7fa6;margin-bottom:3px">Предварительная оценка по расчёту:</div>
+        <strong id="modalTotal">—</strong>
+        <span id="modalMachine" style="font-size:12px;color:#5b7fa6"></span>
+      </div>
+      <div class="modal-field">
+        <label>Ваше имя *</label>
+        <input type="text" id="cName" placeholder="Иван Петров">
+      </div>
+      <div class="modal-field">
+        <label>Компания</label>
+        <input type="text" id="cCompany" placeholder="ООО «Название»">
+      </div>
+      <div class="modal-field">
+        <label>Телефон / WhatsApp *</label>
+        <input type="tel" id="cPhone" placeholder="+7 (___) ___-__-__">
+      </div>
+      <div class="modal-field">
+        <label>Комментарий (необязательно)</label>
+        <textarea id="cComment" placeholder="Опишите симптомы поломки, срочность..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+        <button class="btn-primary" onclick="submitForm()">Отправить заявку →</button>
+      </div>
+    </div>
+    <div class="success-msg" id="successMsg">
+      <div class="big">✅</div>
+      <h4>Заявка отправлена!</h4>
+      <p>Специалист ЯФОР свяжется с вами в течение 2 рабочих часов для уточнения деталей и согласования выезда.</p>
+      <br>
+      <button class="btn-secondary" onclick="closeModal()" style="max-width:200px;margin:0 auto">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  ДАННЫЕ
+// ═══════════════════════════════════════════════════════════════
+
+const SYSTEMS = [
+  { id:'framing',    name:'Рама и направляющие',       desc:'Профиль рамы, линейные направляющие, опоры',           base:55000,  partsFull:3 },
+  { id:'transport',  name:'Система транспортировки плёнки', desc:'Цепи, звёздочки, зажимы, ролики протяжки',         base:70000,  partsFull:5 },
+  { id:'forming',    name:'Станция формования',         desc:'Нагревательные плиты, матрица, пуансон, уплотнения',   base:95000,  partsFull:7 },
+  { id:'sealing',    name:'Станция запечатывания',      desc:'Термосварочная плита, нагреватели, уплотнения',        base:85000,  partsFull:6 },
+  { id:'cutting',    name:'Станция вырубки / резки',    desc:'Ножи, матрица вырубки, прижим, регулировки',           base:75000,  partsFull:5 },
+  { id:'vacuum',     name:'Вакуумная система',          desc:'Вакуумный насос, клапаны, трубки, распределитель',     base:80000,  partsFull:4 },
+  { id:'pneumatics', name:'Пневматическая система',     desc:'Цилиндры, клапаны, фильтры, регуляторы, трубки',       base:60000,  partsFull:5 },
+  { id:'hydraulics', name:'Гидравлическая система',     desc:'Гидростанция, цилиндры, шланги (при наличии)',         base:90000,  partsFull:4 },
+  { id:'map',        name:'MAP / газовая система',      desc:'Головка смешивания, клапаны, датчики CO₂/N₂',          base:65000,  partsFull:3 },
+  { id:'electric',   name:'Электрика и управление',     desc:'PLC, HMI, датчики, частотники, кабельные трассы',      base:110000, partsFull:8 },
+  { id:'heaters',    name:'Нагревательные элементы',    desc:'ТЭНы, термопары, пирометры, реле',                     base:45000,  partsFull:4 },
+  { id:'safety',     name:'Система безопасности',       desc:'Аварийные стопы, датчики дверей, ограждения',          base:35000,  partsFull:2 },
+  { id:'lubrication',name:'Система смазки',             desc:'Смазочные точки, автосмазка, уплотнения шарниров',     base:25000,  partsFull:2 },
+  { id:'cip',        name:'Система CIP-мойки',          desc:'Насосы, форсунки, трубки, клапаны',                    base:40000,  partsFull:2 },
+  { id:'marking',    name:'Принтер / маркировка',       desc:'Принтер-аппликатор, термоголовка, подача ленты',       base:50000,  partsFull:3 },
+];
+
+const SCOPE_MULT   = { minor: 0.35, major: 0.75, full: 1.0 };
+const SCOPE_SPREAD = { minor: [0.85, 1.2], major: [0.80, 1.25], full: [0.75, 1.30] };
+const SCOPE_DAYS   = { minor: [1,3], major: [3,7], full: [5,12] };
+
+const EXTRAS = [
+  { id:'diag',     name:'Полная диагностика',  desc:'Выезд + отчёт',   price:25000, icon:'🔍' },
+  { id:'adjust',   name:'Настройка / наладка', desc:'ПНР после ремонта',price:18000, icon:'🎚️' },
+  { id:'train',    name:'Обучение операторов', desc:'1–2 дня',          price:22000, icon:'🎓' },
+  { id:'warranty', name:'Гарантия 12 мес.',    desc:'После ремонта',    price:35000, icon:'🛡️' },
+  { id:'parts',    name:'Поставка з/ч',        desc:'По факту подбора', price:0,     icon:'📦' },
+  { id:'urgent',   name:'Срочный выезд 24ч',   desc:'+50% к работам',   price:-1,    icon:'⚡' },
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  DELIVERY TARIFFS  [min, max] руб. (туда+обратно)
+// ═══════════════════════════════════════════════════════════════
+const DELIVERY_TARIFFS = [
+  { label: 'СПб и область',  range: [8000,  15000]  },
+  { label: '101–300 км',     range: [18000, 30000]  },
+  { label: '301–600 км',     range: [30000, 55000]  },
+  { label: '601–1000 км',    range: [55000, 90000]  },
+  { label: '1001–2000 км',   range: [90000, 160000] },
+  { label: 'свыше 2000 км',  range: [160000, 280000]},
+];
+
+// Размер машины → тоннаж → коэф. к тарифу
+const SIZE_WEIGHT_COEF = {
+  '0.7': 0.7,   // компактная ~600 кг
+  '0.85': 0.85,
+  '1.0': 1.0,   // базовая ~1500 кг
+  '1.2': 1.2,
+  '1.45': 1.5,
+  '1.7': 1.8,
+  '2.1': 2.3,   // крупная ~5000+ кг
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+// Доставка — только Москва (фиксировано)
+const DELIVERY_OFFICE = 'msk';
+
+let state = {
+  condCoef: 0.85,
+  condKey: 'g',
+  systems: {},
+  extras: new Set(),
+  urgent: false,
+  logistic: null,     // 'visit' | 'delivery' | 'self' | null
+  diagOffice: 'spb',  // офис, из которого выедет диагност
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDER SYSTEMS
+// ═══════════════════════════════════════════════════════════════
+function renderSystems() {
+  const c = document.getElementById('systemsContainer');
+  c.innerHTML = SYSTEMS.map(s => `
+    <div class="system-row" id="row_${s.id}">
+      <div class="sys-check" id="chk_${s.id}" onclick="toggleSystem('${s.id}')"></div>
+      <div class="sys-info">
+        <div class="sys-name">${s.name}</div>
+        <div class="sys-desc">${s.desc}</div>
+      </div>
+      <div class="sys-scope" id="scope_${s.id}">
+        <button class="scope-btn scope-minor" onclick="setScope('${s.id}','minor')">Мелкий</button>
+        <button class="scope-btn scope-major" onclick="setScope('${s.id}','major')">Средний</button>
+        <button class="scope-btn scope-full"  onclick="setScope('${s.id}','full')">Полный</button>
+      </div>
+      <div class="sys-base-price" id="bprice_${s.id}"></div>
+    </div>
+  `).join('');
+}
+
+function renderExtras() {
+  const c = document.getElementById('extrasContainer');
+  c.innerHTML = EXTRAS.map(e => `
+    <div class="extra-item" id="ex_${e.id}" onclick="toggleExtra('${e.id}')">
+      <span class="eicon">${e.icon}</span>
+      <div class="etxt">
+        <div class="ename">${e.name}</div>
+        <div class="eprice">${e.price > 0 ? fmtNum(e.price)+' ₽' : e.price === 0 ? 'по факту' : 'наценка +50%'}</div>
+      </div>
+      <div class="echk" id="echk_${e.id}"></div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  EVENTS
+// ═══════════════════════════════════════════════════════════════
+function toggleSystem(id) {
+  const cur = state.systems[id];
+  if (!cur) {
+    state.systems[id] = 'minor';
+  } else {
+    delete state.systems[id];
+  }
+  renderSystemRow(id);
+  updateCalc();
+}
+
+function setScope(id, scope) {
+  state.systems[id] = scope;
+  const chk = document.getElementById('chk_'+id);
+  chk.classList.add('checked');
+  renderSystemRow(id);
+  updateCalc();
+}
+
+function renderSystemRow(id) {
+  const scope = state.systems[id];
+  const chk = document.getElementById('chk_'+id);
+  if (scope) {
+    chk.classList.add('checked');
+  } else {
+    chk.classList.remove('checked');
+  }
+  const btns = document.querySelectorAll(`#scope_${id} .scope-btn`);
+  btns.forEach(b => {
+    b.classList.remove('active');
+    if (scope && b.classList.contains('scope-'+scope)) b.classList.add('active');
+  });
+  const s = SYSTEMS.find(x => x.id === id);
+  const bp = document.getElementById('bprice_'+id);
+  if (scope && s) {
+    const coef = getCoefs();
+    const raw  = s.base * SCOPE_MULT[scope] * coef;
+    bp.textContent = '~'+fmtNum(Math.round(raw/1000)*1000)+' ₽';
+  } else {
+    bp.textContent = '';
+  }
+}
+
+function toggleExtra(id) {
+  const el = document.getElementById('ex_'+id);
+  if (state.extras.has(id)) {
+    state.extras.delete(id);
+    el.classList.remove('active');
+  } else {
+    state.extras.add(id);
+    el.classList.add('active');
+  }
+  if (id === 'urgent') state.urgent = state.extras.has('urgent');
+  // Показываем блок выбора офиса диагностики
+  const diagBlock = document.getElementById('diagOfficeBlock');
+  if (diagBlock) diagBlock.classList.toggle('visible', state.extras.has('diag'));
+  updateCalc();
+}
+
+function selectCond(el, selClass) {
+  document.querySelectorAll('.cond-btn').forEach(b => {
+    b.classList.remove('sel-green','sel-yellow','sel-orange','sel-red');
+  });
+  el.classList.add(selClass);
+  state.condCoef = parseFloat(el.dataset.coef);
+  state.condKey  = el.dataset.sel;
+  autoSuggestLogistic();
+  updateCalc();
+}
+
+function setDiagOffice(city) {
+  state.diagOffice = city;
+  ['spb','msk','vlg'].forEach(c => {
+    document.getElementById('doff_'+c).classList.remove('active');
+  });
+  document.getElementById('doff_'+city).classList.add('active');
+  updateCalc();
+}
+
+function setLogistic(type) {
+  state.logistic = type;
+  ['visit','delivery','self'].forEach(t => {
+    const b = document.getElementById('log_'+t);
+    b.classList.remove('active-visit','active-delivery','active-self');
+  });
+  document.getElementById('log_'+type).classList.add('active-'+type);
+  document.getElementById('deliveryBlock').style.display =
+    (type === 'delivery') ? 'block' : 'none';
+  document.getElementById('logisticHint').textContent = '';
+  updateCalc();
+}
+
+function autoSuggestLogistic() {
+  // Если пользователь уже выбрал — не перебиваем
+  if (state.logistic) return;
+  const hint = document.getElementById('logisticHint');
+  if (state.condKey === 'g') {
+    hint.textContent = '💡 Рекомендуется: Выезд специалиста';
+    hint.style.color = 'var(--green)';
+  } else {
+    hint.textContent = '💡 Рекомендуется: Доставка в ЯФОР';
+    hint.style.color = 'var(--orange)';
+  }
+}
+
+function getDeliveryCost() {
+  if (state.logistic !== 'delivery') return { min: 0, max: 0, label: '' };
+  const distIdx  = parseInt(document.getElementById('deliveryDist').value);
+  const sizeCoef = SIZE_WEIGHT_COEF[document.getElementById('filmWidth').value] || 1.0;
+  const tariff   = DELIVERY_TARIFFS[distIdx];
+  const min = Math.round(tariff.range[0] * sizeCoef / 500) * 500;
+  const max = Math.round(tariff.range[1] * sizeCoef / 500) * 500;
+  return { min, max, label: tariff.label };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CALCULATION
+// ═══════════════════════════════════════════════════════════════
+function getCoefs() {
+  const fw   = parseFloat(document.getElementById('filmWidth').value);
+  const age  = parseFloat(document.getElementById('machineAge').value);
+  const mfr  = parseFloat(document.getElementById('mfrType').value);
+  return fw * age * state.condCoef * mfr;
+}
+
+function updateCalc() {
+  const fw   = parseFloat(document.getElementById('filmWidth').value);
+  const age  = parseFloat(document.getElementById('machineAge').value);
+  const mfr  = parseFloat(document.getElementById('mfrType').value);
+  const coef = fw * age * state.condCoef * mfr;
+
+  // Update coef display
+  document.getElementById('cSize').textContent  = '×'+fw.toFixed(2);
+  document.getElementById('cAge').textContent   = '×'+age.toFixed(2);
+  document.getElementById('cCond').textContent  = '×'+state.condCoef.toFixed(2);
+  document.getElementById('cMfr').textContent   = '×'+mfr.toFixed(2);
+
+  const logLabels = {
+    visit:    '🔧 Выезд специалиста',
+    delivery: '🚛 Доставка → Москва',
+    self:     '🏭 Самовывоз',
+  };
+  const cLog = document.getElementById('cLogistic');
+  if (state.logistic) {
+    cLog.textContent = logLabels[state.logistic];
+    cLog.style.color = state.logistic === 'delivery' ? 'var(--orange)' : 'var(--green)';
+  } else {
+    cLog.textContent = '— не выбрано';
+    cLog.style.color = 'var(--grey-soft)';
+  }
+
+  // Machine tag
+  const model = document.getElementById('machineModel').value.trim();
+  document.getElementById('machineTagText').textContent =
+    (model || 'Термоформер') + ' · коэф. ' + coef.toFixed(2);
+
+  // Recalc all system rows
+  SYSTEMS.forEach(s => renderSystemRow(s.id));
+
+  const selectedSystems = Object.entries(state.systems);
+
+  if (selectedSystems.length === 0) {
+    document.getElementById('lineItems').innerHTML = `
+      <div class="empty-hint">
+        <div class="big">🔧</div>
+        Выберите системы слева — расчёт появится здесь
+      </div>`;
+    document.getElementById('totalBlock').style.display = 'none';
+    document.getElementById('noSelBlock').style.display = 'none';
+    return;
+  }
+
+  // Build line items
+  let totalMin = 0, totalMax = 0;
+  let maxDays = 0, totalParts = 0, maxSpec = 1;
+  let lines = '';
+
+  selectedSystems.forEach(([id, scope]) => {
+    const s = SYSTEMS.find(x => x.id === id);
+    if (!s || !scope) return;
+    const base = s.base * SCOPE_MULT[scope] * coef;
+    const [lo, hi] = SCOPE_SPREAD[scope];
+    const vMin = Math.round(base * lo / 1000) * 1000;
+    const vMax = Math.round(base * hi / 1000) * 1000;
+    totalMin += vMin;
+    totalMax += vMax;
+
+    const [dlo, dhi] = SCOPE_DAYS[scope];
+    if (dhi > maxDays) maxDays = dhi;
+    totalParts += Math.round(s.partsFull * SCOPE_MULT[scope] * 1.5);
+    if (scope === 'full') maxSpec = Math.max(maxSpec, 2);
+
+    lines += `<div class="li-row">
+      <span class="li-name">${s.name}</span>
+      <span class="li-val scope-${scope}">${fmtNum(vMin)}–${fmtNum(vMax)} ₽</span>
+    </div>`;
+  });
+
+  // Extras
+  let extrasTotal = 0;
+  state.extras.forEach(eid => {
+    if (eid === 'urgent') return;
+    const e = EXTRAS.find(x => x.id === eid);
+    if (e && e.price > 0) {
+      extrasTotal += e.price;
+      const diagOfficeLabel = { spb: 'из СПб', msk: 'из Москвы', vlg: 'из Волгограда' };
+      const extraLabel = (eid === 'diag')
+        ? `${e.icon} ${e.name} · специалист ${diagOfficeLabel[state.diagOffice]}`
+        : `${e.icon} ${e.name}`;
+      lines += `<div class="li-row">
+        <span class="li-name">${extraLabel}</span>
+        <span class="li-val">${fmtNum(e.price)} ₽</span>
+      </div>`;
+    } else if (e && e.price === 0) {
+      lines += `<div class="li-row">
+        <span class="li-name">${e.icon} ${e.name}</span>
+        <span class="li-val" style="color:#aaa">по факту</span>
+      </div>`;
+    }
+  });
+
+  // Urgent surcharge
+  if (state.urgent) {
+    const uMin = Math.round(totalMin * 0.5 / 1000) * 1000;
+    const uMax = Math.round(totalMax * 0.5 / 1000) * 1000;
+    totalMin += uMin; totalMax += uMax;
+    lines += `<div class="li-row">
+      <span class="li-name">⚡ Срочный выезд (+50%)</span>
+      <span class="li-val scope-full">${fmtNum(uMin)}–${fmtNum(uMax)} ₽</span>
+    </div>`;
+  }
+
+  totalMin += extrasTotal;
+  totalMax += extrasTotal;
+
+  // Delivery cost
+  const delivery = getDeliveryCost();
+  if (delivery.min > 0) {
+    lines += `<div class="li-row">
+      <span class="li-name">🚛 Доставка в ЯФОР (Москва) и обратно · ${delivery.label}</span>
+      <span class="li-val scope-major">${fmtNum(delivery.min)}–${fmtNum(delivery.max)} ₽</span>
+    </div>`;
+    totalMin += delivery.min;
+    totalMax += delivery.max;
+  }
+
+  // Update delivery estimate block
+  if (state.logistic === 'delivery') {
+    const est = document.getElementById('deliveryEstimate');
+    if (delivery.min > 0) {
+      est.innerHTML = `<strong>${fmtNum(delivery.min)} – ${fmtNum(delivery.max)} ₽</strong>
+        Доставка туда + обратно · ${delivery.label}<br>
+        <span style="font-size:10px;opacity:0.75">Расчёт с учётом размера машины. Уточняйте у менеджера.</span>`;
+    } else {
+      est.innerHTML = `<strong>от 8 000 ₽</strong>Доставка по СПб и области`;
+    }
+  }
+
+  document.getElementById('lineItems').innerHTML = lines;
+  document.getElementById('totalRange').textContent =
+    fmtNum(Math.round(totalMin/1000)*1000) + ' – ' + fmtNum(Math.round(totalMax/1000)*1000) + ' ₽';
+  document.getElementById('totalBlock').style.display = 'block';
+  document.getElementById('noSelBlock').style.display = 'none';
+
+  document.getElementById('tlDays').textContent = '~'+maxDays;
+  document.getElementById('tlParts').textContent = totalParts+'–'+(totalParts*2);
+  document.getElementById('tlSpec').textContent = maxSpec+(maxSpec>1?'-3':'–2');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════════════════
+function openModal() {
+  const total = document.getElementById('totalRange').textContent;
+  const model = document.getElementById('machineModel').value.trim();
+  document.getElementById('modalTotal').textContent = total;
+  document.getElementById('modalMachine').textContent = model ? ' · ' + model : '';
+  document.getElementById('modalBody').style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOnBg(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+function submitForm() {
+  const name  = document.getElementById('cName').value.trim();
+  const phone = document.getElementById('cPhone').value.trim();
+  if (!name || !phone) { alert('Пожалуйста, заполните имя и телефон'); return; }
+  // В реальной версии — интеграция с EmailJS / CRM
+  document.getElementById('modalBody').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════════
+function fmtNum(n) {
+  return n.toLocaleString('ru-RU');
+}
+
+function selectAllSystems() {
+  SYSTEMS.forEach(s => {
+    if (!state.systems[s.id]) state.systems[s.id] = 'minor';
+    renderSystemRow(s.id);
+  });
+  updateCalc();
+}
+
+function clearAllSystems() {
+  SYSTEMS.forEach(s => { delete state.systems[s.id]; renderSystemRow(s.id); });
+  updateCalc();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+renderSystems();
+renderExtras();
+updateCalc();
+</script>
+</body>
+</html>

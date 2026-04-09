@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Подбор флоу-пак машины YAFLOW — ЯФОР</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:        #1F4E79;
+  --blue-mid:    #2E75B6;
+  --blue-light:  #D6E4F0;
+  --blue-pale:   #EEF4FB;
+  --green:       #1E6B3C;
+  --green-pale:  #E2EFDA;
+  --orange:      #C55A11;
+  --orange-mid:  #E06B1A;
+  --orange-pale: #FDE8D8;
+  --red:         #C0392B;
+  --red-pale:    #FDECEA;
+  --grey:        #3A3A3A;
+  --grey-soft:   #6B7280;
+  --bg:          #F0F4F9;
+  --white:       #FFFFFF;
+  --radius:      10px;
+  --border:      #DDE5EF;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--grey);
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─────────────────────────────────────── */
+.page-header {
+  background: linear-gradient(130deg, var(--blue) 0%, #2563AB 100%);
+  padding: 26px 24px 22px;
+  text-align: center;
+  color: white;
+}
+.page-header .badge {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 20px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 3px 14px; margin-bottom: 10px; opacity: 0.85;
+}
+.page-header h1 { font-size: 21px; font-weight: 700; margin-bottom: 5px; }
+.page-header p  { font-size: 13px; opacity: 0.78; }
+
+/* ─── LAYOUT ─────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) clamp(290px,31%,370px);
+  gap: 20px;
+  max-width: 1080px;
+  margin: 20px auto;
+  padding: 0 16px 48px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .right-col { order: -1; }
+}
+
+/* ─── ЛЕВАЯ КОЛОНКА: КАРТОЧКИ ────────────────────── */
+.questions-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+.q-block {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.q-block.answered { border-color: var(--blue-mid); }
+
+.q-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 18px 11px;
+  border-bottom: 1px solid var(--bg);
+}
+.q-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #E9EFF6; color: var(--blue);
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.q-block.answered .q-num { background: var(--blue-mid); color: white; }
+.q-title { font-size: 13px; font-weight: 700; color: var(--grey); }
+.q-sub   { font-size: 11px; color: var(--grey-soft); margin-left: auto; }
+.q-body  { padding: 14px 18px 16px; }
+
+/* ─── OPTION GRID ────────────────────────────────── */
+.opt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+.opt-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+.opt-grid.cols1 { grid-template-columns: 1fr; }
+@media (max-width: 500px) {
+  .opt-grid, .opt-grid.cols3 { grid-template-columns: 1fr; }
+}
+
+.opt-btn {
+  border: 2px solid var(--border);
+  border-radius: 9px;
+  background: white;
+  padding: 11px 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: all .18s;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.opt-btn:hover  { border-color: var(--blue-mid); background: var(--blue-pale); }
+.opt-btn.active { border-color: var(--blue-mid); background: var(--blue-pale); }
+.opt-btn.active .opt-icon { background: var(--blue-mid); }
+
+.opt-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: #E9EFF6; display: flex; align-items: center;
+  justify-content: center; font-size: 16px; flex-shrink: 0;
+  transition: background .18s;
+}
+.opt-text .opt-name { font-size: 12px; font-weight: 700; color: var(--grey); }
+.opt-text .opt-desc { font-size: 11px; color: var(--grey-soft); margin-top: 2px; line-height: 1.35; }
+
+/* ─── SLIDER INPUTS ──────────────────────────────── */
+.slider-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+@media (max-width: 500px) { .slider-grid { grid-template-columns: 1fr; } }
+
+.sl-field label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--grey-soft); display: block; margin-bottom: 6px;
+}
+.sl-field .sl-val {
+  font-size: 18px; font-weight: 800; color: var(--blue);
+  margin-bottom: 6px; display: block;
+}
+.sl-field .sl-unit { font-size: 12px; color: var(--grey-soft); font-weight: 400; margin-left: 3px; }
+input[type=range] {
+  width: 100%; accent-color: var(--blue-mid);
+  height: 4px; cursor: pointer;
+}
+.sl-field .sl-minmax {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: #bbb; margin-top: 2px;
+}
+
+/* ─── CHECKBOX OPTS ──────────────────────────────── */
+.check-grid { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: center; gap: 10px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 9px 12px; cursor: pointer; background: white;
+  transition: all .18s;
+}
+.check-item:hover { border-color: var(--blue-mid); }
+.check-item.active { border-color: var(--blue-mid); background: var(--blue-pale); }
+.chk-box {
+  width: 18px; height: 18px; border: 2px solid var(--border);
+  border-radius: 4px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.check-item.active .chk-box {
+  border-color: var(--blue-mid); background: var(--blue-mid);
+}
+.check-item.active .chk-box::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; }
+.chk-icon { font-size: 18px; flex-shrink: 0; }
+.chk-text .chk-name { font-size: 12px; font-weight: 700; color: var(--grey); }
+.chk-text .chk-desc { font-size: 11px; color: var(--grey-soft); margin-top: 1px; }
+
+/* ─── RIGHT PANEL ────────────────────────────────── */
+.right-col { position: sticky; top: 18px; display: flex; flex-direction: column; gap: 14px; }
+
+.panel-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+}
+.panel-head {
+  background: linear-gradient(130deg, var(--blue) 0%, var(--blue-mid) 100%);
+  padding: 14px 18px; color: white;
+}
+.panel-head h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.panel-head p  { font-size: 11px; opacity: .75; }
+.panel-body { padding: 16px 18px; }
+
+/* ─── MODEL RESULT ───────────────────────────────── */
+.model-empty {
+  text-align: center; padding: 20px 10px;
+  font-size: 12px; color: var(--grey-soft);
+}
+.model-empty .big { font-size: 30px; margin-bottom: 8px; }
+
+.model-card {
+  border: 2px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.model-card.best { border-color: var(--blue-mid); }
+.model-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--blue-pale);
+}
+.model-card.best .model-head { background: var(--blue-mid); }
+.model-tag {
+  display: inline-block; border-radius: 4px;
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  background: rgba(255,255,255,.25); color: white;
+}
+.model-name { font-size: 16px; font-weight: 800; color: var(--blue); }
+.model-card.best .model-name { color: white; }
+.model-badge {
+  margin-left: auto; font-size: 10px; font-weight: 700;
+  background: var(--orange); color: white;
+  border-radius: 4px; padding: 2px 8px;
+}
+.model-body { padding: 12px 14px; }
+.model-spec { font-size: 11px; color: var(--grey-soft); display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+.model-spec span { display: flex; justify-content: space-between; }
+.model-spec span b { color: var(--grey); }
+.model-why { font-size: 11px; color: var(--green); font-weight: 600; }
+.model-price {
+  font-size: 13px; font-weight: 800; color: var(--blue);
+  text-align: right; margin-top: 6px;
+}
+
+/* ─── ROI ────────────────────────────────────────── */
+.roi-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 12px; padding: 4px 0;
+  border-bottom: 1px solid #f0f4f8;
+}
+.roi-row:last-child { border-bottom: none; }
+.roi-row .rl { color: var(--grey-soft); }
+.roi-row .rv { font-weight: 700; color: var(--grey); }
+.roi-total {
+  background: var(--blue-pale); border-radius: 8px;
+  padding: 10px 14px; text-align: center; margin: 10px 0;
+}
+.roi-total .rt-label { font-size: 10px; color: var(--grey-soft); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 3px; }
+.roi-total .rt-val   { font-size: 20px; font-weight: 800; color: var(--blue); }
+.roi-total .rt-sub   { font-size: 10px; color: var(--grey-soft); margin-top: 2px; }
+
+/* ─── BUTTONS ────────────────────────────────────── */
+.btn-cta {
+  display: block; width: 100%;
+  background: linear-gradient(130deg, var(--orange) 0%, var(--orange-mid) 100%);
+  color: white; border: none; border-radius: 8px;
+  padding: 12px; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .2s; text-align: center;
+  margin-bottom: 6px;
+}
+.btn-cta:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(197,90,17,.28); }
+.btn-sec {
+  display: block; width: 100%;
+  background: white; color: var(--blue);
+  border: 1.5px solid var(--blue-mid); border-radius: 8px;
+  padding: 10px; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all .2s; text-align: center;
+}
+.btn-sec:hover { background: var(--blue-pale); }
+
+/* ─── NOTE ───────────────────────────────────────── */
+.note {
+  background: #FEF9E7; border: 1px solid #e8d08a;
+  border-radius: 8px; padding: 9px 12px;
+  font-size: 11px; color: #7a5900; line-height: 1.5;
+  margin-top: 8px;
+}
+.note strong { display: block; margin-bottom: 1px; }
+
+/* ─── MODAL ──────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 100; display: none;
+  align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white; border-radius: var(--radius);
+  max-width: 460px; width: 100%; overflow: hidden;
+  animation: popIn .22s ease;
+}
+@keyframes popIn {
+  from { transform: scale(.92); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.modal-head { background: linear-gradient(130deg, var(--blue) 0%, var(--blue-mid) 100%); color: white; padding: 18px 22px; }
+.modal-head h3 { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+.modal-head p  { font-size: 12px; opacity: .78; }
+.modal-body { padding: 18px 22px; }
+.m-summary { background: var(--blue-pale); border-radius: 8px; padding: 10px 13px; margin-bottom: 14px; font-size: 12px; color: var(--blue); }
+.m-summary strong { font-size: 15px; font-weight: 800; display: block; margin-bottom: 2px; }
+.m-field { margin-bottom: 12px; }
+.m-field label { display: block; font-size: 11px; font-weight: 700; color: var(--grey-soft); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+.m-field input, .m-field textarea {
+  width: 100%; padding: 9px 12px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-family: inherit; transition: border-color .2s;
+}
+.m-field input:focus, .m-field textarea:focus { outline: none; border-color: var(--blue-mid); }
+.m-field textarea { resize: vertical; min-height: 60px; }
+.m-footer { display: flex; gap: 8px; }
+.m-footer .btn-cta { flex: 1; margin-bottom: 0; }
+.m-cancel { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; background: white; color: var(--grey-soft); font-size: 12px; font-weight: 600; cursor: pointer; }
+.m-cancel:hover { background: var(--bg); }
+.m-success { text-align: center; padding: 28px 18px; display: none; }
+.m-success .big { font-size: 44px; margin-bottom: 10px; }
+.m-success h4 { font-size: 17px; font-weight: 700; color: var(--green); margin-bottom: 5px; }
+.m-success p  { font-size: 12px; color: var(--grey-soft); }
+
+/* ─── PROGRESS DOTS ──────────────────────────────── */
+.progress-bar {
+  display: flex; gap: 4px; margin-bottom: 14px;
+}
+.prog-dot {
+  flex: 1; height: 4px; border-radius: 2px;
+  background: var(--border); transition: background .3s;
+}
+.prog-dot.done   { background: var(--green); }
+.prog-dot.active { background: var(--blue-mid); }
+</style>
+</head>
+<body>
+<!-- ── BACK TO HOMEPAGE ─────────────────────────────── -->
+<div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:9px 20px;display:flex;align-items:center;gap:14px;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+  <a href="../yaforys_homepage.html"
+     style="display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.88);font-size:.84rem;font-weight:700;text-decoration:none;padding:6px 14px;border-radius:7px;border:1.5px solid rgba(255,255,255,.28);transition:all .2s;"
+     onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff';this.style.borderColor='rgba(255,255,255,.6)'"
+     onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.88)';this.style.borderColor='rgba(255,255,255,.28)'">
+    ← На главную
+  </a>
+  <span style="color:rgba(255,255,255,.3);font-size:.9rem;user-select:none;">|</span>
+  <span style="color:rgba(255,255,255,.55);font-size:.82rem;font-weight:500;letter-spacing:.2px;">www.yaforys.ru</span>
+  <div style="flex:1;"></div>
+  <a href="../yaforys_homepage.html#calculators"
+     style="color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;"
+     onmouseover="this.style.color='rgba(255,255,255,.9)'"
+     onmouseout="this.style.color='rgba(255,255,255,.55)'">
+    Все калькуляторы
+  </a>
+</div>
+
+
+<div class="page-header">
+  <div class="badge">Конфигуратор · ЯФОР</div>
+  <h1>📦 Подбор флоу-пак машины YAFLOW</h1>
+  <p>Ответьте на 5 вопросов — получите рекомендацию модели и расчёт окупаемости</p>
+</div>
+
+<div class="layout">
+
+  <!-- ═══ ЛЕВАЯ КОЛОНКА ══════════════════════════════════════ -->
+  <div class="questions-wrap">
+
+    <!-- 1. ТИП ПРОДУКТА -->
+    <div class="q-block" id="qb1">
+      <div class="q-header">
+        <div class="q-num">1</div>
+        <div class="q-title">Тип упаковываемого продукта</div>
+      </div>
+      <div class="q-body">
+        <div class="opt-grid">
+          <button class="opt-btn" data-q="1" data-v="tray" onclick="pick(this)">
+            <div class="opt-icon">🥗</div>
+            <div class="opt-text">
+              <div class="opt-name">Лоток с продуктом</div>
+              <div class="opt-desc">Овощи, зелень, салаты, ягоды в подложке</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="1" data-v="snack" onclick="pick(this)">
+            <div class="opt-icon">🍫</div>
+            <div class="opt-text">
+              <div class="opt-name">Штучный / снэк</div>
+              <div class="opt-desc">Кондитерские изделия, батончики, печенье</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="1" data-v="sandwich" onclick="pick(this)">
+            <div class="opt-icon">🥪</div>
+            <div class="opt-text">
+              <div class="opt-name">Готовые блюда / сэндвичи</div>
+              <div class="opt-desc">Сэндвичи, роллы, бургеры, выпечка</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="1" data-v="bulk" onclick="pick(this)">
+            <div class="opt-icon">🥬</div>
+            <div class="opt-text">
+              <div class="opt-name">Пучок / навал</div>
+              <div class="opt-desc">Зелень без подложки, пучки, нарезка</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="1" data-v="group" onclick="pick(this)">
+            <div class="opt-icon">📦</div>
+            <div class="opt-text">
+              <div class="opt-name">Групповая упаковка</div>
+              <div class="opt-desc">Несколько единиц в одном пакете</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="1" data-v="other" onclick="pick(this)">
+            <div class="opt-icon">⚙️</div>
+            <div class="opt-text">
+              <div class="opt-name">Другое</div>
+              <div class="opt-desc">Уточним у менеджера</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. РАЗМЕРЫ ПРОДУКТА -->
+    <div class="q-block" id="qb2">
+      <div class="q-header">
+        <div class="q-num">2</div>
+        <div class="q-title">Размеры продукта (максимальные)</div>
+        <span class="q-sub">Для подбора модели</span>
+      </div>
+      <div class="q-body">
+        <div class="slider-grid">
+          <div class="sl-field">
+            <label>Ширина</label>
+            <span class="sl-val" id="vW">200 <span class="sl-unit">мм</span></span>
+            <input type="range" id="sW" min="50" max="500" value="200" step="10" oninput="slUpdate()">
+            <div class="sl-minmax"><span>50</span><span>500 мм</span></div>
+          </div>
+          <div class="sl-field">
+            <label>Высота</label>
+            <span class="sl-val" id="vH">80 <span class="sl-unit">мм</span></span>
+            <input type="range" id="sH" min="10" max="250" value="80" step="5" oninput="slUpdate()">
+            <div class="sl-minmax"><span>10</span><span>250 мм</span></div>
+          </div>
+          <div class="sl-field">
+            <label>Длина / глубина</label>
+            <span class="sl-val" id="vD">250 <span class="sl-unit">мм</span></span>
+            <input type="range" id="sD" min="50" max="600" value="250" step="10" oninput="slUpdate()">
+            <div class="sl-minmax"><span>50</span><span>600 мм</span></div>
+          </div>
+          <div class="sl-field">
+            <label>Масса продукта</label>
+            <span class="sl-val" id="vWt">200 <span class="sl-unit">г</span></span>
+            <input type="range" id="sWt" min="10" max="2000" value="200" step="10" oninput="slUpdate()">
+            <div class="sl-minmax"><span>10</span><span>2000 г</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. ПРОИЗВОДИТЕЛЬНОСТЬ -->
+    <div class="q-block" id="qb3">
+      <div class="q-header">
+        <div class="q-num">3</div>
+        <div class="q-title">Требуемая производительность</div>
+        <span class="q-sub">Влияет на выбор модели</span>
+      </div>
+      <div class="q-body">
+        <div class="opt-grid">
+          <button class="opt-btn" data-q="3" data-v="low" data-speed="30" onclick="pick(this)">
+            <div class="opt-icon">🐢</div>
+            <div class="opt-text">
+              <div class="opt-name">До 30 уп/мин</div>
+              <div class="opt-desc">Малый объём, опытный участок</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="3" data-v="med" data-speed="60" onclick="pick(this)">
+            <div class="opt-icon">⚡</div>
+            <div class="opt-text">
+              <div class="opt-name">30–80 уп/мин</div>
+              <div class="opt-desc">Серийное производство</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="3" data-v="high" data-speed="120" onclick="pick(this)">
+            <div class="opt-icon">🚀</div>
+            <div class="opt-text">
+              <div class="opt-name">80–150 уп/мин</div>
+              <div class="opt-desc">Высокий темп, поточная линия</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="3" data-v="ultra" data-speed="200" onclick="pick(this)">
+            <div class="opt-icon">🏎️</div>
+            <div class="opt-text">
+              <div class="opt-name">Свыше 150 уп/мин</div>
+              <div class="opt-desc">Высокоскоростная линия</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. ПОДАЧА ПРОДУКТА -->
+    <div class="q-block" id="qb4">
+      <div class="q-header">
+        <div class="q-num">4</div>
+        <div class="q-title">Способ подачи продукта в машину</div>
+        <span class="q-sub">Влияет на конфигурацию</span>
+      </div>
+      <div class="q-body">
+        <div class="opt-grid cols1">
+          <button class="opt-btn" data-q="4" data-v="manual" onclick="pick(this)">
+            <div class="opt-icon">🙋</div>
+            <div class="opt-text">
+              <div class="opt-name">Ручная загрузка операторами</div>
+              <div class="opt-desc">Операторы раскладывают продукт на конвейер вручную. Нужен длинный стол-конвейер (4–7 м)</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="4" data-v="auto1" onclick="pick(this)">
+            <div class="opt-icon">🤖</div>
+            <div class="opt-text">
+              <div class="opt-name">Автоподача — 1-лентовая (AF)</div>
+              <div class="opt-desc">Продукт подаётся с предыдущей линии автоматически, поток стабильный</div>
+            </div>
+          </button>
+          <button class="opt-btn" data-q="4" data-v="auto5" onclick="pick(this)">
+            <div class="opt-icon">🦾</div>
+            <div class="opt-text">
+              <div class="opt-name">Автоподача — 5-лентовая (AFS)</div>
+              <div class="opt-desc">Нестабильный или нерегулярный поток продукта, 5 синхронизирующих лент</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. ДОПОЛНИТЕЛЬНО -->
+    <div class="q-block" id="qb5">
+      <div class="q-header">
+        <div class="q-num">5</div>
+        <div class="q-title">Дополнительные требования</div>
+        <span class="q-sub">Можно выбрать несколько</span>
+      </div>
+      <div class="q-body">
+        <div class="check-grid">
+          <div class="check-item" id="cx_map" onclick="toggleCheck('map')">
+            <div class="chk-box"></div>
+            <div class="chk-icon">🌿</div>
+            <div class="chk-text">
+              <div class="chk-name">MAP-атмосфера (газ в упаковке)</div>
+              <div class="chk-desc">Продление срока хранения — CO₂ / N₂ в пакете</div>
+            </div>
+          </div>
+          <div class="check-item" id="cx_printer" onclick="toggleCheck('printer')">
+            <div class="chk-box"></div>
+            <div class="chk-icon">🖨️</div>
+            <div class="chk-text">
+              <div class="chk-name">Термотрансферный принтер</div>
+              <div class="chk-desc">Печать даты, ШК, логотипа прямо на плёнке</div>
+            </div>
+          </div>
+          <div class="check-item" id="cx_label" onclick="toggleCheck('label')">
+            <div class="chk-box"></div>
+            <div class="chk-icon">🏷️</div>
+            <div class="chk-text">
+              <div class="chk-name">Принтер-аппликатор этикеток</div>
+              <div class="chk-desc">Наклейка этикетки с весом, ценой, ШК</div>
+            </div>
+          </div>
+          <div class="check-item" id="cx_metal" onclick="toggleCheck('metal')">
+            <div class="chk-box"></div>
+            <div class="chk-icon">🔍</div>
+            <div class="chk-text">
+              <div class="chk-name">Металлодетектор</div>
+              <div class="chk-desc">Mettler Toledo или аналог — обязателен для сетей</div>
+            </div>
+          </div>
+          <div class="check-item" id="cx_vacuum" onclick="toggleCheck('vacuum')">
+            <div class="chk-box"></div>
+            <div class="chk-icon">💨</div>
+            <div class="chk-text">
+              <div class="chk-name">Вакуумная упаковка</div>
+              <div class="chk-desc">Вакуум в пакете — только для YAFLOW-500</div>
+            </div>
+          </div>
+          <div class="check-item" id="cx_shrink" onclick="toggleCheck('shrink')">
+            <div class="chk-box"></div>
+            <div class="chk-icon">♨️</div>
+            <div class="chk-text">
+              <div class="chk-name">Термоусадочная плёнка</div>
+              <div class="chk-desc">Обтяжка продукта — для широких форматов (450TR/500)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ ПРАВАЯ КОЛОНКА ══════════════════════════════════════ -->
+  <div class="right-col">
+
+    <!-- ПРОГРЕСС -->
+    <div class="panel-card">
+      <div class="panel-head">
+        <h3>📊 Результат подбора</h3>
+        <p id="progressText">Ответьте на вопросы слева</p>
+      </div>
+      <div class="panel-body">
+
+        <div class="progress-bar" id="progressBar">
+          <div class="prog-dot" id="pd1"></div>
+          <div class="prog-dot" id="pd2"></div>
+          <div class="prog-dot" id="pd3"></div>
+          <div class="prog-dot" id="pd4"></div>
+          <div class="prog-dot" id="pd5"></div>
+        </div>
+
+        <div id="modelResult">
+          <div class="model-empty">
+            <div class="big">📦</div>
+            Заполните параметры — и мы подберём оптимальную модель YAFLOW
+          </div>
+        </div>
+
+        <div id="ctaBlock" style="display:none">
+          <button class="btn-cta" onclick="openModal()">📞 Получить точное КП</button>
+          <button class="btn-sec" onclick="window.print()">🖨️ Распечатать подбор</button>
+          <div class="note">
+            <strong>💡 Это предварительный подбор</strong>
+            Точную конфигурацию и цену уточним под ваш продукт — бесплатно.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ROI -->
+    <div class="panel-card" id="roiCard" style="display:none">
+      <div class="panel-head">
+        <h3>💰 Расчёт окупаемости</h3>
+        <p>Ориентировочно, при работе 1 смена/день</p>
+      </div>
+      <div class="panel-body">
+        <div id="roiContent"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="bgClose(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>📋 Запрос коммерческого предложения</h3>
+      <p>Специалист ЯФОР свяжется в течение 2 часов</p>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="m-summary">
+        <div style="font-size:11px;color:#5b7fa6;margin-bottom:3px">Рекомендованная модель:</div>
+        <strong id="mModalModel">—</strong>
+        <span id="mModalOpts" style="font-size:11px;color:#5b7fa6"></span>
+      </div>
+      <div class="m-field"><label>Ваше имя *</label><input type="text" id="mName" placeholder="Иван Петров"></div>
+      <div class="m-field"><label>Компания</label><input type="text" id="mCompany" placeholder="ООО «Агрофреш»"></div>
+      <div class="m-field"><label>Телефон / WhatsApp *</label><input type="tel" id="mPhone" placeholder="+7 (___) ___-__-__"></div>
+      <div class="m-field"><label>Продукт / уточнение</label><textarea id="mComment" placeholder="Опишите продукт, объёмы, сроки..."></textarea></div>
+      <div class="m-footer">
+        <button class="m-cancel" onclick="closeModal()">Отмена</button>
+        <button class="btn-cta" onclick="submitModal()" style="margin-bottom:0">Отправить заявку →</button>
+      </div>
+    </div>
+    <div class="m-success" id="modalSuccess">
+      <div class="big">✅</div>
+      <h4>Заявка принята!</h4>
+      <p>Специалист ЯФОР свяжется с вами в течение 2 рабочих часов.</p>
+      <br>
+      <button class="btn-sec" onclick="closeModal()" style="max-width:180px;margin:0 auto">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  МОДЕЛИ YAFLOW
+// ══════════════════════════════════════════════════════════════
+const MODELS = [
+  {
+    id: 'Y26',
+    name: 'YAFLOW-26',
+    speed: [30, 220],
+    maxW: 210, maxH: 140, maxD: 450,
+    sealing: 260,
+    display: '5.7"',
+    feed: ['manual'],
+    map: false, vacuum: false, shrink: false,
+    bestFor: ['snack','group'],
+    price: 40856,
+    desc: 'Высокоскоростная роторная машина для штучного и группового продукта',
+    why: 'Оптимальна для снэков, кондитерских изделий и группового продукта до 210 мм',
+  },
+  {
+    id: 'Y30',
+    name: 'YAFLOW-30',
+    speed: [40, 90],
+    maxW: 280, maxH: 145, maxD: 542,
+    sealing: 300,
+    display: '5.7"',
+    feed: ['manual'],
+    map: false, vacuum: false, shrink: false,
+    bestFor: ['tray','bulk'],
+    price: 20765,
+    conveyor: 5750,
+    desc: 'Машина с конвейером 6 м для ручной загрузки лотков и зелени',
+    why: 'Самая доступная модель для лотков и зелени при ручной загрузке',
+  },
+  {
+    id: 'Y10P',
+    name: 'YAFLOW-10P',
+    speed: [30, 220],
+    maxW: 310, maxH: 140, maxD: 550,
+    sealing: 300,
+    display: '5.7"',
+    feed: ['manual'],
+    map: false, vacuum: false, shrink: false,
+    bestFor: ['tray','bulk'],
+    price: 26307,
+    conveyor: 17264,
+    desc: 'Машина с конвейером 7 м + SINCRO-синхронизация для нестабильного потока',
+    why: 'Расширенный конвейер 7 м — для большого числа операторов или длинного продукта',
+  },
+  {
+    id: 'Y30AF',
+    name: 'YAFLOW-30AF',
+    speed: [10, 200],
+    maxW: 300, maxH: 185, maxD: 500,
+    sealing: 300,
+    display: '12"',
+    feed: ['manual','auto1'],
+    map: false, vacuum: false, shrink: false,
+    bestFor: ['tray','bulk'],
+    price: 43134,
+    desc: '1-лентовая автоподача, 12" дисплей, 100+ рецептур',
+    why: 'Автоматическая синхронизация продукта — меньше ручного труда при стабильном потоке',
+  },
+  {
+    id: 'Y30AFS',
+    name: 'YAFLOW-30AFS',
+    speed: [10, 200],
+    maxW: 300, maxH: 185, maxD: 500,
+    sealing: 300,
+    display: '12"',
+    feed: ['manual','auto1','auto5'],
+    map: false, vacuum: false, shrink: false,
+    bestFor: ['tray','bulk'],
+    price: 48662,
+    desc: '5-лентовая автоподача — для нестабильного и нерегулярного потока',
+    why: 'Пять синхронизирующих лент устраняют сбои при неравномерной подаче продукта',
+  },
+  {
+    id: 'Y450TR',
+    name: 'YAFLOW-450TR',
+    speed: [30, 80],
+    maxW: 430, maxH: 200, maxD: 9999,
+    sealing: 450,
+    display: '10"',
+    feed: ['manual'],
+    map: true, vacuum: false, shrink: true,
+    bestFor: ['sandwich','tray'],
+    price: 69286,
+    desc: 'Широкий формат до 430 мм, MAP, BOX-MOTION, термоусадка',
+    why: 'Оптимальна для широких лотков, готовых блюд и сэндвичей с MAP-защитой',
+  },
+  {
+    id: 'Y500',
+    name: 'YAFLOW-500',
+    speed: [40, 80],
+    maxW: 480, maxH: 230, maxD: 9999,
+    sealing: 500,
+    display: '10"',
+    feed: ['manual'],
+    map: true, vacuum: true, shrink: true,
+    bestFor: ['bulk','tray','sandwich'],
+    price: 40526,
+    desc: 'Крупный формат 480 мм, вакуум / MAP / термоусадка, BOX-MOTION',
+    why: 'Самый широкий формат — вакуум, MAP, термоусадка в одной машине',
+  },
+];
+
+// Доп. опции — цены EUR
+const OPTION_PRICES = {
+  printer: 4942,
+  label:   3500,
+  metal:   8500,
+  map:     4500,
+  vacuum:  6000,
+  shrink:  2000,
+};
+const OPTION_NAMES = {
+  printer: 'Принтер Videojet',
+  label:   'Аппликатор этикеток',
+  metal:   'Металлодетектор',
+  map:     'MAP-система',
+  vacuum:  'Вакуумный модуль',
+  shrink:  'Узел термоусадки',
+};
+
+// ══════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════
+const A = {
+  q1: null,   // product type
+  speed: 60,  // target speed
+  feed: null,
+  extras: new Set(),
+};
+
+// ══════════════════════════════════════════════════════════════
+//  EVENTS
+// ══════════════════════════════════════════════════════════════
+function pick(btn) {
+  const q = btn.dataset.q;
+  document.querySelectorAll(`.opt-btn[data-q="${q}"]`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('qb'+q).classList.add('answered');
+
+  if (q == '1') A.q1   = btn.dataset.v;
+  if (q == '3') A.speed = parseInt(btn.dataset.speed);
+  if (q == '4') A.feed  = btn.dataset.v;
+
+  updateAll();
+}
+
+function slUpdate() {
+  const w = document.getElementById('sW').value;
+  const h = document.getElementById('sH').value;
+  const d = document.getElementById('sD').value;
+  const wt= document.getElementById('sWt').value;
+  document.getElementById('vW').innerHTML  = w  + '<span class="sl-unit"> мм</span>';
+  document.getElementById('vH').innerHTML  = h  + '<span class="sl-unit"> мм</span>';
+  document.getElementById('vD').innerHTML  = d  + '<span class="sl-unit"> мм</span>';
+  document.getElementById('vWt').innerHTML = wt + '<span class="sl-unit"> г</span>';
+  document.getElementById('qb2').classList.add('answered');
+  updateAll();
+}
+
+function toggleCheck(key) {
+  const el = document.getElementById('cx_'+key);
+  if (A.extras.has(key)) {
+    A.extras.delete(key);
+    el.classList.remove('active');
+  } else {
+    A.extras.add(key);
+    el.classList.add('active');
+  }
+  document.getElementById('qb5').classList.add('answered');
+  updateAll();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SCORING
+// ══════════════════════════════════════════════════════════════
+function scoreModels() {
+  const W  = parseInt(document.getElementById('sW').value);
+  const H  = parseInt(document.getElementById('sH').value);
+  const D  = parseInt(document.getElementById('sD').value);
+  const Wt = parseInt(document.getElementById('sWt').value);
+
+  return MODELS.map(m => {
+    let score = 0;
+    let reasons = [];
+    let disqualified = false;
+
+    // Hard limits
+    if (W > m.maxW) { disqualified = true; reasons.push('ширина превышает лимит'); }
+    if (H > m.maxH) { disqualified = true; reasons.push('высота превышает лимит'); }
+    if (D > m.maxD) { disqualified = true; reasons.push('длина превышает лимит'); }
+    if (A.speed > m.speed[1]) { disqualified = true; reasons.push('скорость ниже требуемой'); }
+
+    // Feed
+    if (A.feed && !m.feed.includes(A.feed)) { disqualified = true; reasons.push('нет нужной системы подачи'); }
+
+    // Extras hard
+    if (A.extras.has('vacuum') && !m.vacuum) { disqualified = true; reasons.push('нет вакуумного модуля'); }
+    if (A.extras.has('shrink') && !m.shrink) { score -= 10; }
+
+    if (disqualified) return { ...m, score: -999, reasons, disqualified: true };
+
+    // Scoring
+    // Width fit — ближе к лимиту = лучше (меньше запаса = более точная машина)
+    const wFit = (m.maxW - W) / m.maxW;
+    score += (1 - wFit) * 30;
+
+    // Product type match
+    if (A.q1 && m.bestFor.includes(A.q1)) score += 40;
+
+    // Speed fit
+    const sFit = A.speed >= m.speed[0] ? 20 : 0;
+    score += sFit;
+
+    // MAP
+    if (A.extras.has('map') && m.map)   score += 15;
+    if (A.extras.has('map') && !m.map)  score -= 10;
+
+    // Extras OK
+    if (A.extras.has('shrink') && m.shrink) score += 10;
+
+    // Price bonus for budget models
+    if (m.price < 30000) score += 5;
+
+    return { ...m, score, reasons, disqualified: false };
+  }).sort((a,b) => b.score - a.score);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════════════════════
+function updateAll() {
+  updateProgress();
+  const scored = scoreModels();
+  renderModels(scored);
+  renderROI(scored);
+}
+
+function updateProgress() {
+  const steps = [
+    !!A.q1,
+    document.getElementById('qb2').classList.contains('answered'),
+    !!A.speed,
+    !!A.feed,
+    document.getElementById('qb5').classList.contains('answered'),
+  ];
+  const done = steps.filter(Boolean).length;
+  steps.forEach((ok, i) => {
+    const d = document.getElementById('pd'+(i+1));
+    d.className = 'prog-dot' + (ok ? ' done' : (i === steps.indexOf(false) ? ' active' : ''));
+  });
+  document.getElementById('progressText').textContent =
+    done === 5 ? 'Подбор завершён ✓' : `Заполнено ${done} из 5`;
+}
+
+function fmtEur(n) {
+  return '€' + Math.round(n).toLocaleString('ru-RU');
+}
+function fmtRub(n) {
+  return Math.round(n).toLocaleString('ru-RU') + ' ₽';
+}
+
+function renderModels(scored) {
+  const top = scored.filter(m => !m.disqualified).slice(0, 3);
+  const res = document.getElementById('modelResult');
+  const cta = document.getElementById('ctaBlock');
+
+  if (top.length === 0) {
+    res.innerHTML = `
+      <div class="model-empty">
+        <div class="big">🤔</div>
+        Не нашлось подходящей модели по заданным параметрам.<br>
+        <span style="color:var(--orange);font-weight:600">Свяжитесь с менеджером — подберём нестандартное решение.</span>
+      </div>`;
+    cta.style.display = 'block';
+    return;
+  }
+
+  let html = '';
+  top.forEach((m, idx) => {
+    const isBest = idx === 0;
+    // extras price
+    let extrasTotal = 0;
+    let extrasList = [];
+    A.extras.forEach(k => {
+      if (OPTION_PRICES[k]) { extrasTotal += OPTION_PRICES[k]; extrasList.push(OPTION_NAMES[k]); }
+    });
+    const basePrice = m.price + (m.conveyor || 0);
+    const total = basePrice + extrasTotal;
+    const totalWithDel = total + 5000; // доставка
+
+    html += `
+    <div class="model-card${isBest ? ' best' : ''}">
+      <div class="model-head">
+        ${isBest ? '<span class="model-tag">✓ Рекомендуем</span>' : ''}
+        <span class="model-name">${m.name}</span>
+        ${isBest ? '<span class="model-badge">№1</span>' : `<span style="margin-left:auto;font-size:11px;color:var(--grey-soft)">Альтернатива</span>`}
+      </div>
+      <div class="model-body">
+        <div class="model-spec">
+          <span><span>Скорость</span><b>${m.speed[0]}–${m.speed[1]} уп/мин</b></span>
+          <span><span>Макс. ширина продукта</span><b>${m.maxW} мм</b></span>
+          <span><span>Макс. высота продукта</span><b>${m.maxH} мм</b></span>
+          <span><span>Ширина сварки</span><b>${m.sealing} мм</b></span>
+          <span><span>Дисплей</span><b>${m.display}</b></span>
+          ${m.map    ? '<span><span>MAP-атмосфера</span><b style="color:var(--green)">✓ есть</b></span>' : ''}
+          ${m.vacuum ? '<span><span>Вакуум</span><b style="color:var(--green)">✓ есть</b></span>' : ''}
+        </div>
+        <div class="model-why">💡 ${m.why}</div>
+        <div class="model-price">
+          ${extrasTotal > 0 ? `<span style="font-size:11px;color:var(--grey-soft)">машина + опции </span>` : ''}
+          ${fmtEur(totalWithDel)}
+          <span style="font-size:11px;color:var(--grey-soft);font-weight:400"> с доставкой, без НДС</span>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  res.innerHTML = html;
+  cta.style.display = 'block';
+
+  // Обновляем модал
+  document.getElementById('mModalModel').textContent = top[0].name + ' — ' + fmtEur(top[0].price + (top[0].conveyor||0));
+  let opts = [];
+  A.extras.forEach(k => { if (OPTION_NAMES[k]) opts.push(OPTION_NAMES[k]); });
+  document.getElementById('mModalOpts').textContent = opts.length ? ' · ' + opts.join(', ') : '';
+}
+
+function renderROI(scored) {
+  const top = scored.filter(m => !m.disqualified)[0];
+  const roiCard = document.getElementById('roiCard');
+  if (!top) { roiCard.style.display = 'none'; return; }
+
+  const speed  = Math.min(A.speed || 60, top.speed[1]);
+  const Wt     = parseInt(document.getElementById('sWt').value) || 200;
+  const shifts = 250;    // рабочих дней
+  const hours  = 7;      // рабочих часов
+  const eff    = 0.82;   // КПД линии
+
+  const pkgPerDay  = speed * 60 * hours * eff;
+  const kgPerDay   = pkgPerDay * Wt / 1000;
+  const pkgPerYear = pkgPerDay * shifts;
+
+  // Экономия ФОТ: ручная упаковка ~3-4 оп на 60 уп/мин, авто снимает 2-3
+  const savedOps    = speed > 80 ? 3 : 2;
+  const fotPerOp    = 55000;  // руб/мес
+  const fotSaving   = savedOps * fotPerOp * 12;
+
+  // Экономия плёнки при точной сварке vs ручная упаковка
+  const filmSaving  = pkgPerYear * 0.008 * 45; // 8г сэкономленной плёнки × 45 руб
+
+  const totalSavingYear = fotSaving + filmSaving;
+  const machinePrice = (top.price + (top.conveyor||0)) * 95; // eur * курс
+
+  const payback = machinePrice / totalSavingYear;
+
+  roiCard.style.display = 'block';
+  document.getElementById('roiContent').innerHTML = `
+    <div class="roi-row"><span class="rl">Производительность</span><span class="rv">${Math.round(pkgPerDay).toLocaleString('ru-RU')} уп/день</span></div>
+    <div class="roi-row"><span class="rl">Объём в год</span><span class="rv">${Math.round(pkgPerYear/1000).toLocaleString('ru-RU')} тыс. уп/год</span></div>
+    <div class="roi-row"><span class="rl">Сокращение ФОТ</span><span class="rv">−${savedOps} оп. / смену · ${fmtRub(fotSaving)}/год</span></div>
+    <div class="roi-row"><span class="rl">Экономия плёнки</span><span class="rv">~${fmtRub(filmSaving)}/год</span></div>
+    <div class="roi-row"><span class="rl">Итого экономия</span><span class="rv" style="color:var(--green)">${fmtRub(totalSavingYear)}/год</span></div>
+    <div class="roi-total">
+      <div class="rt-label">Срок окупаемости</div>
+      <div class="rt-val">${payback < 1 ? '< 12' : Math.round(payback * 12)} мес.</div>
+      <div class="rt-sub">при объёме ${Math.round(kgPerDay)} кг/день · курс EUR 95 ₽</div>
+    </div>
+    <div style="font-size:10px;color:var(--grey-soft);line-height:1.4">
+      * Расчёт ориентировочный. Точная модель — по запросу у менеджера.
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════════════════════
+function openModal() {
+  document.getElementById('modalBody').style.display  = 'block';
+  document.getElementById('modalSuccess').style.display = 'none';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function bgClose(e)   { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+function submitModal() {
+  const name  = document.getElementById('mName').value.trim();
+  const phone = document.getElementById('mPhone').value.trim();
+  if (!name || !phone) { alert('Пожалуйста, заполните имя и телефон'); return; }
+  document.getElementById('modalBody').style.display    = 'none';
+  document.getElementById('modalSuccess').style.display = 'block';
+}
+
+// ── INIT
+slUpdate();
+</script>
+</body>
+</html>
