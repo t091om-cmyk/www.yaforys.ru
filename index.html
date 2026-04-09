@@ -48,32 +48,41 @@ button { cursor: pointer; font-family: inherit; }
   background: var(--blue-dark);
   color: rgba(255,255,255,.75);
   font-size: .8rem;
-  padding: 0;
-}
-/* Строка 1: информация */
-.topbar-info {
-  padding: 5px 0;
-  border-bottom: 1px solid rgba(255,255,255,.1);
-}
-.topbar-info .container { display: flex; align-items: center; gap: 20px; }
-.topbar-info a { color: rgba(255,255,255,.85); }
-.topbar-info a:hover { color: #fff; }
-/* Строка 2: горячие предложения */
-.topbar-hot {
   padding: 6px 0;
 }
-.topbar-hot .container { display: flex; align-items: center; gap: 8px; }
-/* Единый стиль для обоих значков и кнопок */
+.topbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.topbar a { color: rgba(255,255,255,.85); text-decoration: none; }
+.topbar a:hover { color: #fff; }
+/* Честный знак — значок */
+.chz-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 15px; height: 15px;
+  background: #FFE000;
+  color: #1a1a1a;
+  font-size: .6rem; font-weight: 900;
+  border-radius: 2px;
+  border: 1px solid #c8b000;
+  flex-shrink: 0;
+}
+/* Плашки */
 .topbar-badge,
 .topbar-hotlink {
   display: inline-flex;
   align-items: center;
-  height: 24px;
-  font-size: .75rem;
+  gap: 5px;
+  height: 22px;
+  font-size: .73rem;
   font-weight: 700;
-  padding: 0 11px;
-  border-radius: 12px;
-  letter-spacing: .3px;
+  padding: 0 10px;
+  border-radius: 11px;
+  letter-spacing: .2px;
   white-space: nowrap;
   text-decoration: none;
   line-height: 1;
@@ -87,8 +96,6 @@ button { cursor: pointer; font-family: inherit; }
   background: var(--orange);
   border: 1.5px solid var(--orange);
   transition: var(--transition);
-  flex: 1;
-  justify-content: center;
 }
 .topbar-hotlink:hover {
   background: #A84A0F;
@@ -1139,9 +1146,9 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
   .clients-stats { grid-template-columns: repeat(2, 1fr); }
   .why-grid { grid-template-columns: 1fr 1fr; }
   nav { display: none; }
-  .topbar-info .container { gap: 12px; flex-wrap: wrap; }
-  .topbar-hot .container { gap: 6px; }
-  .topbar-hotlink { font-size: .7rem; padding: 0 8px; }
+  .topbar .container { gap: 10px; }
+  .topbar-hotlink { font-size: .68rem; padding: 0 8px; }
+  .topbar-left { gap: 10px; }
   .hero-stats { gap: 20px; flex-wrap: wrap; }
   .cta-banner .container { flex-direction: column; text-align: center; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -1161,18 +1168,16 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
      TOP BAR
      ============================================================ -->
 <div class="topbar">
-  <div class="topbar-info">
-    <div class="container">
+  <div class="container">
+    <div class="topbar-left">
       <span>🕐 Пн–Пт: 9:00–18:00 МСК</span>
       <a href="mailto:sales@yaforys.ru">sales@yaforys.ru</a>
-      <a href="chestny-znak.html" class="topbar-badge">🔴 Честный знак</a>
+      <a href="chestny-znak.html" class="topbar-badge"><span class="chz-icon">✓</span> Честный знак</a>
     </div>
-  </div>
-  <div class="topbar-hot">
-    <div class="container">
-      <a href="remont.html" class="topbar-hotlink">🔧 Ремонт термоформера →</a>
-      <a href="termoformery.html" class="topbar-hotlink">🔲 Купить термоформер →</a>
-      <a href="flowpack.html" class="topbar-hotlink">🐄 Флоу-пак для мяса и птицы →</a>
+    <div class="topbar-right">
+      <a href="remont.html" class="topbar-hotlink">🔧 Ремонт термоформера</a>
+      <a href="termoformery.html" class="topbar-hotlink">🔲 Купить термоформер</a>
+      <a href="flowpack.html" class="topbar-hotlink">🐄 Флоу-пак для мяса и птицы</a>
     </div>
   </div>
 </div>
