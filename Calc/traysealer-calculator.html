@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЯФОР — Подбор трейсилера ЯTRAY</title>
+<style>
+  :root {
+    --blue:    #1F4E79;
+    --blue-m:  #2E75B6;
+    --blue-l:  #D6E4F0;
+    --blue-p:  #EEF4FB;
+    --orange:  #C55A11;
+    --orange-p:#FCE4D6;
+    --green:   #1E6B3C;
+    --green-p: #E2EFDA;
+    --grey:    #444;
+    --grey-l:  #F5F7FA;
+    --white:   #fff;
+    --shadow:  0 2px 12px rgba(31,78,121,.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #EBF2FA;
+    color: var(--grey);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--blue);
+    color: #fff;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  }
+  header .logo {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #fff;
+    border: 3px solid #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+  }
+  header .title-block h1 { font-size: 18px; font-weight: 700; }
+  header .title-block p  { font-size: 13px; opacity: .75; margin-top: 2px; }
+
+  /* ── LAYOUT ── */
+  .wrap {
+    max-width: 1120px;
+    margin: 28px auto;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 22px;
+    align-items: start;
+  }
+  @media(max-width:860px){ .wrap{grid-template-columns:1fr;} }
+
+  /* ── CARD ── */
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 26px 28px;
+    margin-bottom: 0;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--blue);
+    border-bottom: 2px solid var(--blue-l);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .step-badge {
+    background: var(--blue-m);
+    color: #fff;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* ── PILL BUTTONS ── */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--blue-l);
+    background: var(--blue-p);
+    color: var(--blue);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .pill:hover { border-color: var(--blue-m); background: var(--blue-l); }
+  .pill.active {
+    background: var(--blue-m);
+    border-color: var(--blue-m);
+    color: #fff;
+  }
+  .pill.multi.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+
+  /* ── RANGE SLIDER ── */
+  .slider-wrap { padding: 6px 0; }
+  .slider-row { display: flex; align-items: center; gap: 14px; }
+  input[type=range] {
+    flex: 1;
+    accent-color: var(--blue-m);
+    height: 6px;
+    cursor: pointer;
+  }
+  .slider-val {
+    min-width: 80px;
+    text-align: center;
+    background: var(--blue);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+    padding: 0 2px;
+  }
+
+  /* ── NUMBER INPUT ── */
+  .dim-inputs { display: flex; gap: 14px; align-items: center; }
+  .dim-group { display: flex; flex-direction: column; gap: 4px; }
+  .dim-group label { font-size: 12px; color: #888; }
+  .dim-group input {
+    width: 110px;
+    padding: 9px 12px;
+    border: 2px solid var(--blue-l);
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--blue);
+    text-align: center;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .dim-group input:focus { border-color: var(--blue-m); }
+  .dim-sep { font-size: 22px; color: var(--blue-l); font-weight: 300; margin-top: 18px; }
+  .dim-hint { font-size: 12px; color: #999; margin-top: 6px; }
+
+  /* ── RESULT PANEL ── */
+  .result-panel {
+    background: var(--blue);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 22px 22px 18px;
+    position: sticky;
+    top: 20px;
+  }
+  .result-panel h2 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: .3px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,.2);
+  }
+
+  /* ── MODEL CARD ── */
+  .model-card {
+    background: rgba(255,255,255,.10);
+    border-radius: 8px;
+    padding: 14px 14px 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,.15);
+    transition: background .2s;
+  }
+  .model-card.top {
+    background: rgba(255,255,255,.17);
+    border: 2px solid rgba(255,255,255,.4);
+  }
+  .model-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .model-name { font-size: 16px; font-weight: 800; }
+  .model-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .badge-best   { background: var(--orange); color: #fff; }
+  .badge-good   { background: rgba(255,255,255,.25); color: #fff; }
+  .badge-auto   { background: var(--green); color: #fff; }
+
+  .model-type {
+    font-size: 11px;
+    opacity: .7;
+    margin-top: 1px;
+    margin-bottom: 8px;
+  }
+  .model-desc { font-size: 12px; opacity: .85; margin-bottom: 10px; line-height: 1.45; }
+  .model-specs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .spec-tag {
+    font-size: 11px;
+    background: rgba(255,255,255,.15);
+    border-radius: 4px;
+    padding: 3px 7px;
+  }
+  .model-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,.15);
+    padding-top: 8px;
+  }
+  .model-price { font-size: 18px; font-weight: 800; }
+  .model-price-sub { font-size: 11px; opacity: .65; }
+
+  /* ── ROI ── */
+  .roi-block {
+    background: var(--green-p);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    color: var(--grey);
+  }
+  .roi-block h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .roi-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+  }
+  .roi-row:last-child { border-bottom: none; }
+  .roi-row .lbl { color: #555; }
+  .roi-row .val { font-weight: 700; color: var(--blue); }
+  .roi-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--green);
+    padding-top: 10px;
+    margin-top: 6px;
+    border-top: 2px solid var(--green);
+  }
+
+  /* ── ROI INPUT SECTION ── */
+  .roi-inputs { margin-top: 4px; }
+  .roi-input-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--blue-l);
+    gap: 10px;
+  }
+  .roi-input-row:last-child { border-bottom: none; }
+  .roi-input-row label { font-size: 13px; color: var(--grey); line-height: 1.3; flex: 1; }
+  .roi-input-row input {
+    width: 90px;
+    padding: 6px 10px;
+    border: 2px solid var(--blue-l);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue);
+    text-align: right;
+    outline: none;
+    flex-shrink: 0;
+  }
+  .roi-input-row input:focus { border-color: var(--blue-m); }
+  .roi-input-row .unit { font-size: 12px; color: #999; min-width: 36px; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 24px 12px;
+    opacity: .6;
+  }
+  .empty-state .icon { font-size: 36px; margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; line-height: 1.5; }
+
+  /* ── NOTICE ── */
+  .notice {
+    background: var(--orange-p);
+    border-left: 4px solid var(--orange);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--grey);
+    margin-top: 12px;
+    line-height: 1.45;
+  }
+
+  /* ── FOOTER CTA ── */
+  .cta-block {
+    background: var(--orange);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    margin-top: 16px;
+    color: #fff;
+  }
+  .cta-block p { font-size: 13px; margin-bottom: 8px; opacity: .9; }
+  .cta-block a {
+    color: #fff;
+    font-weight: 800;
+    font-size: 16px;
+    text-decoration: none;
+    display: block;
+  }
+</style>
+<link rel="icon" type="image/png" href="../icon.png">
+</head>
+<body>
+<!-- ── BACK TO HOMEPAGE ─────────────────────────────── -->
+<div style="position:sticky;top:0;z-index:9999;background:#1F4E79;padding:7px 20px;display:flex;align-items:center;gap:14px;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+  <img src="../icon.png" alt="ЯФОР" style="height:32px;width:auto;flex-shrink:0;">
+  <img src="../logo.png" alt="ЯФОР" style="height:24px;width:auto;filter:brightness(0) invert(1);flex-shrink:0;">
+  <a href="index.html"
+     style="display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.88);font-size:.84rem;font-weight:700;text-decoration:none;padding:6px 14px;border-radius:7px;border:1.5px solid rgba(255,255,255,.28);transition:all .2s;"
+     onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff';this.style.borderColor='rgba(255,255,255,.6)'"
+     onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.88)';this.style.borderColor='rgba(255,255,255,.28)'">
+    ← На главную
+  </a>
+  <span style="color:rgba(255,255,255,.3);font-size:.9rem;user-select:none;">|</span>
+  <span style="color:rgba(255,255,255,.55);font-size:.82rem;font-weight:500;letter-spacing:.2px;">www.yaforys.ru</span>
+  <div style="flex:1;"></div>
+  <a href="index.html#calculators"
+     style="color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;"
+     onmouseover="this.style.color='rgba(255,255,255,.9)'"
+     onmouseout="this.style.color='rgba(255,255,255,.55)'">
+    Все калькуляторы
+  </a>
+</div>
+
+
+<header>
+  <div class="logo">ЯФОР</div>
+  <div class="title-block">
+    <h1>Подбор трейсилера ЯTRAY</h1>
+    <p>Настройте параметры — получите рекомендацию и расчёт окупаемости</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- LEFT: QUESTIONS -->
+  <div>
+
+    <!-- Q1: SPEED -->
+    <div class="card">
+      <div class="card-title">
+        <span class="step-badge">1</span>
+        Требуемая производительность
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-row">
+          <input type="range" id="speedSlider" min="1" max="72" value="10" step="1" oninput="onSpeed(this.value)">
+          <div class="slider-val" id="speedVal">10 лотков/мин</div>
+        </div>
+        <div class="slider-labels">
+          <span>1</span><span>10</span><span>20</span><span>36</span><span>72</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2: TRAY SIZE -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">
+        <span class="step-badge">2</span>
+        Размер лотка (мм)
+      </div>
+      <div class="dim-inputs">
+        <div class="dim-group">
+          <label>Ширина (мм)</label>
+          <input type="number" id="trayW" value="150" min="50" max="400" oninput="calc()">
+        </div>
+        <div class="dim-sep">×</div>
+        <div class="dim-group">
+          <label>Длина (мм)</label>
+          <input type="number" id="trayL" value="120" min="50" max="500" oninput="calc()">
+        </div>
+      </div>
+      <div class="dim-hint">Укажите максимальный размер лотка, который планируется запаивать</div>
+    </div>
+
+    <!-- Q3: PACKAGING MODE -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">
+        <span class="step-badge">3</span>
+        Тип упаковки
+        <span style="font-size:11px;font-weight:400;color:#999;margin-left:4px">(можно несколько)</span>
+      </div>
+      <div class="pills" id="modePills">
+        <button class="pill multi active" data-mode="vacuum" onclick="toggleMode('vacuum',this)">Вакуум</button>
+        <button class="pill multi" data-mode="map" onclick="toggleMode('map',this)">MAP (газовая среда)</button>
+        <button class="pill multi" data-mode="skin" onclick="toggleMode('skin',this)">SKIN (облегающая плёнка)</button>
+      </div>
+    </div>
+
+    <!-- Q4: AUTOMATION -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">
+        <span class="step-badge">4</span>
+        Режим работы
+      </div>
+      <div class="pills" id="autoPills">
+        <button class="pill active" data-auto="any" onclick="setAuto('any',this)">Любой — покажите лучшее</button>
+        <button class="pill" data-auto="semi" onclick="setAuto('semi',this)">Полуавтомат (оператор подаёт лоток)</button>
+        <button class="pill" data-auto="auto" onclick="setAuto('auto',this)">Автомат inline (непрерывная линия)</button>
+      </div>
+    </div>
+
+    <!-- Q5: PRODUCT -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">
+        <span class="step-badge">5</span>
+        Тип продукта
+      </div>
+      <div class="pills" id="prodPills">
+        <button class="pill active" data-prod="any" onclick="setProd('any',this)">Любой</button>
+        <button class="pill" data-prod="meat" onclick="setProd('meat',this)">🥩 Мясо / птица</button>
+        <button class="pill" data-prod="fish" onclick="setProd('fish',this)">🐟 Рыба / морепродукты</button>
+        <button class="pill" data-prod="ready" onclick="setProd('ready',this)">🍱 Готовые блюда</button>
+        <button class="pill" data-prod="veg" onclick="setProd('veg',this)">🥦 Овощи / сыры</button>
+      </div>
+    </div>
+
+    <!-- ROI INPUTS -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">
+        <span class="step-badge">6</span>
+        Параметры производства <span style="font-size:11px;font-weight:400;color:#999;margin-left:4px">(для расчёта окупаемости)</span>
+      </div>
+      <div class="roi-inputs">
+        <div class="roi-input-row">
+          <label>Лотков в сутки (факт или план)</label>
+          <input type="number" id="rTpd" value="2000" min="100" oninput="calc()">
+          <span class="unit">лотков</span>
+        </div>
+        <div class="roi-input-row">
+          <label>Операторов сейчас на укладке в лоток</label>
+          <input type="number" id="rOps" value="4" min="1" max="20" oninput="calc()">
+          <span class="unit">чел.</span>
+        </div>
+        <div class="roi-input-row">
+          <label>ФОТ одного оператора</label>
+          <input type="number" id="rSal" value="55000" min="20000" oninput="calc()">
+          <span class="unit">руб./мес</span>
+        </div>
+        <div class="roi-input-row">
+          <label>Курс EUR / руб.</label>
+          <input type="number" id="rEur" value="95" min="50" oninput="calc()">
+          <span class="unit">₽/€</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /LEFT -->
+
+  <!-- RIGHT: RESULT -->
+  <div>
+    <div class="result-panel">
+      <h2>🎯 Рекомендованные модели</h2>
+      <div id="resultModels">
+        <div class="empty-state">
+          <div class="icon">⚙️</div>
+          <p>Укажите параметры слева — система подберёт оптимальные трейсилеры ЯTRAY</p>
+        </div>
+      </div>
+      <div id="roiPanel" style="display:none">
+        <div class="roi-block">
+          <h3>📊 Расчёт окупаемости</h3>
+          <div id="roiRows"></div>
+          <div class="roi-total">
+            <span>Окупаемость</span>
+            <span id="roiPayback">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="cta-block">
+        <p>Нужна консультация по подбору и расчёту?</p>
+        <a href="tel:+78001234567">📞 Связаться с менеджером ЯФОР</a>
+      </div>
+    </div>
+  </div><!-- /RIGHT -->
+
+</div><!-- /wrap -->
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const MODELS = [
+  {
+    id: 'yafor450skm',
+    name: 'YAFOR 450SKM',
+    type: 'semi',
+    typeLabel: 'Полуавтомат ротационный',
+    priceEUR: 22676,
+    speedMax: 10,
+    trayW: 187, trayL: 137,
+    modes: ['vacuum', 'map'],
+    prod: ['meat', 'fish', 'any'],
+    desc: 'Ротационный полуавтомат для мяса и птицы с вакуумом и MAP. Низкий порог входа.',
+    extras: ['Вакуум', 'MAP CO₂/N₂', '4 лотка/цикл'],
+    opsAfter: 2,
+  },
+  {
+    id: 'yafor450vsp',
+    name: 'YAFOR 450VSP',
+    type: 'semi',
+    typeLabel: 'Полуавтомат SKIN',
+    priceEUR: 29168,
+    speedMax: 6,
+    trayW: 227, trayL: 178,
+    modes: ['vacuum', 'map', 'skin'],
+    prod: ['fish', 'meat', 'any'],
+    desc: 'Единственный полуавтомат с SKIN-упаковкой. Срок хранения до 3–4× выше.',
+    extras: ['Вакуум', 'MAP', 'SKIN', '2 лотка/цикл'],
+    opsAfter: 2,
+  },
+  {
+    id: 'yatray500',
+    name: 'YATRAY500',
+    type: 'semi',
+    typeLabel: 'Полуавтомат высокой производительности',
+    priceEUR: 14100,
+    speedMax: 12,
+    trayW: 227, trayL: 178,
+    modes: ['vacuum', 'map', 'skin'],
+    prod: ['meat', 'veg', 'any'],
+    desc: 'Максимальная скорость среди полуавтоматов. SKIN + MAP при минимальных инвестициях.',
+    extras: ['Вакуум', 'MAP', 'SKIN', '4 лотка/цикл'],
+    opsAfter: 2,
+  },
+  {
+    id: 'tsa620vg',
+    name: 'TSA620VG',
+    type: 'auto',
+    typeLabel: 'Инлайн-автомат',
+    priceEUR: 71585,
+    speedMax: 36,
+    trayW: 190, trayL: 144,
+    modes: ['vacuum', 'map'],
+    prod: ['meat', 'ready', 'any'],
+    desc: 'Средний инлайн-автомат для производительных линий. Интеграция с этикетировщиком.',
+    extras: ['Вакуум', 'MAP', '3 лотка/формат', 'до 12 цикл/мин'],
+    opsAfter: 1,
+  },
+  {
+    id: 'tsa1000vg',
+    name: 'TSA1000VG',
+    type: 'auto',
+    typeLabel: 'Флагман инлайн',
+    priceEUR: 115969,
+    speedMax: 72,
+    trayW: 380, trayL: 1000, // format size; flexible tray configs
+    modes: ['vacuum', 'map'],
+    prod: ['ready', 'meat', 'any'],
+    desc: 'Флагман ЯФОР. До 72 лотков/мин, большой формат, полная интеграция в линию.',
+    extras: ['Вакуум', 'MAP', '6 лотков/формат', 'до 12 цикл/мин'],
+    opsAfter: 1,
+  },
+];
+
+const OPTION_PRICES = {
+  labeler:  { label: '+ этикетировщик', eur: 4500 },
+  metaldet: { label: '+ металлодетектор', eur: 3800 },
+  printer:  { label: '+ принтер дата-кодер', eur: 3200 },
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let state = {
+  speed: 10,
+  trayW: 150,
+  trayL: 120,
+  modes: new Set(['vacuum']),
+  auto:  'any',
+  prod:  'any',
+};
+
+// ── HANDLERS ─────────────────────────────────────────────────────────────────
+function onSpeed(v) {
+  state.speed = +v;
+  document.getElementById('speedVal').textContent = v + ' лотков/мин';
+  calc();
+}
+
+function toggleMode(mode, btn) {
+  if (state.modes.has(mode)) {
+    if (state.modes.size === 1) return; // keep at least one
+    state.modes.delete(mode);
+    btn.classList.remove('active');
+  } else {
+    state.modes.add(mode);
+    btn.classList.add('active');
+  }
+  calc();
+}
+
+function setAuto(val, btn) {
+  state.auto = val;
+  document.querySelectorAll('#autoPills .pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  calc();
+}
+
+function setProd(val, btn) {
+  state.prod = val;
+  document.querySelectorAll('#prodPills .pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  calc();
+}
+
+// ── SCORING ───────────────────────────────────────────────────────────────────
+function scoreModel(m) {
+  let score = 100;
+  const w = +document.getElementById('trayW').value || state.trayW;
+  const l = +document.getElementById('trayL').value || state.trayL;
+
+  // Hard disqualification
+  if (state.speed > m.speedMax) return -1;              // too slow
+  if (w > m.trayW || l > m.trayL) return -1;            // tray too big
+  if (state.auto === 'semi' && m.type !== 'semi') return -1;
+  if (state.auto === 'auto' && m.type !== 'auto') return -1;
+
+  // SKIN required but model doesn't support
+  if (state.modes.has('skin') && !m.modes.includes('skin')) return -1;
+
+  // Bonus: speed headroom (prefer closer match)
+  const speedRatio = state.speed / m.speedMax;
+  if (speedRatio > 0.8) score += 20; // using capacity well
+  else if (speedRatio < 0.3) score -= 15; // overkill
+
+  // Bonus: tray size fit
+  const fitW = w / m.trayW;
+  const fitL = l / m.trayL;
+  if (fitW > 0.7 && fitL > 0.7) score += 15;
+  else if (fitW < 0.4 && fitL < 0.4) score -= 10;
+
+  // Bonus: mode support
+  state.modes.forEach(mode => {
+    if (m.modes.includes(mode)) score += 10;
+  });
+
+  // Bonus: product fit
+  if (state.prod !== 'any' && m.prod.includes(state.prod)) score += 20;
+
+  // Price preference (semi-auto cheaper = bonus if performance met)
+  if (m.type === 'semi' && state.auto !== 'auto') score += 5;
+
+  return score;
+}
+
+// ── MAIN CALC ─────────────────────────────────────────────────────────────────
+function calc() {
+  state.trayW = +document.getElementById('trayW').value || 150;
+  state.trayL = +document.getElementById('trayL').value || 120;
+
+  const scored = MODELS.map(m => ({ m, score: scoreModel(m) }))
+    .filter(x => x.score >= 0)
+    .sort((a, b) => b.score - a.score);
+
+  renderModels(scored);
+  renderROI(scored);
+}
+
+// ── RENDER MODELS ─────────────────────────────────────────────────────────────
+function renderModels(scored) {
+  const el = document.getElementById('resultModels');
+  if (!scored.length) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🔍</div>
+        <p>Ни одна модель не подходит под заданные параметры.<br>Попробуйте изменить требования или выберите «Любой» режим.</p>
+      </div>
+      <div class="notice">Если задача нестандартная — напишите нам, разработаем решение под ваш продукт.</div>`;
+    document.getElementById('roiPanel').style.display = 'none';
+    return;
+  }
+
+  const top3 = scored.slice(0, 3);
+  const eur  = +document.getElementById('rEur').value || 95;
+
+  el.innerHTML = top3.map((x, i) => {
+    const m = x.m;
+    const priceRub = Math.round(m.priceEUR * eur / 1000) * 1000;
+    const isTop = i === 0;
+    const badge = isTop
+      ? `<span class="model-badge badge-best">⭐ Лучший выбор</span>`
+      : m.type === 'auto'
+        ? `<span class="model-badge badge-auto">Автомат</span>`
+        : `<span class="model-badge badge-good">#${i+1}</span>`;
+
+    const modesStr = m.modes.map(md =>
+      md === 'vacuum' ? 'Вакуум' : md === 'map' ? 'MAP' : 'SKIN'
+    ).join(' · ');
+
+    return `
+    <div class="model-card ${isTop ? 'top' : ''}">
+      <div class="model-top-row">
+        <div class="model-name">${m.name}</div>
+        ${badge}
+      </div>
+      <div class="model-type">${m.typeLabel}</div>
+      <div class="model-desc">${m.desc}</div>
+      <div class="model-specs">
+        <span class="spec-tag">До ${m.speedMax} лотков/мин</span>
+        <span class="spec-tag">${m.trayW}×${m.trayL} мм</span>
+        <span class="spec-tag">${modesStr}</span>
+      </div>
+      <div class="model-price-row">
+        <div>
+          <div class="model-price">от ${m.priceEUR.toLocaleString('ru')} €</div>
+          <div class="model-price-sub">≈ ${priceRub.toLocaleString('ru')} ₽ (без НДС)</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Helper — format RUB
+function formatRub(n) { return Math.round(n).toLocaleString('ru'); }
+
+// ── RENDER ROI ────────────────────────────────────────────────────────────────
+function renderROI(scored) {
+  const panel = document.getElementById('roiPanel');
+  if (!scored.length) { panel.style.display = 'none'; return; }
+
+  const best    = scored[0].m;
+  const eur     = +document.getElementById('rEur').value || 95;
+  const tpd     = +document.getElementById('rTpd').value || 2000;
+  const ops     = +document.getElementById('rOps').value || 4;
+  const sal     = +document.getElementById('rSal').value || 55000;
+
+  const opsAfter    = best.opsAfter;
+  const opsSaved    = Math.max(0, ops - opsAfter);
+  const fotSaving   = opsSaved * sal * 12;
+  const filmSaving  = Math.round(tpd * 365 * 1.2);
+  const totalAnnual = fotSaving + filmSaving;
+  const priceRub    = best.priceEUR * eur;
+  const payMonths   = totalAnnual > 0 ? Math.ceil(priceRub / (totalAnnual / 12)) : null;
+
+  document.getElementById('roiRows').innerHTML = `
+    <div class="roi-row"><span class="lbl">Модель</span><span class="val">${best.name}</span></div>
+    <div class="roi-row"><span class="lbl">Инвестиция</span><span class="val">${formatRub(priceRub)} ₽</span></div>
+    <div class="roi-row"><span class="lbl">Операторов сейчас / после</span><span class="val">${ops} → ${opsAfter} чел.</span></div>
+    <div class="roi-row"><span class="lbl">Экономия ФОТ / год</span><span class="val">${formatRub(fotSaving)} ₽</span></div>
+    <div class="roi-row"><span class="lbl">Экономия плёнки / год</span><span class="val">~${formatRub(filmSaving)} ₽</span></div>
+    <div class="roi-row"><span class="lbl">Итого экономия / год</span><span class="val">${formatRub(totalAnnual)} ₽</span></div>
+  `;
+
+  document.getElementById('roiPayback').textContent =
+    payMonths
+      ? (payMonths <= 12 ? `${payMonths} мес.` : `${(payMonths/12).toFixed(1)} лет`)
+      : 'уточните параметры';
+
+  panel.style.display = 'block';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+calc();
+</script>
+</body>
+</html>
