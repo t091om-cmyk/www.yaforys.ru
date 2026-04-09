@@ -1235,11 +1235,11 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
         </div>
         <div class="form-group">
           <label>Ваше имя</label>
-          <input type="text" placeholder="Иван Петров" required>
+          <input type="text" id="hero-name" placeholder="Иван Петров" required>
         </div>
         <div class="form-group">
           <label>Телефон</label>
-          <input type="tel" placeholder="+7 (___) ___-__-__" required>
+          <input type="tel" id="hero-phone" placeholder="+7 (___) ___-__-__" required>
         </div>
         <button type="submit" class="btn-form-submit">Получить КП →</button>
         <div class="form-privacy">🔒 Нажимая кнопку, вы соглашаетесь с <a href="#" style="color:var(--blue-mid)">политикой конфиденциальности</a></div>
@@ -2074,14 +2074,14 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
     <div id="modal-form-content">
       <div class="modal-title" id="modal-title">Получить коммерческое предложение</div>
       <div class="modal-desc" id="modal-desc">Заполните форму — менеджер свяжется в течение 1 рабочего часа и пришлёт детальное КП.</div>
-      <form onsubmit="submitModal(event)">
+      <form onsubmit="submitModal(event)" id="modal-form">
         <div class="form-group">
           <label>Ваше имя *</label>
-          <input type="text" placeholder="Иван Петров" required>
+          <input type="text" id="modal-name" placeholder="Иван Петров" required>
         </div>
         <div class="form-group">
           <label>Телефон *</label>
-          <input type="tel" placeholder="+7 (___) ___-__-__" required>
+          <input type="tel" id="modal-phone" placeholder="+7 (___) ___-__-__" required>
         </div>
         <div class="form-group">
           <label>Тип оборудования</label>
@@ -2097,7 +2097,7 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
         </div>
         <div class="form-group">
           <label>Комментарий</label>
-          <input type="text" placeholder="Например: мясопереработка, 3 т/смену">
+          <input type="text" id="modal-comment" placeholder="Например: мясопереработка, 3 т/смену">
         </div>
         <button type="submit" class="btn-form-submit">Отправить заявку →</button>
         <div class="form-privacy">🔒 Данные защищены. Не передаём третьим лицам.</div>
@@ -2293,8 +2293,19 @@ function closeModal(e) {
   document.body.style.overflow = '';
 }
 
-function submitModal(e) {
-  e.preventDefault();
+// ---- Google Sheets CRM endpoint ----
+const CRM_URL = 'https://script.google.com/macros/s/AKfycbwMfIcVVXuiZjthZICI1gPEWxxeePXtuf-vJn02x5Eh7T264p9iGFWuburrCnzLT1t7Mw/exec';
+
+function sendToCRM(data) {
+  fetch(CRM_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {}); // silent fail — UI already shows success
+}
+
+function showModalSuccess() {
   document.getElementById('modal-form-content').style.display = 'none';
   document.getElementById('modal-success').style.display = 'block';
   setTimeout(() => {
@@ -2302,12 +2313,33 @@ function submitModal(e) {
     document.body.style.overflow = '';
     document.getElementById('modal-success').style.display = 'none';
     document.getElementById('modal-form-content').style.display = '';
+    const f = document.getElementById('modal-form');
+    if (f) f.reset();
   }, 3500);
+}
+
+function submitModal(e) {
+  e.preventDefault();
+  const name    = (document.getElementById('modal-name')    || {}).value || '';
+  const phone   = (document.getElementById('modal-phone')   || {}).value || '';
+  const equip   = (document.getElementById('modal-eq')      || {}).value || '';
+  const comment = (document.getElementById('modal-comment') || {}).value || '';
+  const source  = (document.getElementById('modal-title')   || {}).textContent || 'Модальная форма';
+  sendToCRM({ name, phone, equip, product: comment, source });
+  showModalSuccess();
 }
 
 function submitHeroForm(e) {
   e.preventDefault();
-  openModal('Получить КП');
+  const name  = (document.getElementById('hero-name')  || {}).value || '';
+  const phone = (document.getElementById('hero-phone') || {}).value || '';
+  const equip = (document.getElementById('hero-eq')    || {}).value || '';
+  const prod  = (document.getElementById('hero-prod')  || {}).value || '';
+  sendToCRM({ name, phone, equip, product: prod, source: 'Hero-форма' });
+  // Show inline success in hero form
+  const btn = e.target.querySelector('button[type="submit"]');
+  if (btn) { btn.textContent = '✅ Заявка принята!'; btn.disabled = true; }
+  setTimeout(() => { e.target.reset(); if (btn) { btn.textContent = 'Получить КП →'; btn.disabled = false; } }, 4000);
 }
 
 // ---- Smooth nav ----
