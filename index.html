@@ -63,6 +63,22 @@ button { cursor: pointer; font-family: inherit; }
   border-radius: 20px;
   letter-spacing: .3px;
 }
+.topbar-hotlink {
+  color: rgba(255,255,255,.9);
+  text-decoration: none;
+  font-size: .8rem;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.25);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.topbar-hotlink:hover {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border-color: rgba(255,255,255,.5);
+}
 /* HOT OFFERS */
 .hot-offers {
   background: #fff;
@@ -1128,10 +1144,12 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
      ============================================================ -->
 <div class="topbar">
   <div class="container">
-    <div class="topbar-links">
-      <span>🕐 Пн–Пт: 9:00–18:00 МСК</span>
-      <a href="mailto:sales@yaforys.ru">sales@yaforys.ru</a>
-      <a href="chestny-znak.html" class="topbar-badge" style="text-decoration:none;">🔴 Честный знак — внедряем под ключ</a>
+    <div class="topbar-links" style="width:100%;justify-content:center;gap:8px;">
+      <a href="remont.html" class="topbar-hotlink">🔧 Ремонт термоформера →</a>
+      <span style="color:rgba(255,255,255,.25);">|</span>
+      <a href="thermoformer-calculator.html" class="topbar-hotlink">🧮 Расчёт термоформера →</a>
+      <span style="color:rgba(255,255,255,.25);">|</span>
+      <a href="flowpack.html" class="topbar-hotlink">🐄 Флоу-пак для мяса и птицы →</a>
     </div>
   </div>
 </div>
@@ -1251,40 +1269,6 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
     </div>
   </div>
 </section>
-
-<!-- ============================================================
-     HOT OFFERS — moved here, right after hero
-     ============================================================ -->
-<div class="hot-offers">
-  <div class="container">
-    <div class="hot-offers-inner">
-      <a href="remont.html" class="hot-offer-card">
-        <span class="hot-offer-icon">🔧</span>
-        <div>
-          <div class="hot-offer-label">🔥 Популярное</div>
-          <div class="hot-offer-title">Ремонт термоформера</div>
-        </div>
-        <span class="hot-offer-arrow">→</span>
-      </a>
-      <a href="thermoformer-calculator.html" class="hot-offer-card">
-        <span class="hot-offer-icon">🧮</span>
-        <div>
-          <div class="hot-offer-label">🔥 Популярное</div>
-          <div class="hot-offer-title">Расчёт термоформера</div>
-        </div>
-        <span class="hot-offer-arrow">→</span>
-      </a>
-      <a href="flowpack.html" class="hot-offer-card">
-        <span class="hot-offer-icon">🐄</span>
-        <div>
-          <div class="hot-offer-label">🔥 Популярное</div>
-          <div class="hot-offer-title">Флоу-пак для мяса и птицы</div>
-        </div>
-        <span class="hot-offer-arrow">→</span>
-      </a>
-    </div>
-  </div>
-</div>
 
 <!-- ============================================================
      TRUST BAR
