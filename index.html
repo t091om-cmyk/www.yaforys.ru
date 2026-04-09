@@ -436,6 +436,18 @@ nav a.active { color: var(--blue-mid); font-weight: 600; }
   font-weight: 700;
   color: var(--blue-mid);
   transition: gap var(--transition);
+  position: relative;
+  z-index: 1;
+}
+.product-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* растягивает кликабельную зону на всю карточку */
+  top: calc(-999px);
+  bottom: calc(-999px);
+  left: calc(-999px);
+  right: calc(-999px);
 }
 .product-link:hover { gap: 10px; }
 .product-link-arrow { font-size: 1rem; }
