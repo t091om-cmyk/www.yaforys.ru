@@ -2332,10 +2332,43 @@ function showModalSuccess() {
   }, 3500);
 }
 
+function markInvalid(el, msg) {
+  if (!el) return;
+  el.style.borderColor = '#e53e3e';
+  el.style.boxShadow = '0 0 0 2px rgba(229,62,62,.25)';
+  let err = el.nextElementSibling;
+  if (!err || !err.classList.contains('field-error')) {
+    err = document.createElement('div');
+    err.className = 'field-error';
+    err.style.cssText = 'color:#e53e3e;font-size:.78rem;margin-top:3px;';
+    el.parentNode.insertBefore(err, el.nextSibling);
+  }
+  err.textContent = msg;
+  el.addEventListener('input', function clear() {
+    el.style.borderColor = ''; el.style.boxShadow = '';
+    if (err) err.textContent = '';
+    el.removeEventListener('input', clear);
+  });
+}
+
+function validateFields(fields) {
+  let valid = true;
+  fields.forEach(({ id, msg }) => {
+    const el = document.getElementById(id);
+    if (!el || !el.value.trim()) { markInvalid(el, msg); valid = false; }
+  });
+  return valid;
+}
+
 function submitModal(e) {
   e.preventDefault();
-  const name    = (document.getElementById('modal-name')    || {}).value || '';
-  const phone   = (document.getElementById('modal-phone')   || {}).value || '';
+  const ok = validateFields([
+    { id: 'modal-name',  msg: 'Пожалуйста, укажите ваше имя' },
+    { id: 'modal-phone', msg: 'Пожалуйста, укажите телефон' }
+  ]);
+  if (!ok) return;
+  const name    = document.getElementById('modal-name').value.trim();
+  const phone   = document.getElementById('modal-phone').value.trim();
   const equip   = (document.getElementById('modal-eq')      || {}).value || '';
   const comment = (document.getElementById('modal-comment') || {}).value || '';
   const source  = (document.getElementById('modal-title')   || {}).textContent || 'Модальная форма';
@@ -2345,10 +2378,15 @@ function submitModal(e) {
 
 function submitHeroForm(e) {
   e.preventDefault();
-  const name  = (document.getElementById('hero-name')  || {}).value || '';
-  const phone = (document.getElementById('hero-phone') || {}).value || '';
-  const equip = (document.getElementById('hero-eq')    || {}).value || '';
-  const prod  = (document.getElementById('hero-prod')  || {}).value || '';
+  const ok = validateFields([
+    { id: 'hero-name',  msg: 'Пожалуйста, укажите ваше имя' },
+    { id: 'hero-phone', msg: 'Пожалуйста, укажите телефон' }
+  ]);
+  if (!ok) return;
+  const name  = document.getElementById('hero-name').value.trim();
+  const phone = document.getElementById('hero-phone').value.trim();
+  const equip = (document.getElementById('hero-eq')   || {}).value || '';
+  const prod  = (document.getElementById('hero-prod') || {}).value || '';
   sendToCRM({ name, phone, equip, product: prod, source: 'Hero-форма' });
   // Show inline success in hero form
   const btn = e.target.querySelector('button[type="submit"]');
@@ -2375,34 +2413,4 @@ function openRepairModal() {
   document.getElementById('modal-form-content').style.display = '';
   document.getElementById('modal-success').style.display = 'none';
   title.textContent = '🔧 Рассчитать стоимость ремонта';
-  desc.textContent  = 'Укажите оборудование и характер неисправности — пришлём смету и список запчастей в течение 24 часов.';
-  if (eq) {
-    eq.innerHTML = `
-      <option value="">— Выберите оборудование —</option>
-      <option>Термоформер ЯFORM</option>
-      <option>Трейсилер ЯTRAY</option>
-      <option>Флоу-пак ЯFLOW</option>
-      <option>Этикетировщик DIBAL</option>
-      <option>ЯBOX</option>
-      <option>Ремонт упаковочного оборудования</option>
-      <option>Другое оборудование</option>
-    `;
-    eq.closest('.form-group').querySelector('label').textContent = 'Модель оборудования';
-  }
-  // replace comment field label
-  const commentInput = document.querySelector('#modal-form-content input[placeholder="Например: мясопереработка, 3 т/смену"]');
-  if (commentInput) {
-    commentInput.placeholder = 'Опишите неисправность: коды ошибок, симптомы';
-    commentInput.closest('.form-group').querySelector('label').textContent = 'Характер неисправности';
-  }
-  document.body.style.overflow = 'hidden';
-}
-
-// ---- Escape closes modal ----
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-});
-</script>
-</body>
-</html>
-           
+  desc.textContent  = 'Укажите оборудование и характер неисправности — пришлём смету и список запчасте
